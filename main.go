@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"github.com/damingerdai/health-master/internal/logger"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	fmt.Println("hello world")
+	r := gin.Default()
+	r.GET("ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong"})
+	})
+	log := logger.NewLogger(logger.LevelInfo)
+	log.Info("health master server ...")
+	r.Run()
 }
