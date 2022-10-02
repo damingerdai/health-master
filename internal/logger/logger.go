@@ -44,6 +44,14 @@ func (l Level) String() string {
 	return ""
 }
 
+func ParseLevel(level Level) log.Level {
+	logLevel, err := log.ParseLevel(level.String())
+	if err != nil {
+		logLevel = log.InfoLevel
+	}
+	return logLevel
+}
+
 func NewLogger(level Level) *log.Logger {
 	logger := log.New()
 
