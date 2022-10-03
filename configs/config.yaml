@@ -3,3 +3,10 @@ Server:
   HttpPort: 8000
   ReadTimeout: 60
   WriteTimeout: 60
+Database:
+  Host: 127.0.0.1
+  Port: 5432
+  User: postgres
+  Password: 123456
+  DB: health-master
+  SSL: false 

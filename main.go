@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/damingerdai/health-master/global"
+	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/logger"
 	"github.com/damingerdai/health-master/internal/routers"
 	"github.com/damingerdai/health-master/pkg/setting"
@@ -16,6 +17,10 @@ func init() {
 	var err = setupSetting()
 	if err != nil {
 		panic("fail to setup server: " + err.Error())
+	}
+	err = setupDBEngine()
+	if err != nil {
+		panic("fail to setup database: " + err.Error())
 	}
 }
 
@@ -40,7 +45,21 @@ func setupSetting() error {
 	}
 
 	err = setting.ReadSection("Server", &global.ServerSetting)
+	if err != nil {
+		return err
+	}
 
+	err = setting.ReadSection("Database", &global.DatabaseSetting)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func setupDBEngine() error {
+	var err error
+	global.DBEngine, err = db.NewDBEngine(global.DatabaseSetting)
 	if err != nil {
 		return err
 	}
