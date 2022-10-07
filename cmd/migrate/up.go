@@ -6,6 +6,8 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +23,7 @@ var migrateUpCmd = &cobra.Command{
 		}
 		defer m.Close()
 		err = m.Up()
-		if err != nil {
+		if err != nil && err != migrate.ErrNoChange {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}

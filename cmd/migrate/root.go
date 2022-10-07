@@ -7,8 +7,6 @@ import (
 	"path"
 
 	"github.com/damingerdai/health-master/pkg/util"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

@@ -1,6 +1,9 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/damingerdai/health-master/internal/api"
+	"github.com/gin-gonic/gin"
+)
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
@@ -8,6 +11,8 @@ func NewRouter() *gin.Engine {
 	r.Any("ping", func(ctx *gin.Context) {
 		ctx.JSON(200, "pong")
 	})
+
+	r.POST("user", api.CreateUser)
 
 	return r
 }

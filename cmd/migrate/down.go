@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/golang-migrate/migrate/v4"
+
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +21,7 @@ var migrateDownCmd = &cobra.Command{
 		}
 		defer m.Close()
 		err = m.Down()
-		if err != nil {
+		if err != nil && err != migrate.ErrNoChange {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
