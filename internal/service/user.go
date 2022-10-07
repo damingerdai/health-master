@@ -23,3 +23,7 @@ func (self *UserService) Create(user *model.User) error {
 	}
 	return nil
 }
+
+func (self *UserService) Find(id string) (*model.User, error) {
+	return self.userRepository.Find(id)
+}

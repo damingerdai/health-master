@@ -13,6 +13,7 @@ func NewRouter() *gin.Engine {
 	})
 
 	r.POST("user", api.CreateUser)
+	r.GET("user/:id", api.GetUser)
 
 	return r
 }

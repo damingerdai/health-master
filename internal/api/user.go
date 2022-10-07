@@ -21,7 +21,22 @@ func CreateUser(c *gin.Context) {
 	user.UpdatedAt = nil
 	userService := service.NewUserService(repository.NewUserRepository(global.DBEngine))
 	if err := userService.Create(&user); err != nil {
-
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	c.JSON(http.StatusOK, user)
+}
+
+func GetUser(c *gin.Context) {
+	var id = c.Param("id")
+
+	userService := service.NewUserService(repository.NewUserRepository(global.DBEngine))
+
+	user, err := userService.Find(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+
 }
