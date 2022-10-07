@@ -16,7 +16,7 @@ var migrateUpCmd = &cobra.Command{
 	Short: "migrate up command",
 	Long:  "execute migate up command",
 	Run: func(cmd *cobra.Command, args []string) {
-		m, err := migrate.New(getMigratePath(), getMigratePath())
+		m, err := migrate.New(getMigratePath(), getPostgresqlUrl())
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)

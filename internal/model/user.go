@@ -4,10 +4,11 @@ import "time"
 
 type User struct {
 	Id        string     `json:"id"`
-	FirstName string     `json:"firstName"`
-	LastName  string     `json:"lastName"`
-	Password  string     `json:"password"`
-	Gender    string     `json:"gender"`
+	Username  string     `json:"username" binding:"required"`
+	FirstName string     `json:"firstName" binding:"required"`
+	LastName  string     `json:"lastName" binding:"required"`
+	Password  string     `json:"password" binding:"required"`
+	Gender    string     `json:"gender" binding:"required"`
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`

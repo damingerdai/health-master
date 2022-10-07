@@ -1,7 +1,8 @@
-CREATE TYPE GENDER AS ENUM ('M', 'F');
+CREATE TYPE GENDER AS ENUM ('M', 'F', 'U');
 
 CREATE TABLE IF NOT EXISTS users (
-    id UUID NOT NULL DEFAULT Gen_random_uuid (),
+    id UUID NOT NULL DEFAULT gen_random_uuid (),
+    username VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     password VARCHAR(32) NOT NULL,
