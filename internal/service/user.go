@@ -1,8 +1,8 @@
 package service
 
 import (
-	"errors"
 	"fmt"
+	"time"
 
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
@@ -17,15 +17,30 @@ func NewUserService(userRepository *repository.UserRepository) *UserService {
 	return &UserService{userRepository}
 }
 
-func (self *UserService) Create(user *model.User) error {
-	user.Password = util.GetMd5Hash(user.Password)
-	err := self.userRepository.Create(user)
+func (userService *UserService) Create(user *model.User) error {
+	existUser, err := userService.userRepository.FindByUserName(user.Username)
 	if err != nil {
-		return errors.New(fmt.Sprintf("fail to create user: %s", err.Error()))
+		return fmt.Errorf("fail to create user: %s", err.Error())
+
+	}
+	if existUser != nil || existUser.Id != "" {
+		return fmt.Errorf("username(%s) is exited", user.Username)
+	}
+	user.Password = util.GetMd5Hash(user.Password)
+	now := time.Now()
+	user.CreatedAt = &now
+	user.UpdatedAt = &now
+	err = userService.userRepository.Create(user)
+	if err != nil {
+		return fmt.Errorf("fail to create user: %s", err.Error())
 	}
 	return nil
 }
 
-func (self *UserService) Find(id string) (*model.User, error) {
-	return self.userRepository.Find(id)
+func (userService *UserService) Find(id string) (*model.User, error) {
+	return userService.userRepository.Find(id)
+}
+
+func (userService *UserService) FindByUserName(username string) (*model.User, error) {
+	return userService.userRepository.Find(username)
 }

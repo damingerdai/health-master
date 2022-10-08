@@ -17,13 +17,14 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user.CreatedAt = nil
-	user.UpdatedAt = nil
 	userService := service.NewUserService(repository.NewUserRepository(global.DBEngine))
 	if err := userService.Create(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	user.CreatedAt = nil
+	user.UpdatedAt = nil
+	user.Password = ""
 	c.JSON(http.StatusOK, user)
 }
 
