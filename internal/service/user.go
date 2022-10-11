@@ -42,5 +42,5 @@ func (userService *UserService) Find(id string) (*model.User, error) {
 }
 
 func (userService *UserService) FindByUserName(username string) (*model.User, error) {
-	return userService.userRepository.Find(username)
+	return userService.userRepository.FindByUserName(username)
 }

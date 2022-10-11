@@ -10,3 +10,7 @@ Database:
   Password: 123456
   DB: health-master
   SSL: false 
+JWT:
+  Secret: damingerdai
+  Issuer: health-master
+  Expire: 7200

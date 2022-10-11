@@ -8,6 +8,8 @@ import (
 	"github.com/damingerdai/health-master/pkg/util"
 )
 
+var secret []byte = make([]byte, 0)
+
 type ServerSettingS struct {
 	RunMode      string
 	HttpPort     string
@@ -22,6 +24,12 @@ type DatabaseSettingS struct {
 	Password string
 	DB       string
 	SSL      bool
+}
+
+type JwtSettingS struct {
+	Secret string
+	Issuer string
+	Expire time.Duration
 }
 
 func (s *Setting) ReadSection(key string, value interface{}) error {
@@ -42,4 +50,12 @@ func (s *DatabaseSettingS) DBConnString() string {
 		s.DB,
 		s.Port,
 		util.If(s.SSL, "require", "disable"))
+}
+
+func (s *JwtSettingS) GetJwtSecret() []byte {
+	if len(secret) == 0 {
+		secret = []byte(s.Secret)
+	}
+
+	return secret
 }

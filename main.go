@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/damingerdai/health-master/global"
@@ -35,7 +39,27 @@ func main() {
 	}
 	log := logger.NewLogger(logger.LevelInfo)
 	log.Info("health master server is running")
-	s.ListenAndServe()
+	go func() {
+		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := s.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown", err)
+	}
+	select {
+	case <-ctx.Done():
+		log.Println("timeout of 5 seconds")
+	}
+	log.Println("Server exiting")
 }
 
 func setupSetting() error {
@@ -53,6 +77,12 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
+
+	err = setting.ReadSection("JWT", &global.JwtSetting)
+	if err != nil {
+		return err
+	}
+	global.JwtSetting.Expire *= time.Second
 
 	return nil
 }
