@@ -1,5 +1,6 @@
 import { ColorModeScript } from '@chakra-ui/react';
 import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
+import { ToastContainer } from '../components/toast';
 import { theme } from '../lib/theme';
 
 export default class Document extends NextDocument {
@@ -10,6 +11,7 @@ export default class Document extends NextDocument {
                 <body>
                     <ColorModeScript initialColorMode={theme.config.initialColorMode}/>
                     <Main />
+                    <ToastContainer/>
                     <NextScript />
                 </body>
             </Html>

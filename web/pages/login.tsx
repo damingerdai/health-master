@@ -18,7 +18,7 @@ import * as React from "react";
 import { useState } from "react";
 import type { NextPage } from "next";
 import * as Yup from 'yup';
-import { request } from "../lib/request";
+import { login } from "../lib/request";
 import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
@@ -29,14 +29,14 @@ const Login: NextPage = () => {
     password: "",
   };
   const handleSubmit = async(value: Record<'username' | 'password', string>, {setSubmitting}) => {
-    const res = await request({
-      method: 'POST',
-      url: '/api/token',
-      data: value,
-    });
-
-    const data = res.data;
-    router.push('/');
+    const { username, password } = value;
+    try {
+      await login(username, password ); 
+      router.push('/');
+    } catch(err) {
+      console.error(err);
+    }
+  
     setSubmitting(false);
   };
   const validationSchemas = Yup.object({

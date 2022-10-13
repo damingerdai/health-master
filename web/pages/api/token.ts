@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    const data = req.body;
+    const data = req.headers;
     const { username, password } = data;
     try {
         const data = await http({

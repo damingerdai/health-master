@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { ProtectRoute } from "../components/protect-route";
 import { Siderbar } from "../components/sidebar";
 
 const Home: NextPage = () => {
@@ -23,4 +24,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default ProtectRoute(Home);

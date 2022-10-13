@@ -7,7 +7,7 @@ import { theme } from '../lib/theme';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      {/* <Fonts/> */}
+      <Fonts/>
       <Component {...pageProps} />
     </ChakraProvider>
   );
