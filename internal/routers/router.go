@@ -15,6 +15,7 @@ func NewRouter() *gin.Engine {
 	apiV1 := r.Group("/api/v1")
 	{
 		apiV1.POST("/user", api.CreateUser)
+		apiV1.GET("/user", api.GetCurrentUser)
 		apiV1.GET("/user/:id", api.GetUser)
 
 		apiV1.POST("/token", api.CreateToken)

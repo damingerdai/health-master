@@ -41,3 +41,35 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 
 }
+
+func GetCurrentUser(c *gin.Context) {
+	var token string
+	if s, exist := c.GetQuery("Authorization"); exist {
+		token = s[7:]
+	} else {
+		token = c.GetHeader("Authorization")[7:]
+	}
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, "no authorization")
+		return
+	}
+
+	userRepository := repository.NewUserRepository(global.DBEngine)
+	userService := service.NewUserService(userRepository)
+	tokenService := service.NewTokenService(userRepository)
+
+	claims, err := tokenService.ParseToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
+	username := claims.Username
+	user, err := userService.FindByUserName(username)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+
+}

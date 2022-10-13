@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/damingerdai/health-master/global"
@@ -25,7 +24,6 @@ func (ts *TokenService) CreateToken(username string, password string) (*model.Us
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(user)
 	if user == nil || user.Id == "" || user.Password != util.GetMd5Hash(password) {
 		return nil, errors.New("username or password error")
 	}
@@ -43,11 +41,27 @@ func (ts *TokenService) doCreateToken(user *model.User) (*model.UserToken, error
 			Issuer:    global.JwtSetting.Issuer,
 		},
 	}
-
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(global.JwtSetting.GetJwtSecret())
 	if err != nil {
 		return nil, err
 	}
 	return &model.UserToken{AccessToken: token, Expired: expireTime}, nil
+}
+
+func (ts *TokenService) ParseToken(token string) (*model.Claims, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &model.Claims{}, func(t *jwt.Token) (interface{}, error) {
+		return global.JwtSetting.GetJwtSecret(), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	if tokenClaims != nil {
+		if claims, ok := tokenClaims.Claims.(*model.Claims); ok && tokenClaims.Valid {
+			return claims, nil
+		}
+	}
+
+	return nil, err
 }
