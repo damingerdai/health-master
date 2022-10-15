@@ -56,7 +56,8 @@ export const login = async (username: string, password: string) => {
         isClosable: true,
       });
     }
-    
+
+    return data;
   } catch(err: any) {
     console.error(err);
     toastInstance({

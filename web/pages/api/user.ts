@@ -10,25 +10,21 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
-    const data = req.headers;
-    const { username, password } = data;
+  if (req.method === 'GET') {
     try {
         const data = await http({
             headers: {
-                username,
-                password
+                Authorization: req.headers.authorization
             },
-            method: 'POST',
-            url: '/api/v1/token'
+            method: 'GET',
+            url: '/api/v1/user'
         });
         res.status(200).json(data.data);
     } catch(err) {
         res.status(500).json(err);
     }
   } else {
-    // res.status(200).json({ name: 'John Doe' }),
-    res.status(200).json({ name: 'Arthur Ming'});
+    res.status(500).json({ error: 'only support get' });
   }
  
 }

@@ -18,12 +18,16 @@ import * as React from "react";
 import { useState } from "react";
 import type { NextPage } from "next";
 import * as Yup from 'yup';
-import { login } from "../lib/request";
+import { login } from "@/lib/request";
+import { useAppDispatch } from "@/lib/redux-hooks";
+import { fetchUser } from "@/slices/user-slice";
 import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const initialValues = {
     username: "",
     password: "",
@@ -31,7 +35,8 @@ const Login: NextPage = () => {
   const handleSubmit = async(value: Record<'username' | 'password', string>, {setSubmitting}) => {
     const { username, password } = value;
     try {
-      await login(username, password ); 
+      const { token } = await login(username, password ); 
+      await dispatch(fetchUser(token.accessToken))
       router.push('/');
     } catch(err) {
       console.error(err);

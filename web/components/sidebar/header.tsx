@@ -1,14 +1,13 @@
+import { useAppSelector } from "@/lib/redux-hooks";
 import {
   Flex,
   FlexProps,
-  Text,
   IconButton,
   useColorModeValue,
   HStack,
   Menu,
   MenuButton,
   Avatar,
-  useColorMode,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { FiBell, FiMenu } from "react-icons/fi";
@@ -19,6 +18,10 @@ interface HeaderProps extends FlexProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
+  const { id, firstName, lastName } = useAppSelector((state) => state.user);
+
+  const username = `${firstName} ${lastName}`;
+
   return (
     <Flex
       as="nav"
@@ -41,17 +44,28 @@ export const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
         aria-label="open menu"
       />
 
-      <HStack spacing={{base: '1', md: '6'}}>
-        <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiBell />}/>
-        <Flex alignItems="center">
+      <HStack spacing={{ base: "1", md: "6" }}>
+        <IconButton
+          size="lg"
+          variant="ghost"
+          aria-label="open menu"
+          icon={<FiBell />}
+        />
+        {id && (
+          <Flex alignItems="center">
             <Menu>
-                <MenuButton py={2} transform="all 0.3s" _focus={{boxShadow: 'none'}}>
-                    <HStack>
-                        <Avatar size="sm" name="Arthur Ming"></Avatar>
-                    </HStack>
-                </MenuButton>
+              <MenuButton
+                py={2}
+                transform="all 0.3s"
+                _focus={{ boxShadow: "none" }}
+              >
+                <HStack>
+                  <Avatar size="sm" name={username}></Avatar>
+                </HStack>
+              </MenuButton>
             </Menu>
-        </Flex>
+          </Flex>
+        )}
         <ToggleThemeButton />
       </HStack>
     </Flex>
