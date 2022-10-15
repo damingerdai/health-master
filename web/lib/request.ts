@@ -80,6 +80,10 @@ export const login = async (username: string, password: string) => {
     });
   }
 
+};
+
+export const logout = () => {
+  localStorage.removeItem('user_token');
 }
 
 const bclient = axios.create({

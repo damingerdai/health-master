@@ -5,7 +5,6 @@ import {
   IconButton,
   useColorModeValue,
   HStack,
-  Box,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { FiBell, FiMenu } from "react-icons/fi";
@@ -42,17 +41,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
         variant="outline"
         aria-label="open menu"
       />
-      {/* <Box  spacing={{ base: "1", md: "6" }}>
-      <IconButton
-        size="lg"
-        variant="ghost"
-        aria-label="open menu"
-        icon={<FiBell />}
-      />
-      <UserMenu />
-      <ToggleThemeButton />
-      </Box> */}
-     
 
       <HStack spacing={{ base: "1", md: "2" }}>
         <IconButton
@@ -61,9 +49,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
           aria-label="open menu"
           icon={<FiBell />}
         />
-        {/* <Flex alignItems="center">
-          <UserMenu />
-        </Flex> */}
         <UserMenu />
         <ToggleThemeButton />
       </HStack>
