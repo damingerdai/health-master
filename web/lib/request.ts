@@ -6,6 +6,16 @@ const fclient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+fclient.interceptors.request.use((config) => {
+  const tokenString = localStorage.getItem('user_token');
+  if (tokenString) {
+    config!.headers!.Authorization = `Bearer ${tokenString}`;
+  }
+
+  return config;
+})
+
+
 export async function request<T = any>(
   options: AxiosRequestConfig
 ): Promise<T> {

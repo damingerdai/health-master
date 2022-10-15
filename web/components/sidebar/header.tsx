@@ -5,13 +5,12 @@ import {
   IconButton,
   useColorModeValue,
   HStack,
-  Menu,
-  MenuButton,
-  Avatar,
+  Box,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { FiBell, FiMenu } from "react-icons/fi";
 import { ToggleThemeButton } from "../toggle-theme-button";
+import { UserMenu } from "../user-menu";
 
 interface HeaderProps extends FlexProps {
   onOpen: () => void;
@@ -43,29 +42,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
         variant="outline"
         aria-label="open menu"
       />
+      {/* <Box  spacing={{ base: "1", md: "6" }}>
+      <IconButton
+        size="lg"
+        variant="ghost"
+        aria-label="open menu"
+        icon={<FiBell />}
+      />
+      <UserMenu />
+      <ToggleThemeButton />
+      </Box> */}
+     
 
-      <HStack spacing={{ base: "1", md: "6" }}>
+      <HStack spacing={{ base: "1", md: "2" }}>
         <IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FiBell />}
         />
-        {id && (
-          <Flex alignItems="center">
-            <Menu>
-              <MenuButton
-                py={2}
-                transform="all 0.3s"
-                _focus={{ boxShadow: "none" }}
-              >
-                <HStack>
-                  <Avatar size="sm" name={username}></Avatar>
-                </HStack>
-              </MenuButton>
-            </Menu>
-          </Flex>
-        )}
+        {/* <Flex alignItems="center">
+          <UserMenu />
+        </Flex> */}
+        <UserMenu />
         <ToggleThemeButton />
       </HStack>
     </Flex>
