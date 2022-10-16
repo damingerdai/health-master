@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "service",
+    srcs = [
+        "token.go",
+        "user.go",
+    ],
+    importpath = "github.com/damingerdai/health-master/internal/service",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//global",
+        "//internal/model",
+        "//internal/repository",
+        "//pkg/util",
+        "@com_github_golang_jwt_jwt_v4//:go_default_library",
+    ],
+)

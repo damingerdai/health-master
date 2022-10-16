@@ -1,0 +1,8 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "files",
+    srcs = ["file.go"],
+    importpath = "github.com/damingerdai/health-master/pkg/util/files",
+    visibility = ["//visibility:public"],
+)

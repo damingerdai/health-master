@@ -14,6 +14,7 @@ export function ToggleThemeButton() {
   const bg = useColorModeValue('rgb(253 186 116 / 1)', 'rgba(82 82 91 / 1)');
   useEffect(() => {
     setColorMode(systemColorMode);
+   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [systemColorMode]);
 
   return (

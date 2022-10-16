@@ -1,0 +1,4 @@
+# set GOPROXY
+test --action_env=GOPROXY=https://goproxy.cn
+build --action_env=GOPROXY=https://goproxy.cn
+run --action_env=GOPROXY=https://goproxy.cn

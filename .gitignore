@@ -4,3 +4,7 @@ migrate
 !cmd/
 !pkg/migrate
 .DS_Store
+bazel-bin
+bazel-health-master
+bazel-out
+bazel-testlogs

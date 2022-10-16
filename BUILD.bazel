@@ -1,0 +1,59 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/damingerdai/health-master
+gazelle(name = "gazelle")
+
+# bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies
+gazelle(
+    name = "gazelle-update-repos",
+    args = [
+        "-from_file=go.mod",
+        "-to_macro=deps.bzl%go_dependencies",
+        "-prune",
+    ],
+    command = "update-repos",
+)
+
+go_library(
+    name = "health-master_lib",
+    srcs = [
+        "main.go",
+    ],
+    importpath = "github.com/damingerdai/health-master",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//global",
+        "//internal/db",
+        "//internal/logger",
+        "//internal/routers",
+        "//pkg/setting",
+        "@com_github_gin_gonic_gin//:go_default_library"
+    ],
+)
+
+go_library(
+    name = "health-master-migrate_lib",
+    srcs = [
+        "migrate.go",
+    ],
+    importpath = "github.com/damingerdai/health-master",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//cmd/migrate",
+        "@com_github_golang_migrate_migrate_v4//database/postgres:go_default_library",
+        "@com_github_golang_migrate_migrate_v4//source/file:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "health-master",
+    embed = [":health-master_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "health-master-migrate",
+    embed = [":health-master-migrate_lib"],
+    visibility = ["//visibility:public"],
+)

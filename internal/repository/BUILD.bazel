@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "repository",
+    srcs = ["user.go"],
+    importpath = "github.com/damingerdai/health-master/internal/repository",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/model",
+        "@io_gorm_gorm//:go_default_library",
+    ],
+)

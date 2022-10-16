@@ -1,0 +1,67 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+
+filegroup(
+    name = "config",
+    srcs = [
+        "package.json",
+        "tsconfig.json",
+        "next.config.js",
+        ".env",
+    ],
+)
+
+filegroup(
+    name = "sources",
+    srcs = glob(
+        [
+            "components/*.ts",
+            "components/*.tsx",
+            "hooks/*.ts",
+            "hooks/*.tsx",
+            "lib/*.ts",
+            "lib/*.tsx",
+            "pages/*.ts",
+            "pages/*.tsx",
+            "slices/*.ts",
+            "slices/*.tsx",
+            "store/*.ts",
+            "store/*.tsx",
+            "styles/*.scss",
+        ],
+    ),
+)
+
+filegroup(
+    name = "health-master-web_lib",
+    srcs = [
+        ":config",
+        ":sources",
+    ],
+)
+
+# bazel run //web:next
+nodejs_binary(
+    name = "next",
+    # args = ["build ./web"],
+    data = [
+        ":health-master-web_lib",
+    ],
+    entry_point = "node_modules/next/dist/bin/next",
+)
+
+# https://github.com/anthanh/bazel-next-typescript-monorepo/blob/master/packages/webapp2/BUILD
+genrule(
+    name = "build",
+    srcs = [
+        ":health-master-web_lib",
+        "@npm//:node_modules",
+    ],
+    outs = ["next.tar.gz"],
+    cmd = """
+        $(location next) build ./web
+    """,
+    tools = [":next"],
+    # executable = True,
+)
