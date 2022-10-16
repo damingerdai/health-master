@@ -20,6 +20,8 @@ func NewRouter() *gin.Engine {
 
 		apiV1.POST("/token", api.CreateToken)
 
+		apiV1.POST("/user-blood-pressure", api.CreateUserBloodPressure)
+
 	}
 
 	return r
