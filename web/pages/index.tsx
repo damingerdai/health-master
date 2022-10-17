@@ -1,8 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { ProtectRoute } from "../components/protect-route";
-import { Siderbar } from "../components/sidebar";
+import { UserBloodPressureForm } from "@/components/user-blood-pressure";
+import { ProtectRoute } from "@/components/protect-route";
+import { Siderbar } from "@/components/sidebar";
 
 const Home: NextPage = () => {
   return (
@@ -15,10 +16,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Siderbar>
-        {/* <div>
-          <main>hh</main>
-          <footer>footer</footer>
-        </div> */}
+          <UserBloodPressureForm />
       </Siderbar>
     </Box>
   );
