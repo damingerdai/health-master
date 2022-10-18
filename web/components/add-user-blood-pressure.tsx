@@ -3,8 +3,6 @@ import { request } from "@/lib/request";
 import {
   Button,
   Flex,
-  FormControl,
-  FormLabel,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import * as React from "react";
+import * as Yup from 'yup';
 import { UserBloodPressureNumberInput } from "./user-blood-pressure-number-input";
 
 interface AddUserBloodPressureValue {
@@ -42,6 +41,12 @@ export const AddUserBloodPressureModal: React.FC<
     pulse: null
   } as unknown as AddUserBloodPressureValue;
 
+  const validationSchemas = Yup.object().shape({
+    diastolicBloodPressure: Yup.number().min(0).required('请输入你的舒张压'),
+    systolicBloodPressure: Yup.number().min(0).required('请输入你的收缩压'),
+    pulse: Yup.number().min(0).required('请输入你的脉搏'),
+  });
+
   const handleSubmit = async(values, {setSubmitting}) => {
     try {
       await request({
@@ -62,7 +67,7 @@ export const AddUserBloodPressureModal: React.FC<
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik initialValues={initialValues} validationSchema={validationSchemas} onSubmit={handleSubmit}>
         {({ isValid, isSubmitting }) => (
           <Form>
             <ModalContent>
@@ -73,18 +78,9 @@ export const AddUserBloodPressureModal: React.FC<
                 <ModalCloseButton />
               </ModalHeader>
               <ModalBody>
-                <FormControl>
-                  <FormLabel>舒张压（mmHg）</FormLabel>
-                  <UserBloodPressureNumberInput name="diastolicBloodPressure" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>收缩压（mmHg）</FormLabel>
-                  <UserBloodPressureNumberInput name="systolicBloodPressure" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>脉搏</FormLabel>
-                  <UserBloodPressureNumberInput name="pulse" />
-                </FormControl>
+                <UserBloodPressureNumberInput display="舒张压（mmHg）" name="diastolicBloodPressure" min={0}/>
+                <UserBloodPressureNumberInput display="收缩压（mmHg）" name="systolicBloodPressure" min={0} />
+                <UserBloodPressureNumberInput display="脉搏" name="pulse" min={0}/>
               </ModalBody>
               <ModalFooter justifyContent="center">
                 <Button
