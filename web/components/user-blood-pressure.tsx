@@ -38,13 +38,12 @@ export const UserBloodPressureForm: React.FC = () => {
     <>
       <Box>
         <Flex direction="column" alignItems="start">
-          <Heading fontSize="4xl">血压记录</Heading>
+          <Heading fontSize="2xl">血压记录</Heading>
           <Button bg="tomato" onClick={onOpen}>
             添加
           </Button>
         </Flex>
         <Divider borderColor="gray.300" my="1rem" />
-
         <Box>
           {userBloodPressuresStatus === RequestStatus.LOADING && (
             <Center>

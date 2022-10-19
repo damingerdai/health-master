@@ -13,7 +13,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { useState } from 'react';
 import type { NextPage } from 'next';
@@ -60,7 +60,7 @@ const Login: NextPage = () => {
             {({
               values, errors, touched, handleChange, isSubmitting,
             }) => (
-              <form>
+              <Form>
                 <Stack spacing={4}>
                   <FormControl isInvalid={!!errors.username && touched.username}>
                     <FormLabel htmlFor="username">用户名</FormLabel>
@@ -96,7 +96,7 @@ const Login: NextPage = () => {
                     </Button>
                   </Stack>
                 </Stack>
-              </form>
+              </Form>
             )}
           </Formik>
         </Box>

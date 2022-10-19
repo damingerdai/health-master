@@ -101,7 +101,7 @@ AddUserBloodPressureModalProps
                 <Button
                   w="85px"
                   type="submit"
-                  colorScheme="orange"
+                  colorScheme="teal"
                   mr="1rem"
                   disabled={!isValid}
                   isLoading={isSubmitting}
@@ -110,7 +110,7 @@ AddUserBloodPressureModalProps
                 </Button>
                 <Button
                   variant="outline"
-                  colorScheme="orange"
+                  colorScheme="teal"
                   onClick={onClose}
                 >
                   取消
