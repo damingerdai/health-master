@@ -40,12 +40,12 @@ export const Header: React.FC<HeaderProps> = (props) => {
       />
 
       <HStack spacing={{ base: '1', md: '2' }}>
-        <IconButton
+        {/* <IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FiBell />}
-        />
+        /> */}
         <UserMenu />
         <ToggleThemeButton />
       </HStack>
