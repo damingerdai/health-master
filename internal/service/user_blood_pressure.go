@@ -28,3 +28,11 @@ func (userBloodPressureService *UserBloodPressureService) Find(id string) (*mode
 	}
 	return ubp, nil
 }
+
+func (userBloodPressureService *UserBloodPressureService) List() (*[]model.UserBloodPressure, error) {
+	ubps, err := userBloodPressureService.userBloodPressureRepository.List()
+	if err != nil {
+		return nil, err
+	}
+	return ubps, nil
+}

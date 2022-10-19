@@ -22,7 +22,9 @@
       "@/lib/*": ["lib/*"],
       "@/slices/*": ["slices/*"],
       "@/store": ["store"],
-      "@/store/*": ["store/*"]
+      "@/store/*": ["store/*"],
+      "@/type": ["type"],
+      "@/type/*": ["type/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

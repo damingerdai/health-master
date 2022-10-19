@@ -32,7 +32,7 @@ type JwtSettingS struct {
 	Expire time.Duration
 }
 
-func (s *Setting) ReadSection(key string, value interface{}) error {
+func (s *Setting) ReadSection(key string, value any) error {
 	err := s.vp.UnmarshalKey(key, value)
 	if err != nil {
 		return err

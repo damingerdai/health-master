@@ -38,7 +38,7 @@ func GetUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, gin.H{"data": user})
 
 }
 
@@ -50,7 +50,7 @@ func GetCurrentUser(c *gin.Context) {
 		token = c.GetHeader("Authorization")[7:]
 	}
 	if token == "" {
-		c.JSON(http.StatusUnauthorized, "no authorization")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "no authorization"})
 		return
 	}
 
@@ -60,16 +60,16 @@ func GetCurrentUser(c *gin.Context) {
 
 	claims, err := tokenService.ParseToken(token)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, err.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	username := claims.Username
 	user, err := userService.FindByUserName(username)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, err.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, gin.H{"data": user})
 
 }

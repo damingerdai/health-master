@@ -8,7 +8,7 @@ import (
 
 type Level int8
 
-type Fields map[string]interface{}
+type Fields map[string]any
 
 const (
 	LevelTrace Level = iota

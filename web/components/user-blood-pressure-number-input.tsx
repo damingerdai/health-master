@@ -5,13 +5,12 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   NumberInputProps,
-  useNumberInput,
   FormControl,
   FormLabel,
   FormErrorMessage,
-} from "@chakra-ui/react";
-import { useField } from "formik";
-import * as React from "react";
+} from '@chakra-ui/react';
+import { useField } from 'formik';
+import * as React from 'react';
 
 interface UserBloodPressureNumberInputProps extends NumberInputProps {
   display: string;
@@ -19,7 +18,7 @@ interface UserBloodPressureNumberInputProps extends NumberInputProps {
 }
 
 export const UserBloodPressureNumberInput: React.FC<
-  UserBloodPressureNumberInputProps
+UserBloodPressureNumberInputProps
 > = (props) => {
   const { name, display, ...rest } = props;
 
@@ -31,7 +30,7 @@ export const UserBloodPressureNumberInput: React.FC<
       <NumberInput
         name={field.name}
         onChange={(e) => {
-          helpers.setValue(typeof e === "string" ? parseInt(e, 10) : e);
+          helpers.setValue(typeof e === 'string' ? parseInt(e, 10) : e);
         }}
         {...rest}
       >

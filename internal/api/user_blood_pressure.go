@@ -44,3 +44,18 @@ func CreateUserBloodPressure(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": userBloodPressure})
 	}
 }
+
+func ListBloodPressures(c *gin.Context) {
+	service := service.New(global.DBEngine)
+
+	userBloodPressureService := service.UserBloodPressureService
+
+	ubps, err := userBloodPressureService.List()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"data": ubps})
+	}
+
+}

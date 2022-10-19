@@ -51,9 +51,11 @@ export function useSystemColorMode(): ColorMode {
   const [colorMode, setColorMode] = useState<ColorMode>(getColorMode(getMatchMedia()));
 
   const handleChange = (): void => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isClient() && window.requestAnimationFrame(() => setColorMode(getColorMode(getMatchMedia())));
   };
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (isClient()) {
       const { bindEvent, unbindEvent } = getBindingEvents(getMatchMedia(), handleChange);

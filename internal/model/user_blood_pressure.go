@@ -8,6 +8,7 @@ type UserBloodPressure struct {
 	DiastolicBloodPressure int32      `json:"diastolicBloodPressure"`
 	SystolicBloodPressure  int32      `json:"systolicBloodPressure"`
 	Pulse                  int32      `json:"pulse"`
+	User                   *User      `json:"user,omitempty" gorm:"UserId"`
 	CreatedAt              *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt              *time.Time `json:"updatedAt,omitempty"`
 	DeletedAt              *time.Time `json:"deletedAt,omitempty"`

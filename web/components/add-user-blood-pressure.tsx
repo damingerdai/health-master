@@ -1,5 +1,5 @@
-import { useAppSelector } from "@/lib/redux-hooks";
-import { request } from "@/lib/request";
+import { useAppSelector } from '@/lib/redux-hooks';
+import { request } from '@/lib/request';
 import {
   Button,
   Flex,
@@ -10,11 +10,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from "@chakra-ui/react";
-import { Form, Formik } from "formik";
-import * as React from "react";
+} from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
 import * as Yup from 'yup';
-import { UserBloodPressureNumberInput } from "./user-blood-pressure-number-input";
+import { UserBloodPressureNumberInput } from './user-blood-pressure-number-input';
 
 interface AddUserBloodPressureValue {
   userId?: string;
@@ -29,16 +29,16 @@ interface AddUserBloodPressureModalProps {
 }
 
 export const AddUserBloodPressureModal: React.FC<
-  AddUserBloodPressureModalProps
+AddUserBloodPressureModalProps
 > = (props) => {
   const { isOpen, onClose } = props;
 
-  const { id } = useAppSelector(state => state.user);
+  const { id } = useAppSelector((state) => state.user);
 
   const initialValues = {
     diastolicBloodPressure: null,
     systolicBloodPressure: null,
-    pulse: null
+    pulse: null,
   } as unknown as AddUserBloodPressureValue;
 
   const validationSchemas = Yup.object().shape({
@@ -47,27 +47,30 @@ export const AddUserBloodPressureModal: React.FC<
     pulse: Yup.number().min(0).required('请输入你的脉搏'),
   });
 
-  const handleSubmit = async(values, {setSubmitting}) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await request({
         method: 'post',
         url: 'api/user_blood_pressure',
         data: {
           ...values,
-          userId: id
-        }
+          userId: id,
+        },
       });
     } catch (err) {
-
       setSubmitting(false);
     }
-    onClose()
+    onClose();
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <Formik initialValues={initialValues} validationSchema={validationSchemas} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchemas}
+        onSubmit={handleSubmit}
+      >
         {({ isValid, isSubmitting }) => (
           <Form>
             <ModalContent>
@@ -78,9 +81,21 @@ export const AddUserBloodPressureModal: React.FC<
                 <ModalCloseButton />
               </ModalHeader>
               <ModalBody>
-                <UserBloodPressureNumberInput display="舒张压（mmHg）" name="diastolicBloodPressure" min={0}/>
-                <UserBloodPressureNumberInput display="收缩压（mmHg）" name="systolicBloodPressure" min={0} />
-                <UserBloodPressureNumberInput display="脉搏" name="pulse" min={0}/>
+                <UserBloodPressureNumberInput
+                  display="舒张压（mmHg）"
+                  name="diastolicBloodPressure"
+                  min={0}
+                />
+                <UserBloodPressureNumberInput
+                  display="收缩压（mmHg）"
+                  name="systolicBloodPressure"
+                  min={0}
+                />
+                <UserBloodPressureNumberInput
+                  display="脉搏"
+                  name="pulse"
+                  min={0}
+                />
               </ModalBody>
               <ModalFooter justifyContent="center">
                 <Button
@@ -93,7 +108,11 @@ export const AddUserBloodPressureModal: React.FC<
                 >
                   提交
                 </Button>
-                <Button variant="outline" colorScheme="orange" onClick={onClose}>
+                <Button
+                  variant="outline"
+                  colorScheme="orange"
+                  onClick={onClose}
+                >
                   取消
                 </Button>
               </ModalFooter>

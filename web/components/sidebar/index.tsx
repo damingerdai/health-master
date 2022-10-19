@@ -2,12 +2,11 @@ import {
   Box,
   Drawer,
   DrawerContent,
-  useColorModeValue,
   useDisclosure,
-} from "@chakra-ui/react";
-import * as React from "react";
-import { SidebarContent } from "./context";
-import { Header } from "./header";
+} from '@chakra-ui/react';
+import * as React from 'react';
+import { SidebarContent } from './context';
+import { Header } from './header';
 
 export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -16,7 +15,7 @@ export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
     <Box>
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: 'none', md: 'block' }}
       />
       <Drawer
         autoFocus={false}

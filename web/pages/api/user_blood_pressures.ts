@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { http } from '../../lib/request';
+import { http } from '@/lib/request';
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,11 +8,8 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const data = await http({
-        headers: {
-          Authorization: req.headers.authorization,
-        },
         method: 'GET',
-        url: '/api/v1/user',
+        url: '/api/v1/user-blood-pressures',
       });
       res.status(200).json(data.data);
     } catch (err) {

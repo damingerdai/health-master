@@ -1,10 +1,10 @@
-import { Fonts } from "@/components/fonts";
-import { theme } from "@/lib/theme";
-import { store } from "@/store";
-import { ChakraProvider } from "@chakra-ui/react";
-import type { AppProps } from "next/app";
-import { Provider } from "react-redux";
-import "../styles/globals.scss";
+import { Fonts } from '@/components/fonts';
+import { theme } from '@/lib/theme';
+import { store } from '@/store';
+import { ChakraProvider } from '@chakra-ui/react';
+import type { AppProps } from 'next/app';
+import { Provider } from 'react-redux';
+import '../styles/globals.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

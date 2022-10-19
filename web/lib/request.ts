@@ -1,35 +1,35 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { toastInstance } from "../components/toast";
+import axios, { AxiosRequestConfig } from 'axios';
+import { toastInstance } from '../components/toast';
 
 const fclient = axios.create({
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 fclient.interceptors.request.use((config) => {
   const tokenString = localStorage.getItem('user_token');
   if (tokenString) {
+    // eslint-disable-next-line no-param-reassign
     config!.headers!.Authorization = `Bearer ${tokenString}`;
   }
 
   return config;
-})
-
+});
 
 export async function request<T = any>(
-  options: AxiosRequestConfig
+  options: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const data = await fclient<T>(options);
 
-    return data as T;
+    return (data.data) as T;
   } catch (err: any) {
-    if (err?.response?.status == 401) {
-      window.location.href = "/login";
-    } else if (err?.response?.status == 403) {
-      window.location.href = "/login";
-    } else if (err?.response?.status == 404) {
-      window.location.href = "/login";
+    if (err?.response?.status === 401) {
+      window.location.href = '/login';
+    } else if (err?.response?.status === 403) {
+      window.location.href = '/login';
+    } else if (err?.response?.status === 404) {
+      window.location.href = '/login';
     }
     if (err?.response) {
       console.error({
@@ -45,15 +45,16 @@ export async function request<T = any>(
   }
 }
 
-export const login = async (username: string, password: string) => {
+// eslint-disable-next-line consistent-return
+export const login = async (username: string, password: string): Promise<any | void> => {
   try {
     const { data } = await fclient({
       method: 'POST',
       url: '/api/token',
       headers: {
         username,
-        password
-      }
+        password,
+      },
     });
     localStorage.setItem('user_token', data.token.accessToken);
     if (data.error || !data.token?.accessToken) {
@@ -68,7 +69,7 @@ export const login = async (username: string, password: string) => {
     }
 
     return data;
-  } catch(err: any) {
+  } catch (err: any) {
     console.error(err);
     toastInstance({
       title: '登录报错',
@@ -79,17 +80,16 @@ export const login = async (username: string, password: string) => {
       isClosable: true,
     });
   }
-
 };
 
 export const logout = () => {
   localStorage.removeItem('user_token');
-}
+};
 
 const bclient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST,
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 export async function http<T = any>(options: AxiosRequestConfig): Promise<T> {
