@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "token.go",
         "user.go",
+        "user_blood_pressure.go",
     ],
     importpath = "github.com/damingerdai/health-master/internal/api",
     visibility = ["//:__subpackages__"],
@@ -13,6 +14,7 @@ go_library(
         "//internal/model",
         "//internal/repository",
         "//internal/service",
-        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_gin_gonic_gin//:gin",
+        "@io_gorm_gorm//:gorm",
     ],
 )

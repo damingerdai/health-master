@@ -5,8 +5,9 @@ go_library(
     srcs = [
         "token.go",
         "user.go",
+        "user_blood_pressure.go",
     ],
     importpath = "github.com/damingerdai/health-master/internal/model",
     visibility = ["//:__subpackages__"],
-    deps = ["@com_github_golang_jwt_jwt_v4//:go_default_library"],
+    deps = ["@com_github_golang_jwt_jwt_v4//:jwt"],
 )

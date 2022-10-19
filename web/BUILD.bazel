@@ -28,14 +28,13 @@ NPM_PACKAGES = [
 #     ),
 # )
 
-
 filegroup(
     name = "config",
     srcs = [
+        ".env",
+        "next.config.js",
         "package.json",
         "tsconfig.json",
-        "next.config.js",
-        ".env",
     ],
 )
 
@@ -66,8 +65,8 @@ filegroup(
 copy_to_bin(
     name = "copy_static_files",
     srcs = [
-        ":health-master-web_lib"
-    ]
+        ":health-master-web_lib",
+    ],
 )
 
 # https://github.com/kunal-rp/monorepo_template/blob/main/web/BUILD
@@ -130,8 +129,47 @@ next(
     name = "build",
     args = [
         "build",
+        "web",
     ],
-    data = NPM_PACKAGES + [ "health-master-web_lib", ":copy_static_files"],
+    data = NPM_PACKAGES + [
+        ".env",
+        "next.config.js",
+        "package.json",
+        "tsconfig.json",
+        "health-master-web_lib",
+        # ":copy_static_files",
+    ],
+    tags = [
+        # This tag instructs ibazel to pipe into stdin a event describing actions.
+        # ibazel send EOF to stdin by default and `react-scripts start` will stop when getting EOF in stdin.
+        # So use this to prevent EOF.
+        "ibazel_notify_changes",
+    ],
+)
+
+next(
+    name = "start",
+    args = [
+        "dev",
+    ],
+    data = NPM_PACKAGES + [
+        ".env",
+        "next.config.js",
+        "package.json",
+        "tsconfig.json",
+        # "health-master-web_lib",
+        # ":copy_static_files",
+    ] +  glob(
+        [
+            "public/*",
+            "components/*",
+            "hooks/*",
+            "lib/*",
+            "pages/*",
+            "slices/*",
+            "store/*",
+            "styles/*",
+        ]),
     tags = [
         # This tag instructs ibazel to pipe into stdin a event describing actions.
         # ibazel send EOF to stdin by default and `react-scripts start` will stop when getting EOF in stdin.

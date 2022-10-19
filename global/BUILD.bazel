@@ -11,6 +11,6 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/setting",
-        "@io_gorm_gorm//:go_default_library",
+        "@io_gorm_gorm//:gorm",
     ],
 )

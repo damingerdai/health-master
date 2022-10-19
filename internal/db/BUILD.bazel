@@ -7,7 +7,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//pkg/setting",
-        "@io_gorm_driver_postgres//:go_default_library",
-        "@io_gorm_gorm//:go_default_library",
+        "@io_gorm_driver_postgres//:postgres",
+        "@io_gorm_gorm//:gorm",
     ],
 )
