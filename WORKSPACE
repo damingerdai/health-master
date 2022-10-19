@@ -1,7 +1,12 @@
 workspace(
     name = "health-master",
-    managed_directories = {"@npm": ["web/node_modules"]}
+    # Map the @npm bazel workspace to the node_modules directory.
+    # This lets Bazel use the same node_modules as other local tooling.
+    managed_directories = {"@web": ["web/node_modules"]}
 )
+
+# functions to get external libs
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -60,7 +65,8 @@ node_repositories(
 )
 
 yarn_install(
-    name = "npm",
-    package_json = "//:web/package.json",
-    yarn_lock = "//:web/yarn.lock",
+    name = "web",
+    exports_directories_only = True,
+    package_json = "//web:package.json",
+    yarn_lock = "//web:yarn.lock",
 )

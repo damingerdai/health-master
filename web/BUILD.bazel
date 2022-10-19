@@ -1,6 +1,33 @@
 package(default_visibility = ["//visibility:public"])
 
-load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin", "nodejs_binary")
+load("@web//next:index.bzl", "next")
+
+NPM_PACKAGES = [
+    "@web//:node_modules",
+]
+
+# filegroup(
+#     name = "srcs",
+#     srcs = glob(
+#         [
+#             "components/*.ts",
+#             "components/*.tsx",
+#             "hooks/*.ts",
+#             "hooks/*.tsx",
+#             "lib/*.ts",
+#             "lib/*.tsx",
+#             "pages/*.ts",
+#             "pages/*.tsx",
+#             "slices/*.ts",
+#             "slices/*.tsx",
+#             "store/*.ts",
+#             "store/*.tsx",
+#             "styles/*.scss",
+#         ],
+#     ),
+# )
+
 
 filegroup(
     name = "config",
@@ -16,19 +43,14 @@ filegroup(
     name = "sources",
     srcs = glob(
         [
-            "components/*.ts",
-            "components/*.tsx",
-            "hooks/*.ts",
-            "hooks/*.tsx",
-            "lib/*.ts",
-            "lib/*.tsx",
-            "pages/*.ts",
-            "pages/*.tsx",
-            "slices/*.ts",
-            "slices/*.tsx",
-            "store/*.ts",
-            "store/*.tsx",
-            "styles/*.scss",
+            "public/*",
+            "components/*",
+            "hooks/*",
+            "lib/*",
+            "pages/*",
+            "slices/*",
+            "store/*",
+            "styles/*",
         ],
     ),
 )
@@ -41,27 +63,79 @@ filegroup(
     ],
 )
 
-# bazel run //web:next
-nodejs_binary(
-    name = "next",
-    # args = ["build ./web"],
-    data = [
-        ":health-master-web_lib",
-    ],
-    entry_point = "node_modules/next/dist/bin/next",
+copy_to_bin(
+    name = "copy_static_files",
+    srcs = [
+        ":health-master-web_lib"
+    ]
 )
 
+# https://github.com/kunal-rp/monorepo_template/blob/main/web/BUILD
+# bazel run //web:next
+# nodejs_binary(
+#     name = "next",
+#     # args = ["build ./web"],
+#     data = NPM_PACKAGES,
+#     # web/node_modules/next/dist/bin/next
+#     # entry_point = "@web//:node_modules/next/dist/bin/next",
+#     entry_point = "@web//:node_modules/next/dist/bin/next",
+#     # entry_point = "@npm//:node_modules/next/dist/bin/next",
+# )
+
 # https://github.com/anthanh/bazel-next-typescript-monorepo/blob/master/packages/webapp2/BUILD
-genrule(
+# bazel build //web:build
+# genrule(
+#     name = "build",
+#     tools = [":next"],
+#     srcs = [
+#         ":health-master-web_lib",
+#         "@web//:node_modules",
+#     ],
+#     outs = ["next.tar.gz"],
+#     cmd = """
+#         $(location next) build ./web
+#     """,
+#     # executable = True,
+# )
+
+# genrule(
+#   name = "prod_build",
+#   tools = [":next"],
+#   srcs = NPM_PACKAGES + [
+#     ":srcs",
+#     "next.config.js",
+#     "postcss.config.js",
+#     "tailwind.config.js",
+#   ],
+#   cmd = " && ".join([
+#     "cp -a web/ ./",
+#     "$(location next) build",
+#     "mkdir prodBuild",
+#     "mv external/web/node_modules nextBuild public/ next.config.js prodBuild",
+#     "mv prodBuild $@",
+#   ]),
+#   outs = [
+#     "prodBuild",
+#   ],
+# )
+
+# genrule(
+#   name = "build",
+#    tools = [":next"],
+#   outs = ["hello_world.txt"],
+#   cmd = "echo Hello World > $@",
+# )
+
+next(
     name = "build",
-    srcs = [
-        ":health-master-web_lib",
-        "@npm//:node_modules",
+    args = [
+        "build",
     ],
-    outs = ["next.tar.gz"],
-    cmd = """
-        $(location next) build ./web
-    """,
-    tools = [":next"],
-    # executable = True,
+    data = NPM_PACKAGES + [ "health-master-web_lib", ":copy_static_files"],
+    tags = [
+        # This tag instructs ibazel to pipe into stdin a event describing actions.
+        # ibazel send EOF to stdin by default and `react-scripts start` will stop when getting EOF in stdin.
+        # So use this to prevent EOF.
+        "ibazel_notify_changes",
+    ],
 )
