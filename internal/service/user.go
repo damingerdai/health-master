@@ -23,7 +23,7 @@ func (userService *UserService) Create(user *model.User) error {
 		return fmt.Errorf("fail to create user: %s", err.Error())
 
 	}
-	if existUser != nil || existUser.Id != "" {
+	if existUser != nil && existUser.Id != "" {
 		return fmt.Errorf("username(%s) is exited", user.Username)
 	}
 	user.Password = util.GetMd5Hash(user.Password)
