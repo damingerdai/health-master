@@ -56,6 +56,8 @@ func (e *Error) StatusCode() int {
 		return http.StatusUnauthorized
 	case TooManyRequests.Code():
 		return http.StatusTooManyRequests
+	case NotFound.Code():
+		return http.StatusNotFound
 	}
 
 	return http.StatusInternalServerError
