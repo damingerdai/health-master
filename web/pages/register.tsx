@@ -44,7 +44,6 @@ const Register: NextPage = () => {
           password: values.password,
         },
       });
-      console.log(res);
       router.push("/login");
     } catch (error) {
         console.error(error);

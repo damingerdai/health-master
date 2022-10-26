@@ -14,7 +14,8 @@ export default async function handler(
         method: 'GET',
         url: '/api/v1/user',
       });
-      res.status(200).json(data.data);
+      console.log(data);
+      res.status(200).json(data);
     } catch (err) {
       res.status(500).json(err);
     }

@@ -20,7 +20,7 @@ import type { NextPage } from "next";
 import * as Yup from "yup";
 import { login } from "@/lib/request";
 import { useAppDispatch } from "@/lib/redux-hooks";
-import { fetchUser } from "@/slices/user-slice";
+import { setCurrentUser } from "@/slices/user-slice";
 import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
@@ -38,8 +38,9 @@ const Login: NextPage = () => {
   ) => {
     const { username, password } = value;
     try {
-      const { token } = await login(username, password);
-      await dispatch(fetchUser(token.accessToken));
+      const { token, user } = await login(username, password);
+      localStorage.setItem('user_token', token);
+      await dispatch(setCurrentUser(user));
       router.push("/");
     } catch (err) {
       console.error(err);

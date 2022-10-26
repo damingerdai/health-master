@@ -44,9 +44,11 @@ func GetUser(c *gin.Context) {
 func GetCurrentUser(c *gin.Context) {
 	var token string
 	if s, exist := c.GetQuery("Authorization"); exist {
-		token = s[7:]
+		// token = s[7:]
+		token = s[0:]
 	} else {
-		token = c.GetHeader("Authorization")[7:]
+		// token = c.GetHeader("Authorization")[7:]
+		token = c.GetHeader("Authorization")[0:]
 	}
 	if token == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "no authorization"})
@@ -68,7 +70,7 @@ func GetCurrentUser(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-
+	user.Password = ""
 	c.JSON(http.StatusOK, gin.H{"data": user})
 
 }

@@ -9,6 +9,7 @@ const fclient = axios.create({
 fclient.interceptors.request.use((config) => {
   const tokenString = localStorage.getItem('user_token');
   if (tokenString) {
+    console.log(tokenString);
     // eslint-disable-next-line no-param-reassign
     config!.headers!.Authorization = `Bearer ${tokenString}`;
   }
@@ -50,23 +51,13 @@ export const login = async (username: string, password: string): Promise<any | v
   try {
     const { data } = await fclient({
       method: 'POST',
-      url: '/api/token',
+      url: '/api/login',
       headers: {
         username,
         password,
       },
     });
-    localStorage.setItem('user_token', data.token.accessToken);
-    if (data.error || !data.token?.accessToken) {
-      toastInstance({
-        title: '登录报错',
-        description: data.error?.message || '登录报错',
-        position: 'bottom',
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      });
-    }
+    localStorage.setItem('user_token', data.token);
 
     return data;
   } catch (err: any) {
@@ -94,7 +85,7 @@ const bclient = axios.create({
 
 export async function http<T = any>(options: AxiosRequestConfig): Promise<T> {
   try {
-    const data = await bclient<T>(options);
+    const { data } = await bclient<T>(options);
 
     return data as T;
   } catch (err) {

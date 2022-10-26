@@ -35,6 +35,13 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     resetUserState: () => initialState,
+    setCurrentUser: (state, { payload }) => {
+      state.id = payload.id;
+      state.username = payload.username;
+      state.firstName = payload.firstName;
+      state.lastName = payload.lastName;
+      state.gender = payload.gender;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUser.fulfilled, (state, action) => {
@@ -48,5 +55,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { resetUserState } = userSlice.actions;
+export const { resetUserState, setCurrentUser } = userSlice.actions;
 export const userStateReducer = userSlice.reducer;
