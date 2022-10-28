@@ -13,8 +13,20 @@ services:
       POSTGRES_DB: health-master
     networks:
       - daming-health-master-network
+  redis:
+    image: redis:6.2.1-alpine
+    container_name: 'redis'
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    volumes:
+      - drip-redis:/data/redis
+    networks:
+      - daming-health-master-redis-volume
 volumes:
   daming-health-master-volume:
+    external: true
+  daming-health-master-redis-volume:
     external: true
 networks:
   daming-health-master-network:
