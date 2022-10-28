@@ -1,5 +1,5 @@
+import { httpClient } from '@/lib/http-client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { http } from '../../lib/request';
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,11 +7,15 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const data = await http({
+      const data = await  httpClient.request({
         method: 'POST',
         url: '/api/v1/user-blood-pressure',
         data: req.body,
+        headers: {
+          Authorization: req.headers.authorization,
+        }
       });
+      console.log(data);
       res.status(200).json(data.data);
     } catch (err) {
       res.status(500).json(err);

@@ -1,5 +1,6 @@
-import { useAppSelector } from '@/lib/redux-hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
 import { request } from '@/lib/request';
+import { fetchUserBloodPressureList } from '@/slices/user-blood-pressure-slice';
 import {
   Button,
   Flex,
@@ -32,7 +33,7 @@ export const AddUserBloodPressureModal: React.FC<
 AddUserBloodPressureModalProps
 > = (props) => {
   const { isOpen, onClose } = props;
-
+  const dispatch = useAppDispatch();
   const { id } = useAppSelector((state) => state.user);
 
   const initialValues = {
@@ -57,6 +58,7 @@ AddUserBloodPressureModalProps
           userId: id,
         },
       });
+      await dispatch(fetchUserBloodPressureList())
     } catch (err) {
       setSubmitting(false);
     }

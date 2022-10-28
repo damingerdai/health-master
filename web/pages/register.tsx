@@ -8,6 +8,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Link,
   Radio,
   RadioGroup,
   Stack,
@@ -33,7 +34,7 @@ const Register: NextPage = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const res = await request({
+      await request({
         method: "post",
         url: "/api/user",
         data: {
@@ -46,7 +47,7 @@ const Register: NextPage = () => {
       });
       router.push("/login");
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
 
     setSubmitting(false);
@@ -231,6 +232,10 @@ const Register: NextPage = () => {
               </Form>
             )}
           </Formik>
+          <Box mt={4}>
+            已有账号？
+            <Link href="./login">点击登录</Link>
+          </Box>
         </Box>
       </Stack>
     </Flex>

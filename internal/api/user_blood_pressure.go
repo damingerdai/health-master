@@ -2,20 +2,21 @@ package api
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/service"
+	"github.com/damingerdai/health-master/pkg/errcode"
+	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func CreateUserBloodPressure(c *gin.Context) {
 	var userBloodPressure model.UserBloodPressure
-
+	resp := response.NewResponse(c)
 	if err := c.ShouldBindJSON(&userBloodPressure); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		resp.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 
@@ -39,23 +40,23 @@ func CreateUserBloodPressure(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		resp.ToErrorResponse(errcode.CreateUserBloodPressureError)
 	} else {
-		c.JSON(http.StatusOK, gin.H{"data": userBloodPressure})
+		resp.ToResponse(userBloodPressure)
 	}
 }
 
 func ListBloodPressures(c *gin.Context) {
+	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine)
 
 	userBloodPressureService := service.UserBloodPressureService
 
 	ubps, err := userBloodPressureService.List()
-
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		resp.ToErrorResponse(errcode.ListUserBloodPressureError)
 	} else {
-		c.JSON(http.StatusOK, gin.H{"data": ubps})
+		resp.ToResponse(ubps)
 	}
 
 }

@@ -6,7 +6,7 @@ import {
   HStack,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { FiBell, FiMenu } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 import { ToggleThemeButton } from '../toggle-theme-button';
 import { UserMenu } from '../user-menu';
 
@@ -40,12 +40,6 @@ export const Header: React.FC<HeaderProps> = (props) => {
       />
 
       <HStack spacing={{ base: '1', md: '2' }}>
-        {/* <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        /> */}
         <UserMenu />
         <ToggleThemeButton />
       </HStack>

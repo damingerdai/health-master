@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <ChakraProvider theme={theme}>
-        {/* <Fonts /> */}
+        <Fonts />
         <Component {...pageProps} />
       </ChakraProvider>
     </Provider>

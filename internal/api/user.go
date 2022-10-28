@@ -7,18 +7,22 @@ import (
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/internal/service"
+	"github.com/damingerdai/health-master/pkg/errcode"
+	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
 )
 
 func CreateUser(c *gin.Context) {
 	var user model.User
+	response := response.NewResponse(c)
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 	userService := service.NewUserService(repository.NewUserRepository(global.DBEngine))
 	if err := userService.Create(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 	user.CreatedAt = nil
@@ -43,15 +47,14 @@ func GetUser(c *gin.Context) {
 
 func GetCurrentUser(c *gin.Context) {
 	var token string
+	response := response.NewResponse(c)
 	if s, exist := c.GetQuery("Authorization"); exist {
-		// token = s[7:]
-		token = s[0:]
+		token = s
 	} else {
-		// token = c.GetHeader("Authorization")[7:]
-		token = c.GetHeader("Authorization")[0:]
+		token = c.GetHeader("Authorization")
 	}
 	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "no authorization"})
+		response.ToErrorResponse(errcode.NotFoundAuthorization)
 		return
 	}
 
@@ -59,18 +62,22 @@ func GetCurrentUser(c *gin.Context) {
 	userService := service.NewUserService(userRepository)
 	tokenService := service.NewTokenService(userRepository)
 
-	claims, err := tokenService.ParseToken(token)
+	claims, err := tokenService.ParseToken(token[7:])
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		response.ToErrorResponse(errcode.UnauthorizedTokenError)
 		return
 	}
 	username := claims.Username
 	user, err := userService.FindByUserName(username)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		response.ToErrorResponse(errcode.UnauthorizedTokenError)
+		return
+	}
+	if user == nil {
+		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		return
 	}
 	user.Password = ""
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	response.ToResponse(user)
 
 }

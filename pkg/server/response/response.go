@@ -19,9 +19,20 @@ func NewResponse(ctx *gin.Context) *Response {
 
 func (r *Response) ToResponse(data any) {
 	if data == nil {
-		data = gin.H{}
+		code := errcode.Success
+		r.Ctx.JSON(http.StatusOK, gin.H{"code": code.Code(), "message": code.Message()})
+		return
 	}
-	r.Ctx.JSON(http.StatusOK, data)
+	r.Ctx.JSON(http.StatusOK, gin.H{"code": 0, "data": data})
+}
+
+func (r *Response) ToTokenResponse(data any) {
+	if data == nil {
+		code := errcode.Success
+		r.Ctx.JSON(http.StatusOK, gin.H{"code": code.Code(), "message": code.Message()})
+		return
+	}
+	r.Ctx.JSON(http.StatusOK, gin.H{"code": 0, "token": data})
 }
 
 func (r *Response) ToErrorResponse(err *errcode.Error) {

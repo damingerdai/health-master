@@ -32,7 +32,7 @@ func JWT() gin.HandlerFunc {
 		} else {
 			srv := service.New(global.DBEngine)
 			tokenService := srv.TokenService
-			_, err := tokenService.ParseToken(token)
+			_, err := tokenService.ParseToken(token[7:])
 			if err != nil {
 				switch err.(*jwt.ValidationError).Errors {
 				case jwt.ValidationErrorExpired:

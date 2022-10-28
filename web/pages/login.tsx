@@ -10,18 +10,19 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   Stack,
-} from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Form, Formik } from "formik";
-import * as React from "react";
-import { useState } from "react";
-import type { NextPage } from "next";
-import * as Yup from "yup";
-import { login } from "@/lib/request";
-import { useAppDispatch } from "@/lib/redux-hooks";
-import { setCurrentUser } from "@/slices/user-slice";
-import { useRouter } from "next/router";
+} from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
+import { useState } from 'react';
+import type { NextPage } from 'next';
+import * as Yup from 'yup';
+import { login } from '@/lib/request';
+import { useAppDispatch } from '@/lib/redux-hooks';
+import { setCurrentUser } from '@/slices/user-slice';
+import { useRouter } from 'next/router';
 
 const Login: NextPage = () => {
   const router = useRouter();
@@ -29,19 +30,19 @@ const Login: NextPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const initialValues = {
-    username: "",
-    password: "",
+    username: '',
+    password: '',
   };
   const handleSubmit = async (
-    value: Record<"username" | "password", string>,
-    { setSubmitting }
+    value: Record<'username' | 'password', string>,
+    { setSubmitting },
   ) => {
     const { username, password } = value;
     try {
-      const { token, user } = await login(username, password);
-      localStorage.setItem('user_token', token);
+      const { token, data: user } = await login(username, password);
+      localStorage.setItem('user_token', token.accessToken);
       await dispatch(setCurrentUser(user));
-      router.push("/");
+      router.push('/');
     } catch (err) {
       console.error(err);
     }
@@ -49,8 +50,8 @@ const Login: NextPage = () => {
     setSubmitting(false);
   };
   const validationSchemas = Yup.object({
-    username: Yup.string().required("请输入你的用户名"),
-    password: Yup.string().required("请输入你的密码"),
+    username: Yup.string().required('请输入你的用户名'),
+    password: Yup.string().required('请输入你的密码'),
   });
 
   return (
@@ -65,7 +66,9 @@ const Login: NextPage = () => {
             validationSchema={validationSchemas}
             onSubmit={handleSubmit}
           >
-            {({ values, errors, touched, handleChange, isSubmitting }) => (
+            {({
+              values, errors, touched, handleChange, isSubmitting,
+            }) => (
               <Form>
                 <Stack spacing={4}>
                   <FormControl
@@ -92,7 +95,7 @@ const Login: NextPage = () => {
                     <FormLabel htmlFor="password">密码</FormLabel>
                     <InputGroup>
                       <Input
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         id="password"
                         name="password"
                         placeholder="密码"
@@ -124,6 +127,10 @@ const Login: NextPage = () => {
                       登录
                     </Button>
                   </Stack>
+                  <Box>
+                    没有账号？
+                    <Link href='./register'>点击创建</Link>
+                  </Box>
                 </Stack>
               </Form>
             )}
