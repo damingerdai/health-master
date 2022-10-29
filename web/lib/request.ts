@@ -48,9 +48,9 @@ export async function request<T = any>(
 }
 
 // eslint-disable-next-line consistent-return
-export const login = async (username: string, password: string): Promise<{ code: number, token: AccessToken, data: User}> => {
+export const login = async (username: string, password: string): Promise<{ code: number, token: AccessToken, data: User }> => {
   try {
-    const { data } = await fclient<{ code: number, token: AccessToken, data: User}>({
+    const { data } = await fclient<{ code: number, token: AccessToken, data: User }>({
       method: 'POST',
       url: '/api/login',
       headers: {
@@ -75,4 +75,3 @@ export const login = async (username: string, password: string): Promise<{ code:
 export const logout = () => {
   localStorage.removeItem('user_token');
 };
-

@@ -129,7 +129,7 @@ const Login: NextPage = () => {
                   </Stack>
                   <Box>
                     没有账号？
-                    <Link href='./register'>点击创建</Link>
+                    <Link href="./register">点击创建</Link>
                   </Box>
                 </Stack>
               </Form>

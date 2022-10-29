@@ -58,7 +58,7 @@ AddUserBloodPressureModalProps
           userId: id,
         },
       });
-      await dispatch(fetchUserBloodPressureList())
+      await dispatch(fetchUserBloodPressureList());
     } catch (err) {
       setSubmitting(false);
     }

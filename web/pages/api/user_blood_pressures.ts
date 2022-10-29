@@ -12,7 +12,7 @@ export default async function handler(
         url: '/api/v1/user-blood-pressures',
         headers: {
           Authorization: req.headers.authorization,
-        }
+        },
       });
       res.status(200).json(data);
     } catch (err) {

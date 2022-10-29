@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   try {
     if (req.method === 'POST') {
-      const headers = req.headers;
+      const { headers } = req;
       const { username, password } = headers;
       const resp = await httpClient.login(username as string, password as string);
       if (isErrorResponse(resp)) {
@@ -16,7 +16,7 @@ export default async function handler(
         return;
       }
       const { token, data } = resp;
-      res.status(200).json({ code: 0, token, data});
+      res.status(200).json({ code: 0, token, data });
     }
   } catch (err: any) {
     if (err.response?.data) {

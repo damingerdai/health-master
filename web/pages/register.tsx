@@ -12,31 +12,31 @@ import {
   Radio,
   RadioGroup,
   Stack,
-} from "@chakra-ui/react";
-import * as React from "react";
-import type { NextPage } from "next";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
-import { PasswordInput } from "@/components/password-input";
-import { request } from "@/lib/request";
-import { useRouter } from "next/router";
+} from '@chakra-ui/react';
+import * as React from 'react';
+import type { NextPage } from 'next';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { PasswordInput } from '@/components/password-input';
+import { request } from '@/lib/request';
+import { useRouter } from 'next/router';
 
 const Register: NextPage = () => {
   const router = useRouter();
   const initialValues = {
-    username: "",
-    firstName: "",
-    lastName: "",
-    gender: "M",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    firstName: '',
+    lastName: '',
+    gender: 'M',
+    password: '',
+    confirmPassword: '',
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await request({
-        method: "post",
-        url: "/api/user",
+        method: 'post',
+        url: '/api/user',
         data: {
           username: values.username,
           firstName: values.firstName,
@@ -45,7 +45,7 @@ const Register: NextPage = () => {
           password: values.password,
         },
       });
-      router.push("/login");
+      router.push('/login');
     } catch (error) {
       console.error(error);
     }
@@ -55,22 +55,22 @@ const Register: NextPage = () => {
 
   const validationSchemas = Yup.object({
     username: Yup.string()
-      .required("请输入你的用户名")
-      .matches(/^[A-Za-z0-9]+$/, "用户名只能由数字和26个英文字母组成"),
-    firstName: Yup.string().required("请输入你的姓"),
-    lastName: Yup.string().required("请输入你的名"),
+      .required('请输入你的用户名')
+      .matches(/^[A-Za-z0-9]+$/, '用户名只能由数字和26个英文字母组成'),
+    firstName: Yup.string().required('请输入你的姓'),
+    lastName: Yup.string().required('请输入你的名'),
     gender: Yup.string().matches(/(M|F)/),
     password: Yup.string()
-      .required("请输入你的密码")
+      .required('请输入你的密码')
       .matches(
         /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
-        "密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间"
+        '密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间',
       ),
     confirmPassword: Yup.string()
-      .required("请输入你的密码")
+      .required('请输入你的密码')
       .matches(
         /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
-        "密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间"
+        '密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间',
       ),
   });
 
@@ -86,11 +86,11 @@ const Register: NextPage = () => {
             validationSchema={validationSchemas}
             validate={(values) => {
               if (
-                values.password &&
-                values.confirmPassword &&
-                values.password !== values.confirmPassword
+                values.password
+                && values.confirmPassword
+                && values.password !== values.confirmPassword
               ) {
-                return { confirmPassword: "两次密码不一致" };
+                return { confirmPassword: '两次密码不一致' };
               }
               return {};
             }}
@@ -165,7 +165,7 @@ const Register: NextPage = () => {
                     <RadioGroup
                       id="gender"
                       name="gender"
-                      onChange={(v) => setFieldValue("gender", v)}
+                      onChange={(v) => setFieldValue('gender', v)}
                       value={values.gender}
                     >
                       <Stack direction="row">
