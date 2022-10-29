@@ -8,7 +8,7 @@ import (
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/util"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/damingerdai/health-master/pkg/util/tokens"
 )
 
 type TokenService struct {
@@ -34,34 +34,16 @@ func (ts *TokenService) CreateToken(username string, password string) (*model.Us
 func (ts *TokenService) doCreateToken(user *model.User) (*model.UserToken, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(global.JwtSetting.Expire)
-	claims := model.Claims{
-		Username: user.Username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
-			Issuer:    global.JwtSetting.Issuer,
-		},
-	}
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString(global.JwtSetting.GetJwtSecret())
+	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Username, global.JwtSetting.Issuer, expireTime.Unix())
 	if err != nil {
 		return nil, err
 	}
-	return &model.UserToken{AccessToken: token, Expired: expireTime}, nil
+	return &model.UserToken{AccessToken: *token, Expired: expireTime}, nil
 }
 
 func (ts *TokenService) ParseToken(token string) (*model.Claims, error) {
-	tokenClaims, err := jwt.ParseWithClaims(token, &model.Claims{}, func(t *jwt.Token) (interface{}, error) {
-		return global.JwtSetting.GetJwtSecret(), nil
-	})
+	secret := global.JwtSetting.GetJwtSecret()
+	claims, err := tokens.ParseToken(token, secret)
 
-	if err != nil {
-		return nil, err
-	}
-	if tokenClaims != nil {
-		if claims, ok := tokenClaims.Claims.(*model.Claims); ok && tokenClaims.Valid {
-			return claims, nil
-		}
-	}
-
-	return nil, err
+	return claims, err
 }
