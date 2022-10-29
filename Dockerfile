@@ -1,0 +1,37 @@
+FROM golang:1.19.2-alpine3.16 AS build
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
+    apk update && \
+    apk upgrade && \
+    apk add --no-cache ca-certificates
+
+WORKDIR /app
+
+COPY go.mod go.sum /app/
+ENV  GO111MODULE=on
+ENV GOPROXY=https://goproxy.cn
+
+RUN go mod download
+
+COPY . .
+RUN go build -o server main.go
+
+FROM alpine:3.16
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
+    apk update && \
+    apk upgrade && \
+    apk add --no-cache tzdata
+
+WORKDIR /app
+
+ENV GIN_MODE="release"
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY --from=build /app/server ./
+COPY --from=build /app/configs/ ./configs
+
+EXPOSE 8000
+
+CMD ["/app/server"]
