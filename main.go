@@ -15,6 +15,7 @@ import (
 	"github.com/damingerdai/health-master/internal/routers"
 	"github.com/damingerdai/health-master/pkg/setting"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 )
 
 func init() {
@@ -25,6 +26,11 @@ func init() {
 	err = setupDBEngine()
 	if err != nil {
 		panic("fail to setup database: " + err.Error())
+	}
+
+	err = setupRedisClient()
+	if err != nil {
+		panic("init setup RedisClient err: " + err.Error())
 	}
 }
 
@@ -84,6 +90,11 @@ func setupSetting() error {
 	}
 	global.JwtSetting.Expire *= time.Second
 
+	err = setting.ReadSection("Redis", &global.RedisSetting)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -93,6 +104,22 @@ func setupDBEngine() error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func setupRedisClient() error {
+	ctx := context.Background()
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     global.RedisSetting.Addr(),
+		Password: global.RedisSetting.Password,
+		DB:       int(global.RedisSetting.DB),
+	})
+	s := rdb.Ping(ctx)
+	if s.Err() != nil {
+		return s.Err()
+	}
+	global.RedisClient = rdb
 
 	return nil
 }

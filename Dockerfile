@@ -32,6 +32,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY --from=build /app/server ./
 COPY --from=build /app/configs/ ./configs
 
+HEALTHCHECK CMD curl --fail http://localhost:8000/ping || exit 1
+
 EXPOSE 8000
 
 CMD ["/app/server"]

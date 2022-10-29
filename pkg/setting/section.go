@@ -32,6 +32,13 @@ type JwtSettingS struct {
 	Expire time.Duration
 }
 
+type RedisSettingS struct {
+	Host     string
+	Port     int
+	Password string
+	DB       int
+}
+
 func (s *Setting) ReadSection(key string, value any) error {
 	err := s.vp.UnmarshalKey(key, value)
 	if err != nil {
@@ -58,4 +65,8 @@ func (s *JwtSettingS) GetJwtSecret() []byte {
 	}
 
 	return secret
+}
+
+func (s *RedisSettingS) Addr() string {
+	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }

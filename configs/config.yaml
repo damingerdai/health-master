@@ -14,3 +14,8 @@ JWT:
   Secret: damingerdai
   Issuer: health-master
   Expire: 7200
+Redis:
+    Host: 127.0.0.1
+    Port: 6379
+    Password:
+    DB: 0

@@ -5,6 +5,9 @@ import (
 )
 
 var (
-	ServerSetting   *setting.ServerSettingS
+	ServerSetting *setting.ServerSettingS
+
 	DatabaseSetting *setting.DatabaseSettingS
+
+	RedisSetting *setting.RedisSettingS
 )
