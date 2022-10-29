@@ -8,6 +8,7 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+	r.Use(middleware.AccessLog())
 
 	r.Any("ping", func(ctx *gin.Context) {
 		ctx.JSON(200, "pong")
