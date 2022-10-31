@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-lastest]
+        os: [ubuntu-latest]
         node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
       fail-fast: true
       matrix:
         go-version: [ 1.19 ]
-        os: [ ubuntu-lastest ]
+        os: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v3
       - name: Setup go ${{ matrix.go-version }}
