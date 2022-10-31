@@ -18,6 +18,8 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
+import { zhCN } from 'date-fns/locale'
 import * as React from 'react';
 import { useEffect } from 'react';
 import { AddUserBloodPressureModal } from './add-user-blood-pressure';
@@ -71,7 +73,7 @@ export const UserBloodPressureForm: React.FC = () => {
                         <Td>{`${udp.diastolicBloodPressure} mmHg`}</Td>
                         <Td>{`${udp.systolicBloodPressure} mmHg`}</Td>
                         <Td>{`${udp.pulse} 次/分`}</Td>
-                        <Td>{udp.createdAt?.toString()}</Td>
+                        <Td>{udp.createdAt ? format(new Date(udp.createdAt), 'PPP', { locale: zhCN }) : '未知'}</Td>
                       </Tr>
                     ))}
                   </Tbody>
