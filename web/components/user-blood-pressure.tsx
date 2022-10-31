@@ -19,7 +19,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { zhCN } from 'date-fns/locale'
+import { zhCN } from 'date-fns/locale';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { AddUserBloodPressureModal } from './add-user-blood-pressure';
