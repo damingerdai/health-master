@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/logger"
 	"github.com/damingerdai/health-master/internal/routers"
+	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -45,27 +44,12 @@ func main() {
 	}
 	log := logger.NewLogger(logger.LevelInfo)
 	log.Info("health master server is running")
-	go func() {
-		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	log.Println("Shutdown Server ...")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := s.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown", err)
+	app, err := server.New(s, global.ServerSetting.RunMode)
+	if err != nil {
+		log.Panicf("run server: %s", err.Error())
+		os.Exit(-1)
 	}
-	select {
-	case <-ctx.Done():
-		log.Println("timeout of 5 seconds")
-	}
-	log.Println("Server exiting")
+	app.Run()
 }
 
 func setupSetting() error {
