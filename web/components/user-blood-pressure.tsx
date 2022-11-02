@@ -46,7 +46,7 @@ export const UserBloodPressureForm: React.FC = () => {
             </Center>
           )}
           {userBloodPressuresStatus === RequestStatus.SUCCEEDED && (
-            <UserBloodPressureList userBloodPressures={userBloodPressures}/>
+            <UserBloodPressureList userBloodPressures={userBloodPressures} />
           )}
         </Box>
       </Box>
