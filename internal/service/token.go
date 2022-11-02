@@ -38,7 +38,6 @@ func (ts *TokenService) CreateToken(username string, password string) (*model.Us
 		return ts.doCreateToken(ctx, user)
 	}
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	if len(val) != 0 {
@@ -47,7 +46,6 @@ func (ts *TokenService) CreateToken(username string, password string) (*model.Us
 		userToken := &model.UserToken{}
 		err = data.Decode(userToken)
 		if err != nil {
-			fmt.Println(err)
 			return nil, err
 		}
 		return userToken, nil
