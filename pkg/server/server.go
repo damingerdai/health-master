@@ -43,33 +43,42 @@ func NewProdServer(server *http.Server) *ProdServer {
 }
 
 func (prodServer ProdServer) Run() error {
+	errorChan := make(chan error)
 	go func() {
 		if err := prodServer.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			fmt.Fprintf(os.Stderr, "listen: %s\n", err)
+			errorChan <- err
 		}
 	}()
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	fmt.Fprint(os.Stdin, "Shutdown server...\n")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := prodServer.server.Shutdown(ctx); err != nil {
-		fmt.Fprintf(os.Stderr, "Server shutdown: %s\n", err.Error())
-	}
 	select {
-	case <-ctx.Done():
-		fmt.Fprintln(os.Stderr, "5 second timeout")
+	case <-quit:
+		fmt.Fprint(os.Stdin, "Shutdown server...\n")
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := prodServer.server.Shutdown(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "Server shutdown: %s\n", err.Error())
+		}
+		select {
+		case <-ctx.Done():
+			fmt.Fprintln(os.Stderr, "5 second timeout")
+		default:
+			fmt.Fprintln(os.Stderr, "Server exiting")
+		}
+
+	case err := <-errorChan:
+		fmt.Println(err)
+		fmt.Fprintf(os.Stderr, "fail to run server: %s\n", err)
+
 	}
 
-	fmt.Fprintln(os.Stderr, "Server exiting")
 	return nil
 }
 
 func New(server *http.Server, runMode string) (Server, error) {
-	fmt.Fprintf(os.Stdin, "health master is in run mode: %s", runMode)
+	fmt.Fprintf(os.Stdin, "health master is in run mode: %s\n", runMode)
 	if runMode == "release" {
 		return NewProdServer(server), nil
 	} else if runMode == "debug" {
