@@ -51,7 +51,8 @@ func (prodServer ProdServer) Run() error {
 		}
 	}()
 
-	quit := make(chan os.Signal)
+	// https://github.com/hlandau/service/issues/10
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	select {
 	case <-quit:
