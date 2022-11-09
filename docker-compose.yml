@@ -20,9 +20,9 @@ services:
       - 6379:6379
     restart: unless-stopped
     volumes:
-      - drip-redis:/data/redis
+      - daming-health-master-redis-volume:/data/redis
     networks:
-      - daming-health-master-redis-volume
+      - daming-health-master-network
 volumes:
   daming-health-master-volume:
     external: true
