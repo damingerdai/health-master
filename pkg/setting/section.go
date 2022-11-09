@@ -8,8 +8,6 @@ import (
 	"github.com/damingerdai/health-master/pkg/util"
 )
 
-var secret []byte = make([]byte, 0)
-
 type ServerSettingS struct {
 	RunMode      string
 	HttpPort     string
@@ -27,9 +25,10 @@ type DatabaseSettingS struct {
 }
 
 type JwtSettingS struct {
-	Secret string
-	Issuer string
-	Expire time.Duration
+	secretBytes []byte
+	Secret      string
+	Issuer      string
+	Expire      time.Duration
 }
 
 type RedisSettingS struct {
@@ -60,11 +59,11 @@ func (s *DatabaseSettingS) DBConnString() string {
 }
 
 func (s *JwtSettingS) GetJwtSecret() []byte {
-	if len(secret) == 0 {
-		secret = []byte(s.Secret)
+	if len(s.secretBytes) == 0 {
+		s.secretBytes = []byte(s.Secret)
 	}
 
-	return secret
+	return s.secretBytes
 }
 
 func (s *RedisSettingS) Addr() string {
