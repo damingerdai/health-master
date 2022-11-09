@@ -68,14 +68,24 @@ require (
 )
 
 replace (
+	github.com/damingerdai/health-master/cmd => ./cmd
 	github.com/damingerdai/health-master/global => ./global
 	github.com/damingerdai/health-master/internal/api => ./internal/api
 	github.com/damingerdai/health-master/internal/db => ./internal/db
 	github.com/damingerdai/health-master/internal/logger => ./internal/logger
+	github.com/damingerdai/health-master/internal/middleware => ./internal/middleware
 	github.com/damingerdai/health-master/internal/model => ./internal/model
 	github.com/damingerdai/health-master/internal/repository => ./internal/repository
 	github.com/damingerdai/health-master/internal/routers => ./internal/routers
 	github.com/damingerdai/health-master/internal/service => ./internal/service
+	github.com/damingerdai/health-master/pkg/errcode => ./pkg/errcode
+	github.com/damingerdai/health-master/pkg/migrate => ./pkg/migrate
+	github.com/damingerdai/health-master/pkg/serializer => ./pkg/serializer
+	github.com/damingerdai/health-master/pkg/server => ./pkg/server
 	github.com/damingerdai/health-master/pkg/setting => ./pkg/setting
 	github.com/damingerdai/health-master/pkg/util => ./pkg/util
+	github.com/damingerdai/health-master/pkg/util/files => ./pkg/util/files
+	github.com/damingerdai/health-master/pkg/util/paths => ./pkg/util/paths
+	github.com/damingerdai/health-master/pkg/util/times => ./pkg/util/times
+	github.com/damingerdai/health-master/pkg/util/tokens => ./pkg/util/tokens
 )
