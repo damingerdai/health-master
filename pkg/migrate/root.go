@@ -46,7 +46,8 @@ func initConfig() {
 		viper.SetConfigName("db")
 	}
 
-	viper.AutomaticEnv()
+	// TODO close the automatic bind env
+	//viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stdin, "Using config file: ", viper.ConfigFileUsed())

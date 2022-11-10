@@ -1,15 +1,15 @@
 version: "3"
 services:
   pg:
-    image: postgres:14
-    container_name: health-master-pg
+    image: postgres:15
+    container_name: pg
     ports:
       - 5432:5432
     volumes:
       - daming-health-master-volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: 123456
       POSTGRES_DB: health-master
     networks:
       - daming-health-master-network
