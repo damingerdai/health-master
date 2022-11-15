@@ -1,9 +1,7 @@
 package service
 
 import (
-	"bytes"
 	"context"
-	"encoding/gob"
 	"errors"
 	"fmt"
 	"time"
@@ -26,6 +24,7 @@ func NewTokenService(userRepository *repository.UserRepository) *TokenService {
 
 func (ts *TokenService) CreateToken(username string, password string) (*model.UserToken, error) {
 	ctx := context.Background()
+	redisService := NewRedisService(global.RedisClient)
 	user, err := ts.userRepository.FindByUserName(username)
 	if err != nil {
 		return nil, err
@@ -33,38 +32,33 @@ func (ts *TokenService) CreateToken(username string, password string) (*model.Us
 	if user == nil || user.Id == "" || user.Password != util.GetMd5Hash(password) {
 		return nil, errors.New("username or password error")
 	}
-	val, err := global.RedisClient.Get(ctx, fmt.Sprintf("token-user-%s", user.Id)).Result()
+	var userKey = fmt.Sprintf("token-user-%s", user.Id)
+	result, err := redisService.Get(ctx, userKey)
 	if err == redis.Nil {
 		return ts.doCreateToken(ctx, user)
 	}
 	if err != nil {
 		return nil, err
 	}
-	if len(val) != 0 {
-		valb := []byte(val)
-		data := gob.NewDecoder(bytes.NewReader(valb))
-		userToken := &model.UserToken{}
-		err = data.Decode(userToken)
-		if err != nil {
-			return nil, err
-		}
-		return userToken, nil
+	if r, ok := result.(model.UserToken); ok {
+		return &r, nil
 	}
+
 	return ts.doCreateToken(ctx, user)
 }
 
 func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(global.JwtSetting.Expire)
+	redisService := NewRedisService(global.RedisClient)
 	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Username, global.JwtSetting.Issuer, expireTime.Unix())
 	if err != nil {
 		return nil, err
 	}
+	userKey := fmt.Sprintf("token-user-%s", user.Id)
 	userToken := model.UserToken{AccessToken: *token, Expired: expireTime}
-	var buffer bytes.Buffer
-	enc := gob.NewEncoder(&buffer)
-	enc.Encode(userToken)
-	global.RedisClient.SetNX(ctx, fmt.Sprintf("token-user-%s", user.Id), buffer.Bytes(), global.JwtSetting.Expire.Abs()-5*time.Second)
+	redisService.SaveNX(ctx, userKey, userToken, global.JwtSetting.Expire.Abs()-5*time.Second)
+
 	return &userToken, nil
 }
 

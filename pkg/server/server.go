@@ -70,7 +70,6 @@ func (prodServer ProdServer) Run() error {
 		}
 
 	case err := <-errorChan:
-		fmt.Println(err)
 		fmt.Fprintf(os.Stderr, "fail to run server: %s\n", err)
 
 	}

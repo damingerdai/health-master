@@ -27,12 +27,11 @@ func TestGobRedisSerializer(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
-	if p2 != nil {
-		t.Log(p2.Name)
-		t.Log(p2.Age)
-	}
 
-	var p3 = *p2
+	t.Log(p2.Name)
+	t.Log(p2.Age)
+
+	var p3 = p2
 	t.Log(p3.Name)
 	t.Log(p3.Age)
 
