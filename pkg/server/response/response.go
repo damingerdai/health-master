@@ -23,7 +23,7 @@ func (r *Response) ToResponse(data any) {
 		r.Ctx.JSON(http.StatusOK, gin.H{"code": code.Code(), "message": code.Message()})
 		return
 	}
-	r.Ctx.JSON(http.StatusOK, gin.H{"code": 0, "data": data})
+	r.Ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": data})
 }
 
 func (r *Response) ToTokenResponse(data any) {
@@ -32,7 +32,7 @@ func (r *Response) ToTokenResponse(data any) {
 		r.Ctx.JSON(http.StatusOK, gin.H{"code": code.Code(), "message": code.Message()})
 		return
 	}
-	r.Ctx.JSON(http.StatusOK, gin.H{"code": 0, "token": data})
+	r.Ctx.JSON(http.StatusOK, gin.H{"code": 200, "token": data})
 }
 
 func (r *Response) ToErrorResponse(err *errcode.Error) {

@@ -5,9 +5,9 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func CreateToken(secret []byte, username, issuer string, expiresAt int64) (*string, error) {
+func CreateToken(secret []byte, userId, issuer string, expiresAt int64) (*string, error) {
 	claims := model.Claims{
-		Username: username,
+		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiresAt,
 			Issuer:    issuer,

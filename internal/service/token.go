@@ -51,7 +51,7 @@ func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*m
 	nowTime := time.Now()
 	expireTime := nowTime.Add(global.JwtSetting.Expire)
 	redisService := NewRedisService(global.RedisClient)
-	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Username, global.JwtSetting.Issuer, expireTime.Unix())
+	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime.Unix())
 	if err != nil {
 		return nil, err
 	}

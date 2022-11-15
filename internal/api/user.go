@@ -67,8 +67,8 @@ func GetCurrentUser(c *gin.Context) {
 		response.ToErrorResponse(errcode.UnauthorizedTokenError)
 		return
 	}
-	username := claims.Username
-	user, err := userService.FindByUserName(username)
+	userId := claims.UserId
+	user, err := userService.Find(userId)
 	if err != nil {
 		response.ToErrorResponse(errcode.UnauthorizedTokenError)
 		return
