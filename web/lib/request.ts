@@ -20,22 +20,23 @@ fclient.interceptors.request.use((config) => {
 
 fclient.interceptors.response.use((response) => {
   const { status } = response;
-  if ((status < 200 || (status >= 300 && status !=- 302)) && !toast.isActive('SERVICE_ERROR'))
-   toastInstance({
-    id: 'SERVICE_ERROR',
-    title: '系统内部异常 - 请稍微再试',
-    position: 'bottom',
-    status: 'error',
-    duration: 9000,
-    isClosable: true,
-  });
+  if ((status < 200 || (status >= 300 && status !== -302)) && !toast.isActive('SERVICE_ERROR')) {
+    toastInstance({
+      id: 'SERVICE_ERROR',
+      title: '系统内部异常 - 请稍微再试',
+      position: 'bottom',
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+    });
+  }
 
-  return {...response};
-},  (err) => {
+  return { ...response };
+}, (err) => {
   const { code, message } = err;
   if (
-    (code === 'ECONNABORTED' || message === 'Network Error') &&
-    !toast.isActive('NETWORK_ERROR')
+    (code === 'ECONNABORTED' || message === 'Network Error')
+    && !toast.isActive('NETWORK_ERROR')
   ) {
     toastInstance({
       id: 'NETWORK_ERROR',

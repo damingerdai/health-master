@@ -1,8 +1,5 @@
-import { useColorModeValue } from '@chakra-ui/react';
-import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
-import { logout as doLogout } from '@/lib/request';
-import { fetchUser, resetUserState } from '@/slices/user-slice';
 import {
+  useColorModeValue,
   Avatar,
   Icon,
   Link,
@@ -13,6 +10,9 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
+import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
+import { logout as doLogout } from '@/lib/request';
+import { fetchUser, resetUserState } from '@/slices/user-slice';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -26,6 +26,8 @@ export const UserMenu: React.FC = () => {
   } = useAppSelector(
     (state) => state.user,
   );
+
+  const linkBgColor = useColorModeValue('whiteAlpha.900', 'gray.200');
 
   const logout = async () => {
     await dispatch(resetUserState());
@@ -64,8 +66,7 @@ export const UserMenu: React.FC = () => {
         </MenuGroup>
         <MenuGroup>
           <MenuItem>
-            <Link pl={9} href="/profile" color={useColorModeValue('whiteAlpha.900', 'gray.200')}>个人主页</Link>
-            {/* < pl={24} href="/profile">个人主页</BrowserLink> */}
+            <Link pl={9} href="/profile" color={linkBgColor}>个人主页</Link>
           </MenuItem>
         </MenuGroup>
         <MenuDivider />

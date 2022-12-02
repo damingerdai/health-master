@@ -6,8 +6,7 @@ export const BrowserLink: React.FC<React.PropsWithChildren<LinkBoxProps & { href
 
   return (
     <NextLink href={href} passHref>
-      {/* <Box as="a">{children}</Box> */}
-      {children}
+      <Box as="a" {...rest}>{children}</Box>
     </NextLink>
   );
 };
