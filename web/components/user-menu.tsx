@@ -1,9 +1,11 @@
+import { useColorModeValue } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
 import { logout as doLogout } from '@/lib/request';
 import { fetchUser, resetUserState } from '@/slices/user-slice';
 import {
   Avatar,
   Icon,
+  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -56,9 +58,14 @@ export const UserMenu: React.FC = () => {
           <MenuItem>
             <Avatar mr="6px" size="sm" name={username} />
             <span>
-              {' '}
               {`${firstName} ${lastName}`}
             </span>
+          </MenuItem>
+        </MenuGroup>
+        <MenuGroup>
+          <MenuItem>
+            <Link pl={9} href="/profile" color={useColorModeValue('whiteAlpha.900', 'gray.200')}>个人主页</Link>
+            {/* < pl={24} href="/profile">个人主页</BrowserLink> */}
           </MenuItem>
         </MenuGroup>
         <MenuDivider />
