@@ -54,7 +54,7 @@ export class HttpClient {
         throw userRes;
       }
       return {
-        code: 0,
+        code: 200,
         token: {
           ...tokenRes.token,
         },

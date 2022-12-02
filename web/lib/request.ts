@@ -1,7 +1,7 @@
 import { AccessToken } from '@/type/token';
 import { User } from '@/type/user';
 import axios, { AxiosRequestConfig } from 'axios';
-import { toastInstance } from '../components/toast';
+import { toast, toastInstance } from '../components/toast';
 
 const fclient = axios.create({
   withCredentials: true,
@@ -16,6 +16,38 @@ fclient.interceptors.request.use((config) => {
   }
 
   return config;
+});
+
+fclient.interceptors.response.use((response) => {
+  const { status } = response;
+  if ((status < 200 || (status >= 300 && status !=- 302)) && !toast.isActive('SERVICE_ERROR'))
+   toastInstance({
+    id: 'SERVICE_ERROR',
+    title: '系统内部异常 - 请稍微再试',
+    position: 'bottom',
+    status: 'error',
+    duration: 9000,
+    isClosable: true,
+  });
+
+  return {...response};
+},  (err) => {
+  const { code, message } = err;
+  if (
+    (code === 'ECONNABORTED' || message === 'Network Error') &&
+    !toast.isActive('NETWORK_ERROR')
+  ) {
+    toastInstance({
+      id: 'NETWORK_ERROR',
+      title: '网络超时 - 刷新页面以恢复',
+      position: 'bottom',
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+    });
+  }
+
+  return Promise.reject(err);
 });
 
 export async function request<T = any>(
