@@ -10,7 +10,6 @@ import { Router } from 'next/router';
 import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
-
   useEffect(() => {
     function clearToast() {
       toastInstance.closeAll();
@@ -19,9 +18,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     return () => {
       Router.events.off('routeChangeStart', clearToast);
-    }
-  }, [])
-
+    };
+  }, []);
 
   return (
     <Provider store={store}>

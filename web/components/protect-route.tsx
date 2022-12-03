@@ -9,7 +9,6 @@ export const ProtectRoute = (WrappedComponent) => function Wrapper(props) {
     const checkToken = async () => {
       const token = localStorage.getItem('user_token');
       if (token) {
-        router.replace('/');
         setAuthenticated(true);
       } else {
         router.replace('/login');
