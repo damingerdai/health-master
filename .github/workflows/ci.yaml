@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY_NAME: github.com
+
 jobs:
   front:
     runs-on: ${{ matrix.os }}
@@ -59,3 +62,25 @@ jobs:
             ${{ runner.os }}-go-
       - name: build
         run: go build -o main main.go
+  build-front-docker:
+    runs-on: ubuntu-latest
+    needs: [ front ]
+    steps:
+      - uses: actions/checkout@master
+      - name: Build docker
+        id: build-docker-web
+        run: |
+          cd web && docker build . -t ${{ env.REGISTRY_NAME }}/damingerdai/health-master-web:${{ github.sha }} -f Dockerfile
+      - name: Image digest
+        run: echo ${{ steps.build-docker-web.outputs.digest }}
+  build-end-docker:
+    runs-on: ubuntu-latest
+    needs: [ front ]
+    steps:
+      - uses: actions/checkout@master
+      - name: Build docker
+        id: build-docker
+        run: |
+          docker build . -t ${{ env.REGISTRY_NAME }}/damingerdai/health-master-web:${{ github.sha }} -f Dockerfile
+      - name: Image digest
+        run: echo ${{ steps.build-docker.outputs.digest }}
