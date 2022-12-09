@@ -75,7 +75,7 @@ jobs:
         run: echo ${{ steps.build-docker-web.outputs.digest }}
   build-end-docker:
     runs-on: ubuntu-latest
-    needs: [ front ]
+    needs: [ end ]
     steps:
       - uses: actions/checkout@master
       - name: Build docker
