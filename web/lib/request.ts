@@ -93,12 +93,13 @@ export const login = async (username: string, password: string): Promise<{ code:
     });
     return data;
   } catch (err: any) {
+    toastInstance.closeAll();
     toastInstance({
       title: '登录报错',
       description: err?.response.data || err?.message || '登录报错',
       position: 'bottom',
       status: 'error',
-      duration: 9000,
+      duration: 5000,
       isClosable: true,
     });
     throw err;
