@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { UserBloodPressureForm } from '@/components/user-blood-pressure';
 import { ProtectRoute } from '@/components/protect-route';
 import { Siderbar } from '@/components/sidebar';
+import { Picker } from '@/components/picker';
 
 const Home: NextPage = () => (
   <Box as="main" pb={8}>
