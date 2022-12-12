@@ -1,5 +1,7 @@
-import * as React from "react";
-import { useEffect, useState, useMemo } from "react";
+/* eslint-disable react/no-unused-prop-types,react/destructuring-assignment,react/no-array-index-key */
+/* eslint-disable @typescript-eslint/no-shadow,@typescript-eslint/no-use-before-define,@typescript-eslint/no-unused-vars */
+import * as React from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -11,38 +13,40 @@ import {
   Flex,
   Spacer,
   useDisclosure,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 interface PickerColumProps {
   options?: Array<string>;
   value?: string;
-  wheel?: "off" | "natural" | "normal";
+  wheel?: 'off' | 'natural' | 'normal';
   onChange?: (value: string) => void;
   onClick?: (value: string) => void;
 }
 
 const PickerColum: React.FC<PickerColumProps> = (props) => {
-  let { options, wheel, onChange, onClick } = {
+  const {
+    options, wheel, onChange, onClick,
+  } = {
     options: [],
-    wheel: "off",
+    wheel: 'off',
     ...props,
   };
-  const [value, setValue] = useState<string>(props.value ?? "");
+  const [value, setValue] = useState<string>(props.value ?? '');
   const [minTranslate, setMinTranslate] = useState<number>(0);
   const [maxTranslate, setMaxTranslate] = useState<number>(0);
   const [scrollerTranslate, setScrollerTranslate] = useState<number>(0);
-  const [startScrollerTranslate, setStartScrollerTranslate] =
-    useState<number>(0);
+  const [startScrollerTranslate, setStartScrollerTranslate] = useState<number>(0);
   const [startTouchY, setStartTouchY] = useState<number>(0);
   const [isMoving, setIsMoving] = useState<boolean>(false);
 
   const translateString = useMemo(
     () => `translate3d(0, ${scrollerTranslate}px, 0)`,
-    [scrollerTranslate]
+    [scrollerTranslate],
   );
 
   const safePreventDefault = (event) => {
-    const passiveEvents = ["onTouchStart", "onTouchMove", "onWheel"];
+    const passiveEvents = ['onTouchStart', 'onTouchMove', 'onWheel'];
+    // eslint-disable-next-line
     if (!passiveEvents.includes(event._reactName)) {
       event.preventDefault();
     }
@@ -78,11 +82,11 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
     }
 
     switch (wheel) {
-      case "natural":
+      case 'natural':
         // ignore and continue
         break;
-      case "normal":
-        delta = delta * -1;
+      case 'normal':
+        delta *= -1;
         break;
       default:
         return;
@@ -100,11 +104,9 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
     }
     let nextScrollerTranslate = startScrollerTranslate + touchY - startTouchY;
     if (nextScrollerTranslate < minTranslate) {
-      nextScrollerTranslate =
-        minTranslate - Math.pow(minTranslate - nextScrollerTranslate, 0.8);
+      nextScrollerTranslate = minTranslate - (minTranslate - nextScrollerTranslate) ** 0.8;
     } else if (nextScrollerTranslate > maxTranslate) {
-      nextScrollerTranslate =
-        maxTranslate + Math.pow(nextScrollerTranslate - maxTranslate, 0.8);
+      nextScrollerTranslate = maxTranslate + (nextScrollerTranslate - maxTranslate) ** 0.8;
     }
     setScrollerTranslate(nextScrollerTranslate);
   };
@@ -143,10 +145,8 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
   const handleItemClick = (option) => {
     if (option !== value) {
       onValueSelected(option);
-    } else {
-      if (onClick && value) {
-        onClick(value);
-      }
+    } else if (onClick && value) {
+      onClick(value);
     }
   };
 
@@ -193,7 +193,7 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
               p="0 6px"
               alignItems="center"
               whiteSpace="nowrap"
-              color={o === value ? "#333" : "#999"}
+              color={o === value ? '#333' : '#999'}
               overflow="hidden"
               textOverflow="ellipsis"
               onClick={() => handleItemClick(o)}
@@ -217,7 +217,7 @@ export const Picker: React.FC<PickerProps> = (props) => {
 
   return (
     <>
-      <Button onClick={onOpen}>{btnName ?? "点击"}</Button>
+      <Button onClick={onOpen}>{btnName ?? '点击'}</Button>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
@@ -241,12 +241,24 @@ export const Picker: React.FC<PickerProps> = (props) => {
               cursor="grab"
               __css={{
                 WebkitMaskBoxImage:
-                  "linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)",
+                  'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
               }}
             >
-              <PickerColum options={["one", "two", "three", "four", "five"]} value="one" onChange={(v) => console.log('1', v)}/>
-              <PickerColum options={["one", "two", "three", "four", "five"]} value="two" onChange={(v) => console.log('2', v)}/>
-              <PickerColum options={["one", "two", "three", "four", "five"]} value="three" onChange={(v) => console.log('2', v)}/>
+              <PickerColum
+                options={['one', 'two', 'three', 'four', 'five']}
+                value="one"
+                onChange={(v) => console.log('1', v)}
+              />
+              <PickerColum
+                options={['one', 'two', 'three', 'four', 'five']}
+                value="two"
+                onChange={(v) => console.log('2', v)}
+              />
+              <PickerColum
+                options={['one', 'two', 'three', 'four', 'five']}
+                value="three"
+                onChange={(v) => console.log('2', v)}
+              />
               <Box
                 pos="absolute"
                 top="50%"
@@ -257,35 +269,35 @@ export const Picker: React.FC<PickerProps> = (props) => {
                 mt="-18px"
                 _before={{
                   top: 0,
-                  bottom: "auto",
+                  bottom: 'auto',
 
                   content: "' '",
-                  position: "absolute",
+                  position: 'absolute',
                   left: 0,
-                  right: "auto",
+                  right: 'auto',
 
-                  display: "block",
-                  width: "100%",
-                  height: "1px",
+                  display: 'block',
+                  width: '100%',
+                  height: '1px',
 
-                  backgroundColor: "#d9d9d9",
-                  transform: "scaleY(0.5)",
+                  backgroundColor: '#d9d9d9',
+                  transform: 'scaleY(0.5)',
                 }}
                 _after={{
                   bottom: 0,
-                  top: "auto",
+                  top: 'auto',
 
                   content: "' '",
-                  position: "absolute",
+                  position: 'absolute',
                   left: 0,
-                  right: "auto",
+                  right: 'auto',
 
-                  display: "block",
-                  width: "100%",
-                  height: "1px",
+                  display: 'block',
+                  width: '100%',
+                  height: '1px',
 
-                  backgroundColor: "#d9d9d9",
-                  transform: "scaleY(0.5)",
+                  backgroundColor: '#d9d9d9',
+                  transform: 'scaleY(0.5)',
                 }}
               />
             </Box>
