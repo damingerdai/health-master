@@ -14,6 +14,7 @@ import {
   Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
+import { times } from 'lodash';
 
 interface PickerColumProps {
   options?: Array<string>;
@@ -208,102 +209,93 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
 };
 
 interface PickerProps {
-  btnName?: string;
+  confirmText?: React.ReactNode;
+  cancelText?: React.ReactNode;
+  open?: boolean;
+  options: Array<string[]>;
+  value: string | string[];
 }
 
 export const Picker: React.FC<PickerProps> = (props) => {
-  const { btnName } = props;
+  const {
+    confirmText, cancelText, open, options,
+  } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  useEffect(() => {
+    if (open === true) {
+      onOpen();
+    } else if (open === false) {
+      onClose();
+    }
+  }, [open]);
+
+  const highlightCss = {
+    content: "' '",
+    position: 'absolute',
+    left: 0,
+    right: 'auto',
+
+    display: 'block',
+    width: '100%',
+    height: '1px',
+
+    backgroundColor: '#d9d9d9',
+    transform: 'scaleY(0.5)',
+  };
+
   return (
-    <>
-      <Button onClick={onOpen}>{btnName ?? '点击'}</Button>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">
-            <Flex>
-              <Button variant="ghost" onClick={onClose}>
-                取消
-              </Button>
-              <Spacer />
-              <Button variant="ghost">确定</Button>
-            </Flex>
-          </DrawerHeader>
+    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerHeader borderBottomWidth="1px">
+          <Flex>
+            <Button variant="ghost" onClick={onClose}>
+              {cancelText ?? '取消'}
+            </Button>
+            <Spacer />
+            <Button variant="ghost">{confirmText ?? '确定'}</Button>
+          </Flex>
+        </DrawerHeader>
 
-          <DrawerBody>
+        <DrawerBody>
+          <Box
+            display="flex"
+            dir="colum"
+            pos="relative"
+            justifyContent="center"
+            h="216px"
+            cursor="grab"
+            __css={{
+              WebkitMaskBoxImage:
+                'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
+            }}
+          >
+            {
+              times(options.length).map((i) => <PickerColum key={i} options={options[i]} />)
+            }
             <Box
-              display="flex"
-              dir="colum"
-              pos="relative"
-              justifyContent="center"
-              h="216px"
-              cursor="grab"
-              __css={{
-                WebkitMaskBoxImage:
-                  'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
+              pos="absolute"
+              top="50%"
+              left="0"
+              w="100%"
+              pointerEvents="none"
+              h="36px"
+              mt="-18px"
+              _before={{
+                top: 0,
+                bottom: 'auto',
+                ...highlightCss,
               }}
-            >
-              <PickerColum
-                options={['one', 'two', 'three', 'four', 'five']}
-                value="one"
-                onChange={(v) => console.log('1', v)}
-              />
-              <PickerColum
-                options={['one', 'two', 'three', 'four', 'five']}
-                value="two"
-                onChange={(v) => console.log('2', v)}
-              />
-              <PickerColum
-                options={['one', 'two', 'three', 'four', 'five']}
-                value="three"
-                onChange={(v) => console.log('2', v)}
-              />
-              <Box
-                pos="absolute"
-                top="50%"
-                left="0"
-                w="100%"
-                pointerEvents="none"
-                h="36px"
-                mt="-18px"
-                _before={{
-                  top: 0,
-                  bottom: 'auto',
-
-                  content: "' '",
-                  position: 'absolute',
-                  left: 0,
-                  right: 'auto',
-
-                  display: 'block',
-                  width: '100%',
-                  height: '1px',
-
-                  backgroundColor: '#d9d9d9',
-                  transform: 'scaleY(0.5)',
-                }}
-                _after={{
-                  bottom: 0,
-                  top: 'auto',
-
-                  content: "' '",
-                  position: 'absolute',
-                  left: 0,
-                  right: 'auto',
-
-                  display: 'block',
-                  width: '100%',
-                  height: '1px',
-
-                  backgroundColor: '#d9d9d9',
-                  transform: 'scaleY(0.5)',
-                }}
-              />
-            </Box>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </>
+              _after={{
+                bottom: 0,
+                top: 'auto',
+                ...highlightCss,
+              }}
+            />
+          </Box>
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
   );
 };
