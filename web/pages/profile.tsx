@@ -23,8 +23,6 @@ const Profile: NextPage = () => {
     }
   }, []);
 
-  console.log(currentUser);
-
   return (
     <Box as="main" pb={8} pl={8} pr={8}>
       <Box pt={4}>

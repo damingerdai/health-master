@@ -1,20 +1,7 @@
 /* eslint-disable react/no-unused-prop-types,react/destructuring-assignment,react/no-array-index-key */
-/* eslint-disable @typescript-eslint/no-shadow,@typescript-eslint/no-use-before-define,@typescript-eslint/no-unused-vars */
+import { Box, useColorModeValue } from '@chakra-ui/react';
 import * as React from 'react';
-import { useEffect, useState, useMemo } from 'react';
-import {
-  Box,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
-  Spacer,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { times } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 
 interface PickerColumProps {
   options?: Array<string>;
@@ -24,21 +11,22 @@ interface PickerColumProps {
   onClick?: (value: string) => void;
 }
 
-const PickerColum: React.FC<PickerColumProps> = (props) => {
+export const PickerColum: React.FC<PickerColumProps> = (props) => {
   const {
     options, wheel, onChange, onClick,
   } = {
     options: [],
     wheel: 'off',
     ...props,
-  };
-  const [value, setValue] = useState<string>(props.value ?? '');
+  } as Required<PickerColumProps>;
+  const [value, setValue] = useState<string>('');
   const [minTranslate, setMinTranslate] = useState<number>(0);
   const [maxTranslate, setMaxTranslate] = useState<number>(0);
   const [scrollerTranslate, setScrollerTranslate] = useState<number>(0);
   const [startScrollerTranslate, setStartScrollerTranslate] = useState<number>(0);
   const [startTouchY, setStartTouchY] = useState<number>(0);
   const [isMoving, setIsMoving] = useState<boolean>(false);
+  const selectedColor = useColorModeValue('#333', '#ccc');
 
   const translateString = useMemo(
     () => `translate3d(0, ${scrollerTranslate}px, 0)`,
@@ -51,6 +39,13 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
     if (!passiveEvents.includes(event._reactName)) {
       event.preventDefault();
     }
+  };
+
+  const onValueSelected = (val: string) => {
+    if (onChange) {
+      onChange(val);
+    }
+    setValue(val);
   };
 
   const onScrollerTranslateSettled = (scrollerTranslateValue: number) => {
@@ -67,13 +62,6 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
     if (newSelectedValue) {
       onValueSelected(newSelectedValue);
     }
-  };
-
-  const onValueSelected = (value: string) => {
-    if (onChange) {
-      onChange(value);
-    }
-    setValue(value);
   };
 
   const handleWheel = (e) => {
@@ -114,12 +102,12 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
 
   const handleTouchStart = (e) => {
     safePreventDefault(e);
-    const startTouchY = e.targetTouches[0].pageY;
-    setStartTouchY(startTouchY);
+    const newStartTouchY = e.targetTouches[0].pageY;
+    setStartTouchY(newStartTouchY);
     setStartScrollerTranslate(scrollerTranslate);
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = () => {
     if (!isMoving) {
       return;
     }
@@ -132,7 +120,7 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
     }, 0);
   };
 
-  const handleTouchCancel = (e) => {
+  const handleTouchCancel = () => {
     if (!isMoving) {
       return;
     }
@@ -154,8 +142,7 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
   useEffect(() => {
     let selectedIndex = value ? options.indexOf(value) : -1;
     if (selectedIndex < 0) {
-      // throw new ReferenceError();
-      onValueSelected(options[0]);
+      setValue(options[0]);
       selectedIndex = 0;
     }
 
@@ -163,6 +150,12 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
     setMinTranslate(126 - 36 * options.length);
     setMaxTranslate(90);
   }, [options, value]);
+
+  useEffect(() => {
+    if (props.value) {
+      setValue(props.value);
+    }
+  }, [props.value]);
 
   return (
     <Box
@@ -194,7 +187,7 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
               p="0 6px"
               alignItems="center"
               whiteSpace="nowrap"
-              color={o === value ? '#333' : '#999'}
+              color={o === value ? selectedColor : '#999'}
               overflow="hidden"
               textOverflow="ellipsis"
               onClick={() => handleItemClick(o)}
@@ -205,97 +198,5 @@ const PickerColum: React.FC<PickerColumProps> = (props) => {
         </Box>
       )}
     </Box>
-  );
-};
-
-interface PickerProps {
-  confirmText?: React.ReactNode;
-  cancelText?: React.ReactNode;
-  open?: boolean;
-  options: Array<string[]>;
-  value: string | string[];
-}
-
-export const Picker: React.FC<PickerProps> = (props) => {
-  const {
-    confirmText, cancelText, open, options,
-  } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  useEffect(() => {
-    if (open === true) {
-      onOpen();
-    } else if (open === false) {
-      onClose();
-    }
-  }, [open]);
-
-  const highlightCss = {
-    content: "' '",
-    position: 'absolute',
-    left: 0,
-    right: 'auto',
-
-    display: 'block',
-    width: '100%',
-    height: '1px',
-
-    backgroundColor: '#d9d9d9',
-    transform: 'scaleY(0.5)',
-  };
-
-  return (
-    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerHeader borderBottomWidth="1px">
-          <Flex>
-            <Button variant="ghost" onClick={onClose}>
-              {cancelText ?? '取消'}
-            </Button>
-            <Spacer />
-            <Button variant="ghost">{confirmText ?? '确定'}</Button>
-          </Flex>
-        </DrawerHeader>
-
-        <DrawerBody>
-          <Box
-            display="flex"
-            dir="colum"
-            pos="relative"
-            justifyContent="center"
-            h="216px"
-            cursor="grab"
-            __css={{
-              WebkitMaskBoxImage:
-                'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
-            }}
-          >
-            {
-              times(options.length).map((i) => <PickerColum key={i} options={options[i]} />)
-            }
-            <Box
-              pos="absolute"
-              top="50%"
-              left="0"
-              w="100%"
-              pointerEvents="none"
-              h="36px"
-              mt="-18px"
-              _before={{
-                top: 0,
-                bottom: 'auto',
-                ...highlightCss,
-              }}
-              _after={{
-                bottom: 0,
-                top: 'auto',
-                ...highlightCss,
-              }}
-            />
-          </Box>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
   );
 };

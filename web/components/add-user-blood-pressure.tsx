@@ -98,6 +98,8 @@ AddUserBloodPressureModalProps
                   name="pulse"
                   min={0}
                 />
+                {/* <DatePickerInput display="记录时间"
+                  name="registerDate"/> */}
               </ModalBody>
               <ModalFooter justifyContent="center">
                 <Button
@@ -110,11 +112,7 @@ AddUserBloodPressureModalProps
                 >
                   提交
                 </Button>
-                <Button
-                  variant="outline"
-                  colorScheme="teal"
-                  onClick={onClose}
-                >
+                <Button variant="outline" colorScheme="teal" onClick={onClose}>
                   取消
                 </Button>
               </ModalFooter>
