@@ -15,6 +15,9 @@ import {
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
+import { DatePickerInput } from './date-picker-input';
+import { TimePickerInput } from './time-picker-input';
+import { toastInstance } from './toast';
 import { UserBloodPressureNumberInput } from './user-blood-pressure-number-input';
 
 interface AddUserBloodPressureValue {
@@ -22,6 +25,8 @@ interface AddUserBloodPressureValue {
   diastolicBloodPressure: number;
   systolicBloodPressure: number;
   pulse: number;
+  logDate: Date;
+  logTime: Date;
 }
 
 interface AddUserBloodPressureModalProps {
@@ -40,29 +45,47 @@ AddUserBloodPressureModalProps
     diastolicBloodPressure: null,
     systolicBloodPressure: null,
     pulse: null,
+    logDate: null,
+    logTime: null,
   } as unknown as AddUserBloodPressureValue;
 
   const validationSchemas = Yup.object().shape({
     diastolicBloodPressure: Yup.number().min(0).required('请输入你的舒张压'),
     systolicBloodPressure: Yup.number().min(0).required('请输入你的收缩压'),
     pulse: Yup.number().min(0).required('请输入你的脉搏'),
+    logDate: Yup.string().required('请输入记录日期'),
+    logTime: Yup.string().required('请输入记录时间'),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      const logDateTime = `${values.logDate[0]}-${values.logDate[1]}-${values.logDate[2]}T${values.logTime[0]}:${values.logTime[1]}:00Z`;
+      const data = {
+        ...values,
+        logDateTime,
+        userId: id,
+      };
+      delete data.logDate;
+      delete data.logTime;
       await request({
         method: 'post',
         url: 'api/user_blood_pressure',
-        data: {
-          ...values,
-          userId: id,
-        },
+        data,
       });
       await dispatch(fetchUserBloodPressureList());
-    } catch (err) {
+      onClose();
+      setSubmitting(false);
+    } catch (err: any) {
+      toastInstance({
+        id: 'SERVICE_ERROR',
+        title: err.message,
+        position: 'bottom',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
       setSubmitting(false);
     }
-    onClose();
   };
 
   return (
@@ -98,8 +121,8 @@ AddUserBloodPressureModalProps
                   name="pulse"
                   min={0}
                 />
-                {/* <DatePickerInput display="记录时间"
-                  name="registerDate"/> */}
+                <DatePickerInput display="记录日期" name="logDate" />
+                <TimePickerInput display="记录时间" name="logTime" />
               </ModalBody>
               <ModalFooter justifyContent="center">
                 <Button

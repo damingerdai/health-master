@@ -1,0 +1,1 @@
+ALTER TABLE user_blood_pressure ADD COLUMN IF NOT EXISTS log_datetime TIMESTAMPTZ;

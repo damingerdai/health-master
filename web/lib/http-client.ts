@@ -18,10 +18,11 @@ export class HttpClient {
   public async request<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
       const { data } = await this.axiosInstance<T>(config);
+
       return data;
     } catch (err: any) {
       if (err.response && err.response.data) {
-        return err.response.data;
+        throw err.response.data;
       }
       throw err;
     }

@@ -37,15 +37,16 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
     isOpen, onOpen, onClose, onToggle,
   } = useDisclosure();
   const [field, meta, helpers] = useField(name);
+  const currentDate = new Date();
   const [years] = useState<string[]>(
-    generateNumberArray(1975, new Date().getFullYear()),
+    generateNumberArray(1975, currentDate.getFullYear()),
   );
   const [months] = useState<string[]>(generateNumberArray(1, 12));
   const [days, setDays] = useState<string[]>(generateNumberArray(1, 31));
   const [value, setValue] = useState<string[]>([
-    new Date().getFullYear().toString(),
-    (new Date().getMonth() + 1).toString(),
-    new Date().getDate().toString(),
+    currentDate.getFullYear().toString(),
+    (currentDate.getMonth() + 1).toString(),
+    currentDate.getDate().toString(),
   ]);
 
   const options = useMemo(() => [years, months, days], [years, months, days]);
@@ -71,11 +72,12 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
     if (valueChange) {
       valueChange([newYear, newMonth, newDay]);
     }
+    helpers.setValue([...value]);
   }, [value]);
 
   return (
     <>
-      <FormControl>
+      <FormControl isInvalid={!!meta.error && meta.touched} mt={1}>
         <FormLabel>{display}</FormLabel>
         <InputGroup size="md">
           <Input readOnly name={field.name} value={displayValue} {...rest} />
@@ -95,7 +97,7 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
         value={value}
         onValueChange={(val) => {
           setValue([...val]);
-          helpers.setValue([...val]);
+          helpers.setTouched(true);
         }}
       />
     </>

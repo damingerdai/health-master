@@ -1,0 +1,1 @@
+ALTER TABLE user_blood_pressure DROP COLUMN IF EXISTS log_datetime TIMESTAMPTZ
