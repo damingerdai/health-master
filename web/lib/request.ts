@@ -33,7 +33,8 @@ fclient.interceptors.response.use((response) => {
 
   return { ...response };
 }, (err) => {
-  const { code, message } = err;
+  console.log(err);
+  const { code, message, response} = err;
   if (
     (code === 'ECONNABORTED' || message === 'Network Error')
     && !toastInstance.isActive('NETWORK_ERROR')
@@ -46,6 +47,11 @@ fclient.interceptors.response.use((response) => {
       duration: 9000,
       isClosable: true,
     });
+  } else if (response && response.data) {
+    const res = response.data;
+    if (res.code === 10000003 || res.code === 10000006) {
+      window.location.href = '/login';
+    }
   }
 
   return Promise.reject(err);
@@ -67,11 +73,6 @@ export async function request<T = any>(
       window.location.href = '/login';
     }
     if (err?.response) {
-      // console.error({
-      //   status: err.response.status,
-      //   data: err.response.data,
-      //   header: err.response.headers,
-      // });
 
       throw err.response.data || '';
     }
