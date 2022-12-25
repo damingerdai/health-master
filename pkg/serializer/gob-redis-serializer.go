@@ -3,7 +3,6 @@ package serializer
 import (
 	"bytes"
 	"encoding/gob"
-	"fmt"
 )
 
 type GobRedisSerializer[T any] struct {
@@ -25,7 +24,6 @@ func (serializer GobRedisSerializer[T]) Deserialize(bs []byte) (T, error) {
 	var t T
 	err := data.Decode(&t)
 	if err != nil {
-		fmt.Println(err)
 		return t, err
 	}
 	return t, nil

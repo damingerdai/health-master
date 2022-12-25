@@ -36,3 +36,11 @@ func (userBloodPressureService *UserBloodPressureService) List() (*[]model.UserB
 	}
 	return ubps, nil
 }
+
+func (userBloodPressureService *UserBloodPressureService) ListByUserId(userId string) (*[]model.UserBloodPressure, error) {
+	ubps, err := userBloodPressureService.userBloodPressureRepository.ListByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+	return ubps, nil
+}

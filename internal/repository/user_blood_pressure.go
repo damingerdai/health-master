@@ -40,3 +40,12 @@ func (userBloodPressureRepository *UserBloodPressureRepository) List() (*[]model
 	}
 	return &ubps, nil
 }
+
+func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(userId string) (*[]model.UserBloodPressure, error) {
+	var ubps []model.UserBloodPressure
+	result := userBloodPressureRepository.db.Where("user_id", userId).Where("deleted_at IS NULL").Find(&ubps)
+	if result.Error != nil {
+		return nil, errors.Unwrap(result.Error)
+	}
+	return &ubps, nil
+}

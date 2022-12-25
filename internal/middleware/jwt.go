@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/damingerdai/health-master/global"
@@ -42,8 +41,7 @@ func JWT() gin.HandlerFunc {
 					ecode = errcode.UnauthorizedTokenError
 				}
 			}
-			fmt.Println(claims)
-			fmt.Println(claims.UserId)
+			c.Set("UserId", claims.UserId)
 		}
 
 		if ecode != errcode.Success {

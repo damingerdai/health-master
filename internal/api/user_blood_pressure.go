@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
@@ -20,8 +19,6 @@ func CreateUserBloodPressure(c *gin.Context) {
 		resp.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
-
-	fmt.Println(userBloodPressure)
 
 	err := global.DBEngine.Transaction(func(tx *gorm.DB) error {
 		service := service.New(tx)
@@ -52,10 +49,9 @@ func CreateUserBloodPressure(c *gin.Context) {
 func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine)
-
+	userId := c.GetString("UserId")
 	userBloodPressureService := service.UserBloodPressureService
-
-	ubps, err := userBloodPressureService.List()
+	ubps, err := userBloodPressureService.ListByUserId(userId)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ListUserBloodPressureError)
 	} else {
