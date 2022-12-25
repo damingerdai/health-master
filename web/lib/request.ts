@@ -33,7 +33,6 @@ fclient.interceptors.response.use((response) => {
 
   return { ...response };
 }, (err) => {
-  console.log(err);
   const { code, message, response } = err;
   if (
     (code === 'ECONNABORTED' || message === 'Network Error')
