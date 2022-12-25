@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/damingerdai/health-master/global"
@@ -32,7 +33,7 @@ func JWT() gin.HandlerFunc {
 		} else {
 			srv := service.New(global.DBEngine)
 			tokenService := srv.TokenService
-			_, err := tokenService.ParseToken(token[7:])
+			claims, err := tokenService.ParseToken(token[7:])
 			if err != nil {
 				switch err.(*jwt.ValidationError).Errors {
 				case jwt.ValidationErrorExpired:
@@ -41,6 +42,8 @@ func JWT() gin.HandlerFunc {
 					ecode = errcode.UnauthorizedTokenError
 				}
 			}
+			fmt.Println(claims)
+			fmt.Println(claims.UserId)
 		}
 
 		if ecode != errcode.Success {
