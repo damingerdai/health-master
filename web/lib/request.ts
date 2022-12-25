@@ -34,7 +34,7 @@ fclient.interceptors.response.use((response) => {
   return { ...response };
 }, (err) => {
   console.log(err);
-  const { code, message, response} = err;
+  const { code, message, response } = err;
   if (
     (code === 'ECONNABORTED' || message === 'Network Error')
     && !toastInstance.isActive('NETWORK_ERROR')
@@ -73,7 +73,6 @@ export async function request<T = any>(
       window.location.href = '/login';
     }
     if (err?.response) {
-
       throw err.response.data || '';
     }
 
