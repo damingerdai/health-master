@@ -34,7 +34,7 @@ func (userBloodPressureRepository *UserBloodPressureRepository) Find(id string) 
 
 func (userBloodPressureRepository *UserBloodPressureRepository) List() (*[]model.UserBloodPressure, error) {
 	var ubps []model.UserBloodPressure
-	result := userBloodPressureRepository.db.Joins("User").Find(&ubps).Where("deleted_at IS NULL")
+	result := userBloodPressureRepository.db.Joins("User").Where("deleted_at IS NULL").Find(&ubps)
 	if result.Error != nil {
 		return nil, errors.Unwrap(result.Error)
 	}
@@ -43,7 +43,7 @@ func (userBloodPressureRepository *UserBloodPressureRepository) List() (*[]model
 
 func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(userId string) (*[]model.UserBloodPressure, error) {
 	var ubps []model.UserBloodPressure
-	result := userBloodPressureRepository.db.Where("user_id", userId).Where("deleted_at IS NULL").Find(&ubps)
+	result := userBloodPressureRepository.db.Joins("User").Where("user_blood_pressure.user_id", userId).Where("user_blood_pressure.deleted_at IS NULL").Find(&ubps)
 	if result.Error != nil {
 		return nil, errors.Unwrap(result.Error)
 	}
