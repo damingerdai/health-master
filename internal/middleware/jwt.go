@@ -41,7 +41,11 @@ func JWT() gin.HandlerFunc {
 					ecode = errcode.UnauthorizedTokenError
 				}
 			}
-			c.Set("UserId", claims.UserId)
+			if claims == nil {
+				ecode = errcode.UnauthorizedTokenTimeout
+			} else {
+				c.Set("UserId", claims.UserId)
+			}
 		}
 
 		if ecode != errcode.Success {

@@ -32,7 +32,7 @@ export const UserBloodPressureList: React.FC<UserBloodPressureListProps> = (
               <Th>舒张压</Th>
               <Th>收缩压</Th>
               <Th>脉搏</Th>
-              <Th>创建时间</Th>
+              <Th>记录时间</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -43,8 +43,8 @@ export const UserBloodPressureList: React.FC<UserBloodPressureListProps> = (
                 <Td>{`${udp.systolicBloodPressure} mmHg`}</Td>
                 <Td>{`${udp.pulse} 次/分`}</Td>
                 <Td>
-                  {udp.createdAt
-                    ? format(new Date(udp.createdAt), 'PPP', { locale: zhCN })
+                  {udp.logDatetime
+                    ? format(new Date(udp.logDatetime), 'PPP', { locale: zhCN })
                     : '未知'}
                 </Td>
               </Tr>
