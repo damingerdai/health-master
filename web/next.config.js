@@ -7,7 +7,7 @@ const nextConfig = {
     ignoreDuringBuilds: true
   },
   productionBrowserSourceMaps: true,
-  // output: 'standalone',
+  output: 'standalone',
 }
 
 module.exports = nextConfig
