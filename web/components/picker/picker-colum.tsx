@@ -167,8 +167,8 @@ export const PickerColum: React.FC<PickerColumProps> = (props) => {
       onWheel={(e) => handleWheel(e)}
       onTouchMove={(e) => handleTouchMove(e)}
       onTouchStart={(e) => handleTouchStart(e)}
-      onTouchEnd={(e) => handleTouchEnd()}
-      onTouchCancel={(e) => handleTouchCancel()}
+      onTouchEnd={() => handleTouchEnd()}
+      onTouchCancel={() => handleTouchCancel()}
     >
       {options && (
         <Box
