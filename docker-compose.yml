@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: health-master
+      POSTGRES_DB: postgres
     networks:
       - daming-health-master-network
   redis:
