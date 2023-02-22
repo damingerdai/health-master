@@ -16,4 +16,6 @@ var (
 
 	CreateUserBloodPressureError = NewError(30000001, "创建用户血压记录失败")
 	ListUserBloodPressureError   = NewError(30000002, "获取用户血压记录失败")
+
+	ListRoleError = NewError(40000001, "获取角色失败")
 )
