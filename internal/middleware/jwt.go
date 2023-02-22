@@ -18,6 +18,10 @@ func JWT() gin.HandlerFunc {
 			c.Next()
 			return
 		}
+		if ok, _ := regexp.MatchString("^/api/v1/user$", url); ok && c.Request.Method == "POST" {
+			c.Next()
+			return
+		}
 		var (
 			token string
 			ecode = errcode.Success

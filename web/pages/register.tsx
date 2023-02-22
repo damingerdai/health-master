@@ -76,7 +76,7 @@ const Register: NextPage = () => {
 
   return (
     <Flex minH="100wh" align="center" justify="center">
-      <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
+      <Stack spacing={8} mx="auto" w="sm" py={12} px={6}>
         <Stack align="center">
           <Heading fontSize="4xl">注册</Heading>
         </Stack>

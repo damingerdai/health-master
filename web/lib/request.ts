@@ -61,9 +61,9 @@ export async function request<T = any>(
 ): Promise<T> {
   try {
     const data = await fclient<T>(options);
-
     return (data.data) as T;
   } catch (err: any) {
+    console.error(err);
     if (err?.response?.status === 401) {
       window.location.href = '/login';
     } else if (err?.response?.status === 403) {
