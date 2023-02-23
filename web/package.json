@@ -28,6 +28,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.4",
+    "swr": "^2.0.3",
     "yup": "^0.29.3"
   },
   "devDependencies": {
