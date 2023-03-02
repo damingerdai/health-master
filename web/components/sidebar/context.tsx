@@ -24,11 +24,13 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({ onClose, ...rest
       <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
     </Flex>
     <Box>
-      <NavItem path='dashboard' icon={FiHome}>
+      <NavItem path="dashboard" icon={FiHome}>
         仪表盘
       </NavItem>
-      <NavItem path='/' icon={FiHome}>
-        首{' '}页
+      <NavItem path="/" icon={FiHome}>
+        首
+        {' '}
+        页
       </NavItem>
     </Box>
   </Box>

@@ -10,10 +10,10 @@ import {
 } from '@chakra-ui/react';
 import useSWR from 'swr';
 import * as React from 'react';
-import { AddUserBloodPressureModal } from './add-user-blood-pressure';
-import { UserBloodPressureList } from './user-blood-pressure-list';
 import { UserBloodPressures } from '@/type/user-blood-pressure';
 import { request } from '@/lib/request';
+import { AddUserBloodPressureModal } from './add-user-blood-pressure';
+import { UserBloodPressureList } from './user-blood-pressure-list';
 
 export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,23 +24,23 @@ export const UserBloodPressureForm: React.FC = () => {
     });
     return res.data;
   };
-  const { data, error, isLoading } = useSWR('api/user_blood_pressures', fetcher)
+  const { data, isLoading } = useSWR('api/user_blood_pressures', fetcher);
 
   return (
     <>
       <Box>
-        <Flex direction='column' alignItems='start'>
-          <Heading fontSize='2xl'>血压记录</Heading>
-          <Button bg='tomato' onClick={onOpen}>
+        <Flex direction="column" alignItems="start">
+          <Heading fontSize="2xl">血压记录</Heading>
+          <Button bg="tomato" onClick={onOpen}>
             添加
           </Button>
         </Flex>
-        <Divider borderColor='gray.300' my='1rem' />
+        <Divider borderColor="gray.300" my="1rem" />
         <Box>
           { isLoading && (
             <Center>
-              <Spinner size='xl' />
-           </Center>
+              <Spinner size="xl" />
+            </Center>
           )}
           { !isLoading && data && (
             <UserBloodPressureList userBloodPressures={data} />

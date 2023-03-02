@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from "@/lib/redux-hooks";
-import { request } from "@/lib/request";
-import { fetchUserBloodPressureList } from "@/slices/user-blood-pressure-slice";
+import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
+import { request } from '@/lib/request';
+import { fetchUserBloodPressureList } from '@/slices/user-blood-pressure-slice';
 import {
   Button,
   Flex,
@@ -11,14 +11,14 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from "@chakra-ui/react";
-import { Form, Formik } from "formik";
-import * as React from "react";
-import * as Yup from "yup";
-import { DatePickerInput } from "./date-picker-input";
-import { TimePickerInput } from "./time-picker-input";
-import { toastInstance } from "./toast";
-import { UserBloodPressureNumberInput } from "./user-blood-pressure-number-input";
+} from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
+import * as Yup from 'yup';
+import { DatePickerInput } from './date-picker-input';
+import { TimePickerInput } from './time-picker-input';
+import { toastInstance } from './toast';
+import { UserBloodPressureNumberInput } from './user-blood-pressure-number-input';
 
 interface AddUserBloodPressureValue {
   userId?: string;
@@ -35,7 +35,7 @@ interface AddUserBloodPressureModalProps {
 }
 
 export const AddUserBloodPressureModal: React.FC<
-  AddUserBloodPressureModalProps
+AddUserBloodPressureModalProps
 > = (props) => {
   const { isOpen, onClose } = props;
   const dispatch = useAppDispatch();
@@ -50,15 +50,16 @@ export const AddUserBloodPressureModal: React.FC<
   } as unknown as AddUserBloodPressureValue;
 
   const validationSchemas = Yup.object().shape({
-    diastolicBloodPressure: Yup.number().min(0).required("请输入你的舒张压"),
-    systolicBloodPressure: Yup.number().min(0).required("请输入你的收缩压"),
-    pulse: Yup.number().min(0).required("请输入你的脉搏"),
-    logDate: Yup.string().required("请输入记录日期"),
-    logTime: Yup.string().required("请输入记录时间"),
+    diastolicBloodPressure: Yup.number().min(0).required('请输入你的舒张压'),
+    systolicBloodPressure: Yup.number().min(0).required('请输入你的收缩压'),
+    pulse: Yup.number().min(0).required('请输入你的脉搏'),
+    logDate: Yup.string().required('请输入记录日期'),
+    logTime: Yup.string().required('请输入记录时间'),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      // eslint-disable-next-line max-len
       const logDateTime = `${values.logDate[0]}-${values.logDate[1].padStart(2, '0')}-${values.logDate[2]}T${values.logTime[0]}:${values.logTime[1]}:00Z`;
       const data = {
         ...values,
@@ -68,8 +69,8 @@ export const AddUserBloodPressureModal: React.FC<
       delete data.logDate;
       delete data.logTime;
       await request({
-        method: "post",
-        url: "api/user_blood_pressure",
+        method: 'post',
+        url: 'api/user_blood_pressure',
         data,
       });
       await dispatch(fetchUserBloodPressureList());
@@ -77,10 +78,10 @@ export const AddUserBloodPressureModal: React.FC<
       setSubmitting(false);
     } catch (err: any) {
       toastInstance({
-        id: "SERVICE_ERROR",
+        id: 'SERVICE_ERROR',
         title: err.message,
-        position: "bottom",
-        status: "error",
+        position: 'bottom',
+        status: 'error',
         duration: 9000,
         isClosable: true,
       });

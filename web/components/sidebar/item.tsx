@@ -15,23 +15,26 @@ export const NavItem: React.FC<React.PropsWithChildren<NavItemProps>> = ({
   path,
   children,
   ...rest
-}) => (
-  <Link href={path ?? '/'} style={{ textDecoration: 'none' }}>
-    <Flex
-      align="center"
-      p="4"
-      mx="4"
-      borderRadius="lg"
-      role="group"
-      cursor="pointer"
-      // _hover={{ bg: 'cyan.400', color: 'white' }}
-      _hover={{
-        color: useColorModeValue('black', 'white')
-      }}
-      {...rest}
-    >
-      {icon && <Icon mr="4" fontSize="16" _groupHover={{ color: useColorModeValue('black', 'white') }} as={icon} />}
-      {children}
-    </Flex>
-  </Link>
-);
+}) => {
+  const hoverColor = useColorModeValue('black', 'white');
+
+  return (
+    <Link href={path ?? '/'} style={{ textDecoration: 'none' }}>
+      <Flex
+        align="center"
+        p="4"
+        mx="4"
+        borderRadius="lg"
+        role="group"
+        cursor="pointer"
+        _hover={{
+          color: hoverColor,
+        }}
+        {...rest}
+      >
+        {icon && <Icon mr="4" fontSize="16" _groupHover={{ color: hoverColor }} as={icon} />}
+        {children}
+      </Flex>
+    </Link>
+  );
+};

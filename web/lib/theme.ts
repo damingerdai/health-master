@@ -5,7 +5,7 @@ const styles = {
   global: (props: StyleFunctionProps | Record<string, any>) => ({
     body: {
       // bg: mode('#f0e7db', '#202023')(props),
-      bg: mode("#ffffff", "#202023")(props),
+      bg: mode('#ffffff', '#202023')(props),
     },
   }),
 };
