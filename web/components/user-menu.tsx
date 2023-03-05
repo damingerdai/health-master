@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { FiLogOut } from 'react-icons/fi';
+import { FaUser } from 'react-icons/fa';
 
 export const UserMenu: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +28,7 @@ export const UserMenu: React.FC = () => {
     (state) => state.user,
   );
 
-  const linkBgColor = useColorModeValue('whiteAlpha.900', 'gray.200');
+  const linkBgColor = useColorModeValue('gray.800', 'gray.200');
 
   const logout = async () => {
     await dispatch(resetUserState());
@@ -66,7 +67,8 @@ export const UserMenu: React.FC = () => {
         </MenuGroup>
         <MenuGroup>
           <MenuItem>
-            <Link pl={9} href="/profile" color={linkBgColor}>个人主页</Link>
+            <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FaUser} />
+            <Link href="/profile" color={linkBgColor}>个人主页</Link>
           </MenuItem>
         </MenuGroup>
         <MenuDivider />

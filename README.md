@@ -32,3 +32,11 @@ add permission to the database with the user:
 ```
 GRANT ALL PRIVILEGES ON DATABASE exampledb TO dbuser.
 ```
+
+## Install githook
+
+```
+chmod ug+x .go-husky/*
+sh install_githooks.sh
+chmod ug+x .git/hooks/*
+```

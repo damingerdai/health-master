@@ -8,7 +8,7 @@ import { useSystemColorMode } from '../hooks/useSystemColorMode';
 
 const themes = ['light', 'dark'];
 
-export function ToggleThemeButton() {
+export const ToggleThemeButton: React.FC = () => {
   const systemColorMode = useSystemColorMode();
   const { colorMode, toggleColorMode, setColorMode } = useColorMode();
   const bg = useColorModeValue('rgb(253 186 116 / 1)', 'rgba(82 82 91 / 1)');
@@ -56,4 +56,4 @@ export function ToggleThemeButton() {
       })}
     </Box>
   );
-}
+};

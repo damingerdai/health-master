@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import '../styles/globals.scss';
 import { Router } from 'next/router';
 import { useEffect } from 'react';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -25,6 +26,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <ChakraProvider theme={theme}>
         <Fonts />
+        <Head>
+          <title>Health Master Web</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="description" content="health master web" />
+          <meta name="author" content="damingerdai" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
         <Component {...pageProps} />
       </ChakraProvider>
     </Provider>
