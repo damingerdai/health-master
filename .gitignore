@@ -4,3 +4,5 @@ migrate
 !cmd/
 !pkg/migrate
 .DS_Store
+web/.next
+web/node_modules
