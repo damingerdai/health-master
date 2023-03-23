@@ -1,72 +1,69 @@
 package logger
 
 import (
-	"os"
+	"fmt"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-type Level int8
+var encoderConfig = zapcore.EncoderConfig{
+	TimeKey:       "time",
+	LevelKey:      "level",
+	NameKey:       "logger",
+	CallerKey:     "caller",
+	MessageKey:    "msg",
+	StacktraceKey: "stacktrace",
+	LineEnding:    zapcore.DefaultLineEnding,
 
-type Fields map[string]any
+	// EncodeLevel color the log message
+	//EncodeLevel: zapcore.LowercaseLevelEncoder,
+	EncodeLevel:    zapcore.CapitalColorLevelEncoder,
+	EncodeTime:     zapcore.ISO8601TimeEncoder,
+	EncodeDuration: zapcore.SecondsDurationEncoder,
 
-const (
-	LevelTrace Level = iota
-	LevelDebug
-	LevelInfo
-	LevelWarn
-	LevelError
-	LevelFatal
-	LevelPanic
-)
-
-type Logger struct {
-	newLogger *log.Logger
+	// EncodeCaller show the go file where Logger is invoked
+	//EncodeCaller:   zapcore.FullCallerEncoder,
+	EncodeCaller: nil,
 }
 
-func (l Level) String() string {
-	switch l {
-	case LevelTrace:
-		return "trace"
-	case LevelDebug:
-		return "debug"
-	case LevelInfo:
-		return "info"
-	case LevelWarn:
-		return "warn"
-	case LevelError:
-		return "error"
-	case LevelFatal:
-		return "fatal"
-	case LevelPanic:
-		return "panic"
+var config = zap.Config{
+	// Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
+	Development: false,
+	Encoding:    "console",
+	// Encoding:    "json",
+	EncoderConfig: encoderConfig,
+	// InitialFields:    map[string]interface{}{"serviceName": "iden3-demo"},
+	OutputPaths:      []string{"stdout"},
+	ErrorOutputPaths: []string{"stderr"},
+}
+
+func getLogLevel(level string) (*zap.AtomicLevel, error) {
+	var atom zap.AtomicLevel
+
+	switch level {
+	case "info":
+		atom = zap.NewAtomicLevelAt(zap.InfoLevel)
+	case "warn":
+		atom = zap.NewAtomicLevelAt(zap.WarnLevel)
+	case "debug":
+		atom = zap.NewAtomicLevelAt(zap.DebugLevel)
+	default:
+		return nil, fmt.Errorf("unsupport log level: %v", level)
 	}
-	return ""
+	return &atom, nil
 }
 
-func ParseLevel(level Level) log.Level {
-	logLevel, err := log.ParseLevel(level.String())
+func NewLogger(level string) (*zap.Logger, error) {
+	logLevel, err := getLogLevel(level)
 	if err != nil {
-		logLevel = log.InfoLevel
+		return nil, err
 	}
-	return logLevel
-}
+	config.Level = *logLevel
 
-func NewLogger(level Level) *log.Logger {
-	logger := log.New()
-
-	logger.SetFormatter(&log.TextFormatter{ForceColors: false, FullTimestamp: true})
-	logger.SetOutput(os.Stdout)
-	log.SetFormatter(&log.TextFormatter{ForceColors: false, FullTimestamp: true})
-	log.SetOutput(os.Stdout)
-
-	logLevel, err := log.ParseLevel(level.String())
+	log, err := config.Build()
 	if err != nil {
-		logLevel = log.InfoLevel
+		return nil, err
 	}
-	logger.SetLevel(logLevel)
-	log.SetLevel(logLevel)
-
-	return logger
-
+	return log, err
 }

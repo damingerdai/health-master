@@ -42,11 +42,14 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	log := logger.NewLogger(logger.LevelInfo)
+	log, err := logger.NewLogger("info")
+	if err != nil {
+		panic(err)
+	}
 	log.Info("health master server is running")
 	app, err := server.New(s, global.ServerSetting.RunMode)
 	if err != nil {
-		log.Panicf("run server: %s", err.Error())
+		log.Error(fmt.Sprintf("run server: %s", err.Error()))
 		os.Exit(-1)
 	}
 	app.Run()
