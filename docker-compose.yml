@@ -13,6 +13,26 @@ services:
       POSTGRES_DB: postgres
     networks:
       - daming-health-master-network
+  pgbouncer:
+    # image: edoburu/pgbouncer:1.9.0
+    image: rmccaffrey/pgbouncer:1.18.1
+    container_name: pgbouncer
+    environment:
+       - DB_USER=postgres
+       - DB_PASSWORD=123456
+       - DB_HOST=pg
+       - DB_NAME=postgres
+       - POOL_MODE=session
+       - ADMIN_USERS=postgres
+    volumes:
+      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+    networks:
+      - daming-health-master-network
+    ports:
+      - 6432:6432
+    depends_on:
+      - pg
   redis:
     image: redis:6.2.1-alpine
     container_name: 'redis'
