@@ -1,6 +1,8 @@
 package setting
 
 import (
+	"strings"
+
 	"github.com/spf13/viper"
 )
 
@@ -13,6 +15,9 @@ func NewSetting() (*Setting, error) {
 	vp.SetConfigName("config")
 	vp.AddConfigPath("configs")
 	vp.SetConfigType("yaml")
+	vp.AutomaticEnv()
+	replacer := strings.NewReplacer(".", "_")
+	vp.SetEnvKeyReplacer(replacer)
 	err := vp.ReadInConfig()
 	if err != nil {
 		return nil, err

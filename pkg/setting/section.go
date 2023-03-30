@@ -38,8 +38,24 @@ type RedisSettingS struct {
 	DB       int
 }
 
+type Settings struct {
+	Server   ServerSettingS
+	Database DatabaseSettingS
+	JWT      JwtSettingS
+	Redis    RedisSettingS
+}
+
 func (s *Setting) ReadSection(key string, value any) error {
 	err := s.vp.UnmarshalKey(key, value)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Setting) ReadAllSection(value any) error {
+	err := s.vp.Unmarshal(value)
 	if err != nil {
 		return err
 	}
