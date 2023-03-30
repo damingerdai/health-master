@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -15,10 +16,15 @@ import (
 	"github.com/damingerdai/health-master/pkg/setting"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	"github.com/joho/godotenv"
 )
 
 func init() {
-	var err = setupSetting()
+	var err = godotenv.Load()
+	if err != nil {
+		log.Println("fail to setup server: " + err.Error())
+	}
+	err = setupSetting()
 	if err != nil {
 		panic("fail to setup server: " + err.Error())
 	}
@@ -46,12 +52,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	log.Info("health master server is running")
 	app, err := server.New(s, global.ServerSetting.RunMode)
 	if err != nil {
 		log.Error(fmt.Sprintf("run server: %s", err.Error()))
 		os.Exit(-1)
 	}
+	log.Info("health master server is running")
 	app.Run()
 }
 

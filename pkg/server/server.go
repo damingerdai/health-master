@@ -8,6 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/damingerdai/health-master/internal/logger"
+	"go.uber.org/zap"
 )
 
 type Server interface {
@@ -78,7 +81,12 @@ func (prodServer ProdServer) Run() error {
 }
 
 func New(server *http.Server, runMode string) (Server, error) {
-	fmt.Fprintf(os.Stdin, "health master is in run mode: %s\n", runMode)
+	log, err := logger.NewLogger("debug")
+	if err != nil {
+		return nil, err
+	}
+	defer log.Sync()
+	log.Debug("health master is in run mode:", zap.String("runMode", runMode))
 	if runMode == "release" {
 		return NewProdServer(server), nil
 	} else if runMode == "debug" {
