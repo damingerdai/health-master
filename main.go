@@ -62,31 +62,20 @@ func main() {
 }
 
 func setupSetting() error {
-	setting, err := setting.NewSetting()
+	settings, err := setting.NewSetting()
 	if err != nil {
 		return err
 	}
-
-	err = setting.ReadSection("Server", &global.ServerSetting)
+	var appSetting setting.Settings
+	err = settings.ReadAllSection(&appSetting)
 	if err != nil {
-		return err
+		return nil
 	}
-
-	err = setting.ReadSection("Database", &global.DatabaseSetting)
-	if err != nil {
-		return err
-	}
-
-	err = setting.ReadSection("JWT", &global.JwtSetting)
-	if err != nil {
-		return err
-	}
+	global.ServerSetting = &appSetting.Server
+	global.DatabaseSetting = &appSetting.Database
+	global.JwtSetting = &appSetting.JWT
 	global.JwtSetting.Expire *= time.Second
-
-	err = setting.ReadSection("Redis", &global.RedisSetting)
-	if err != nil {
-		return err
-	}
+	global.RedisSetting = &appSetting.Redis
 
 	return nil
 }
