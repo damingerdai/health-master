@@ -3,9 +3,9 @@ package middleware
 import (
 	"bytes"
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/damingerdai/health-master/global"
 	"github.com/gin-gonic/gin"
 	"github.com/mssola/user_agent"
 )
@@ -29,10 +29,9 @@ func AccessLog() gin.HandlerFunc {
 
 		beginTime := time.Now()
 		c.Next()
-		// endTime := time.Now()
 		tc := time.Since(beginTime)
 		ua := user_agent.New(c.Request.UserAgent())
 		browserName, browserVersion := ua.Browser()
-		fmt.Fprintf(os.Stdin, "%s: method: %s, status code: %d, browser: %sV%s, spend %v\n", c.Request.URL, c.Request.Method, bodyWriter.Status(), browserName, browserVersion, tc)
+		global.Logger.Debug(fmt.Sprintf("%s: method: %s, status code: %d, browser: %sV%s, spend %s", c.Request.URL, c.Request.Method, bodyWriter.Status(), browserName, browserVersion, tc))
 	}
 }

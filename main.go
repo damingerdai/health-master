@@ -15,8 +15,8 @@ import (
 	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
+	"github.com/redis/go-redis/v9"
 )
 
 func init() {
@@ -32,10 +32,13 @@ func init() {
 	if err != nil {
 		panic("fail to setup database: " + err.Error())
 	}
-
 	err = setupRedisClient()
 	if err != nil {
 		panic("init setup RedisClient err: " + err.Error())
+	}
+	err = setupLogger()
+	if err != nil {
+		panic("init setup logger err: " + err.Error())
 	}
 }
 
@@ -48,16 +51,12 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	log, err := logger.NewLogger("info")
-	if err != nil {
-		panic(err)
-	}
 	app, err := server.New(s, global.ServerSetting.RunMode)
 	if err != nil {
-		log.Error(fmt.Sprintf("run server: %s", err.Error()))
+		global.Logger.Error(fmt.Sprintf("run server: %s", err.Error()))
 		os.Exit(-1)
 	}
-	log.Info("health master server is running")
+	global.Logger.Info("health master server is running")
 	app.Run()
 }
 
@@ -69,13 +68,13 @@ func setupSetting() error {
 	var appSetting setting.Settings
 	err = settings.ReadAllSection(&appSetting)
 	if err != nil {
-		return nil
+		return err
 	}
 	global.ServerSetting = &appSetting.Server
 	global.DatabaseSetting = &appSetting.Database
 	global.JwtSetting = &appSetting.JWT
-	global.JwtSetting.Expire *= time.Second
 	global.RedisSetting = &appSetting.Redis
+	global.LoggerSetting = &appSetting.Logger
 
 	return nil
 }
@@ -102,6 +101,16 @@ func setupRedisClient() error {
 		return s.Err()
 	}
 	global.RedisClient = rdb
+
+	return nil
+}
+
+func setupLogger() error {
+	log, err := logger.NewLogger(global.LoggerSetting.Level)
+	if err != nil {
+		return err
+	}
+	global.Logger = log
 
 	return nil
 }

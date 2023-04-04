@@ -38,11 +38,16 @@ type RedisSettingS struct {
 	DB       int
 }
 
+type LoggerSettingS struct {
+	Level string
+}
+
 type Settings struct {
 	Server   ServerSettingS
 	Database DatabaseSettingS
 	JWT      JwtSettingS
 	Redis    RedisSettingS
+	Logger   LoggerSettingS
 }
 
 func (s *Setting) ReadSection(key string, value any) error {

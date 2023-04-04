@@ -10,9 +10,17 @@ import (
 )
 
 func CreateToken(c *gin.Context) {
-	username := c.GetHeader("username")
-	password := c.GetHeader("password")
 	response := response.NewResponse(c)
+	username := c.GetHeader("username")
+	if len(username) == 0 {
+		response.ToErrorResponse(errcode.InvalidParams)
+		return
+	}
+	password := c.GetHeader("password")
+	if len(password) == 0 {
+		response.ToErrorResponse(errcode.InvalidParams)
+		return
+	}
 	userRepository := repository.NewUserRepository(global.DBEngine)
 	tokenService := service.NewTokenService(userRepository)
 

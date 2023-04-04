@@ -1,8 +1,8 @@
 Server:
   RunMode: debug
   HttpPort: 8000
-  ReadTimeout: 60
-  WriteTimeout: 60
+  ReadTimeout: 60s
+  WriteTimeout: 60s
 Database:
   Host: 127.0.0.1
   Port: 6432
@@ -13,9 +13,11 @@ Database:
 JWT:
   Secret: damingerdai
   Issuer: health-master
-  Expire: 7200
+  Expire: 7200s
 Redis:
-    Host: 127.0.0.1
-    Port: 6379
-    Password:
-    DB: 0
+  Host: 127.0.0.1
+  Port: 6379
+  Password:
+  DB: 0
+Logger:
+  Level: info

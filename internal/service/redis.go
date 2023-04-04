@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/damingerdai/health-master/pkg/serializer"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 type RedisService struct {

@@ -10,4 +10,6 @@ var (
 	DatabaseSetting *setting.DatabaseSettingS
 
 	RedisSetting *setting.RedisSettingS
+
+	LoggerSetting *setting.LoggerSettingS
 )
