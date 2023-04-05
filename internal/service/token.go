@@ -11,7 +11,7 @@ import (
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/damingerdai/health-master/pkg/util/tokens"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 type TokenService struct {

@@ -2,7 +2,7 @@ version: "3"
 services:
   pg:
     image: postgres:15
-    container_name: pg
+    container_name: 'health-master-pg'
     ports:
       - 5432:5432
     volumes:
@@ -34,8 +34,8 @@ services:
     depends_on:
       - pg
   redis:
-    image: redis:6.2.1-alpine
-    container_name: 'redis'
+    image: redis:7.0.10-alpine3.17
+    container_name: 'health-master-redis'
     ports:
       - 6379:6379
     restart: unless-stopped
