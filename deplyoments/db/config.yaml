@@ -9,3 +9,4 @@ data:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: '123456'
   POSTGRES_DB: postgres
+  
