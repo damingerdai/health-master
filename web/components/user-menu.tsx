@@ -9,6 +9,8 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
+  Portal,
+  Box,
 } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
 import { logout as doLogout } from '@/lib/request';
@@ -56,31 +58,33 @@ export const UserMenu: React.FC = () => {
       >
         <Avatar size="sm" name={username} />
       </MenuButton>
-      <MenuList maxW={{ base: '6rem', md: '8rem' }}>
-        <MenuGroup>
-          <MenuItem>
-            <Avatar mr="6px" size="sm" name={username} />
-            <span>
-              {`${firstName} ${lastName}`}
-            </span>
-          </MenuItem>
-        </MenuGroup>
-        <MenuGroup>
-          <MenuItem>
-            <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FaUser} />
-            <Link href="/profile" color={linkBgColor}>个人主页</Link>
-          </MenuItem>
-        </MenuGroup>
-        <MenuDivider />
-        <MenuGroup>
-          <MenuItem onClick={logout}>
-            <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FiLogOut} />
-            <span>
-              登出
-            </span>
-          </MenuItem>
-        </MenuGroup>
-      </MenuList>
+      <Portal>
+        <MenuList maxW={{ base: '6rem', md: '8rem' }}>
+          <MenuGroup>
+            <MenuItem>
+              <Avatar mr="6px" size="sm" name={username} />
+              <span>
+                {`${firstName} ${lastName}`}
+              </span>
+            </MenuItem>
+          </MenuGroup>
+          <MenuGroup>
+            <MenuItem>
+              <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FaUser} />
+              <Link href="/profile" color={linkBgColor}>个人主页</Link>
+            </MenuItem>
+          </MenuGroup>
+          <MenuDivider />
+          <MenuGroup>
+            <MenuItem onClick={logout}>
+              <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FiLogOut} />
+              <Box as="span">
+                登出
+              </Box>
+            </MenuItem>
+          </MenuGroup>
+        </MenuList>
+      </Portal>
     </Menu>
   );
 };
