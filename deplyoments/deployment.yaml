@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-master-api
+  namespace: health-master-namespace
+  labels:
+    app:  health-master-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-master-api
+  template:
+    metadata:
+      labels:
+        app: health-master-api
+      name: health-master-api
+    spec:
+      # imagePullSecrets:
+      #   - name: regcred
+      containers:
+        - name: health-master-api
+          image: health-master
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              cpu: 512m
+              memory: 1024Mi
+            requests:
+              cpu: 256m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /app/configs
+              name: config
+      volumes:
+        - configMap:
+            name: health-master-config
+          name: config

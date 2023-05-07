@@ -8,8 +8,10 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
 WORKDIR /app
 
 COPY go.mod go.sum /app/
-ENV  GO111MODULE=on
+ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.cn
+# ENV GOOS=linux 
+# ENV GOARCH=amd64
 
 RUN go mod download
 

@@ -1,0 +1,39 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    Server:
+      RunMode: debug
+      HttpPort: 8000
+      ReadTimeout: 60s
+      WriteTimeout: 60s
+    Database:
+      Host: pgbouncer
+      Port: 6432
+      User: postgres
+      Password: 123456
+      DB: postgres
+      SSL: false
+    JWT:
+      Secret: damingerdai
+      Issuer: health-master
+      Expire: 7200s
+    Redis:
+      Host: redis
+      Port: 6379
+      Password:
+      DB: 0
+    Logger:
+      Level: info
+  db.yaml: |
+    Host: redis
+    Port: 5432
+    Username: postgres
+    Password: 123456
+    Dbname: postgres
+    SSL: false
+    MigratePath: file://./db/migrations
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: health-master-config
+  namespace: health-master-namespace
