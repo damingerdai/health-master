@@ -17,7 +17,7 @@ JWT:
 Redis:
   Host: 127.0.0.1
   Port: 6379
-  Password:
+  Password: 12345
   DB: 0
 Logger:
   Level: info

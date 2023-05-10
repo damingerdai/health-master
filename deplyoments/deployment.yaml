@@ -24,13 +24,13 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
-          resources:
-            limits:
-              cpu: 512m
-              memory: 1024Mi
-            requests:
-              cpu: 256m
-              memory: 512Mi
+          # resources:
+          #   limits:
+          #     cpu: 1024m
+          #     memory: 2048Mi
+          #   requests:
+          #     cpu: 512m
+          #     memory: 1024Mi
           volumeMounts:
             - mountPath: /app/configs
               name: config

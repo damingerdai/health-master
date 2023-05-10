@@ -2,13 +2,13 @@ apiVersion: v1
 data:
   config.yaml: |
     Server:
-      RunMode: debug
+      RunMode: release
       HttpPort: 8000
       ReadTimeout: 60s
       WriteTimeout: 60s
     Database:
-      Host: pgbouncer
-      Port: 6432
+      Host: postgres
+      Port: 5432
       User: postgres
       Password: 123456
       DB: postgres
@@ -20,7 +20,7 @@ data:
     Redis:
       Host: redis
       Port: 6379
-      Password:
+      Password: 12345
       DB: 0
     Logger:
       Level: info

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/damingerdai/health-master/global"
@@ -28,18 +29,22 @@ func init() {
 	if err != nil {
 		panic("fail to setup server: " + err.Error())
 	}
+	log.Println("setup app setting")
 	err = setupDBEngine()
 	if err != nil {
 		panic("fail to setup database: " + err.Error())
 	}
+	log.Println("setup database")
 	err = setupRedisClient()
 	if err != nil {
 		panic("init setup RedisClient err: " + err.Error())
 	}
+	log.Println("setup redis")
 	err = setupLogger()
 	if err != nil {
 		panic("init setup logger err: " + err.Error())
 	}
+	log.Println("setup logger")
 }
 
 func main() {
@@ -68,7 +73,17 @@ func setupSetting() error {
 	var appSetting setting.Settings
 	err = settings.ReadAllSection(&appSetting)
 	if err != nil {
-		return err
+		// cannot parse 'Redis.Port' as int: strconv.ParseInt: parsing "tcp://****:6379": invalid syntax
+		// this is unknodwn bug only in docker?
+		if !strings.Contains(err.Error(), "cannot parse 'Redis.Port' as int") {
+			return err
+		}
+		var redisSetting setting.RedisSettingS
+		err = settings.ReadSection("Redis", &redisSetting)
+		if err != nil {
+			return err
+		}
+		appSetting.Redis = redisSetting
 	}
 	global.ServerSetting = &appSetting.Server
 	global.DatabaseSetting = &appSetting.Database

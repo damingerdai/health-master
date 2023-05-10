@@ -16,15 +16,33 @@ data:
     pidfile /data/redis-6379.pid
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv-volume
+  namespace: health-master-namespace
+  # labels:
+  #   type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/redis"
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: redis-pvc
   namespace: health-master-namespace
+  labels:
+    type: local
 spec:
+  storageClassName: manual
+  # storageClassName: local-path
   accessModes:
     - ReadWriteOnce
-  # storageClassName: manual
-  storageClassName: local-path
   resources:
     requests:
       storage: 1Gi

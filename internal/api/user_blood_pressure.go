@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
@@ -17,7 +16,6 @@ func CreateUserBloodPressure(c *gin.Context) {
 	var userBloodPressure model.UserBloodPressure
 	resp := response.NewResponse(c)
 	if err := c.ShouldBindJSON(&userBloodPressure); err != nil {
-		fmt.Println(err)
 		resp.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
