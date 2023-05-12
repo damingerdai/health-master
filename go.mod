@@ -7,7 +7,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/joho/godotenv v1.5.1
-	github.com/mssola/user_agent v0.5.3
+	github.com/mssola/user_agent v0.6.0
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
