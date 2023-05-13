@@ -49,6 +49,6 @@ export default async function handler(
       res.status(500).json(err);
     }
   } else {
-    res.status(500).json({ error: 'only support get' });
+    res.status(500).json({ error: 'only support get and post' });
   }
 }

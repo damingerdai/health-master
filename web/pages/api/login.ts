@@ -17,6 +17,8 @@ export default async function handler(
       }
       const { token, data } = resp;
       res.status(200).json({ code: 0, token, data });
+    } else {
+      res.status(500).json({ error: 'only support post' });
     }
   } catch (err: any) {
     if (err.response?.data) {
