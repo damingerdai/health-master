@@ -1,6 +1,7 @@
 package response
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/damingerdai/health-master/pkg/errcode"
@@ -37,6 +38,21 @@ func (r *Response) ToTokenResponse(data any) {
 
 func (r *Response) ToErrorResponse(err *errcode.Error) {
 	response := gin.H{"code": err.Code(), "message": err.Message()}
+	details := err.Details()
+	if len(details) > 0 {
+		response["details"] = details
+	}
+
+	r.Ctx.JSON(err.StatusCode(), response)
+}
+
+func (r *Response) ToErrorResponseWithError(err *errcode.Error, cause error) {
+	message := err.Message()
+	fmt.Println(cause.Error() != "")
+	if cause.Error() != "" {
+		message = cause.Error()
+	}
+	response := gin.H{"code": err.Code(), "message": message}
 	details := err.Details()
 	if len(details) > 0 {
 		response["details"] = details

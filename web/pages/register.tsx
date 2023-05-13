@@ -20,6 +20,7 @@ import * as Yup from 'yup';
 import { PasswordInput } from '@/components/password-input';
 import { request } from '@/lib/request';
 import { useRouter } from 'next/router';
+import { toastInstance } from '@/components/toast';
 
 const Register: NextPage = () => {
   const router = useRouter();
@@ -46,8 +47,15 @@ const Register: NextPage = () => {
         },
       });
       router.push('/login');
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      toastInstance({
+        title: '注册报错',
+        description: error?.response?.data || error?.message || '注册报错',
+        position: 'bottom',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
 
     setSubmitting(false);
