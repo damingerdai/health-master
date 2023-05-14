@@ -12,7 +12,7 @@ export default async function handler(
       const { username, password } = headers;
       const resp = await httpClient.login(username as string, password as string);
       if (isErrorResponse(resp)) {
-        res.status(500).json(resp.message);
+        res.status(500).json({ code: -1, message: resp.message });
         return;
       }
       const { token, data } = resp;
@@ -22,9 +22,9 @@ export default async function handler(
     }
   } catch (err: any) {
     if (err.response?.data) {
-      res.status(500).json(err.response.data.message);
+      res.status(500).json({ code: -1, message: err.response.data.message });
     } else {
-      res.status(500).json(err);
+      res.status(500).json({ code: -1, message: err });
     }
   }
 }

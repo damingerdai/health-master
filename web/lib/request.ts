@@ -95,7 +95,7 @@ export const login = async (username: string, password: string): Promise<{ code:
     toastInstance.closeAll();
     toastInstance({
       title: '登录报错',
-      description: err?.response?.data || err?.message || '登录报错',
+      description: err?.response?.data?.message || err?.message || '登录报错',
       position: 'bottom',
       status: 'error',
       duration: 5000,
