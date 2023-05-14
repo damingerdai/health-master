@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: health-master-api
+  namespace: health-master-namespace
+spec:
+  rules:
+  - host: api-health-master.damingerdai.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: health-master-api
+            port:
+              number: 8000
