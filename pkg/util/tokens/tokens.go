@@ -1,15 +1,18 @@
 package tokens
 
 import (
+	"time"
+
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-func CreateToken(secret []byte, userId, issuer string, expiresAt int64) (*string, error) {
+func CreateToken(secret []byte, userId, issuer string, expiresAt time.Time) (*string, error) {
+	expiresAtTime := jwt.NewNumericDate(expiresAt)
 	claims := model.Claims{
 		UserId: userId,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expiresAt,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: expiresAtTime,
 			Issuer:    issuer,
 		},
 	}

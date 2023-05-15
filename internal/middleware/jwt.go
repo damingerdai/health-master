@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	"regexp"
 
 	"github.com/damingerdai/health-master/global"
@@ -8,7 +9,7 @@ import (
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func JWT() gin.HandlerFunc {
@@ -38,10 +39,9 @@ func JWT() gin.HandlerFunc {
 			tokenService := srv.TokenService
 			claims, err := tokenService.ParseToken(token[7:])
 			if err != nil {
-				switch err.(*jwt.ValidationError).Errors {
-				case jwt.ValidationErrorExpired:
+				if errors.Is(err, jwt.ErrTokenExpired) {
 					ecode = errcode.UnauthorizedTokenTimeout
-				default:
+				} else {
 					ecode = errcode.UnauthorizedTokenError
 				}
 			}

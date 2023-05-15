@@ -4,7 +4,7 @@ import (
 	"encoding/gob"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func init() {
@@ -18,5 +18,5 @@ type UserToken struct {
 
 type Claims struct {
 	UserId string `json:"userId"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
