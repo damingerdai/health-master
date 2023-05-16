@@ -31,7 +31,7 @@ RUN yarn config set strict-ssl false
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY .env .env
+COPY .env.example .env
 RUN yarn build
 
 FROM node:18.16.0-alpine3.16 AS runner
