@@ -21,6 +21,7 @@ func NewRouter() *gin.Engine {
 		apiV1.GET("/user", api.GetCurrentUser)
 		apiV1.GET("/user/:id", api.GetUser)
 
+		apiV1.GET("/token", api.ParseToken)
 		apiV1.POST("/token", api.CreateToken)
 
 		apiV1.POST("/user-blood-pressure", api.CreateUserBloodPressure)

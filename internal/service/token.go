@@ -65,6 +65,9 @@ func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*m
 func (ts *TokenService) ParseToken(token string) (*model.Claims, error) {
 	secret := global.JwtSetting.GetJwtSecret()
 	claims, err := tokens.ParseToken(token, secret)
+	if err != nil {
+		return nil, err
+	}
 
 	return claims, err
 }
