@@ -18,8 +18,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build docker
         id: build-docker
-        run: |
-          docker build . -t ${{ env.REGISTRY_NAME }}/damingerdai/health-master:${{ github.sha }} -f Dockerfile
+        run: |-
+          docker build . -t ${{ env.REGISTRY_NAME }}/damingerdai/health-master:${{ github.sha }} -f github.Dockerfile
       - name: Image digest
         run: echo ${{ steps.build-docker.outputs.digest }}
       - name: Save docker image to tar file
