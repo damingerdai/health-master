@@ -45,38 +45,51 @@ func GetUser(c *gin.Context) {
 }
 
 func GetCurrentUser(c *gin.Context) {
-	var token string
-	response := response.NewResponse(c)
-	if s, exist := c.GetQuery("Authorization"); exist {
-		token = s
+	var response = response.NewResponse(c)
+	userId := c.GetString("UserId")
+	if userId == "" {
+		var token string
+		if s, exist := c.GetQuery("Authorization"); exist {
+			token = s
+		} else {
+			token = c.GetHeader("Authorization")
+		}
+		if token == "" {
+			response.ToErrorResponse(errcode.NotFoundAuthorization)
+			return
+		}
+
+		userRepository := repository.NewUserRepository(global.DBEngine)
+		userService := service.NewUserService(userRepository)
+		tokenService := service.NewTokenService(userRepository)
+
+		claims, err := tokenService.ParseToken(token[7:])
+		if err != nil {
+			response.ToErrorResponse(errcode.UnauthorizedTokenError)
+			return
+		}
+		userId := claims.UserId
+		user, err := userService.Find(userId)
+		if err != nil {
+			response.ToErrorResponse(errcode.UnauthorizedTokenError)
+			return
+		}
+		if user == nil {
+			response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+			return
+		}
+		user.Password = ""
+		response.ToResponse(user)
+
 	} else {
-		token = c.GetHeader("Authorization")
+		userRepository := repository.NewUserRepository(global.DBEngine)
+		userService := service.NewUserService(userRepository)
+		user, err := userService.Find(userId)
+		if err != nil {
+			response.ToErrorResponse(errcode.ServerError)
+			return
+		}
+		user.Password = ""
+		response.ToResponse(user)
 	}
-	if token == "" {
-		response.ToErrorResponse(errcode.NotFoundAuthorization)
-		return
-	}
-
-	userRepository := repository.NewUserRepository(global.DBEngine)
-	userService := service.NewUserService(userRepository)
-	tokenService := service.NewTokenService(userRepository)
-
-	claims, err := tokenService.ParseToken(token[7:])
-	if err != nil {
-		response.ToErrorResponse(errcode.UnauthorizedTokenError)
-		return
-	}
-	userId := claims.UserId
-	user, err := userService.Find(userId)
-	if err != nil {
-		response.ToErrorResponse(errcode.UnauthorizedTokenError)
-		return
-	}
-	if user == nil {
-		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
-		return
-	}
-	user.Password = ""
-	response.ToResponse(user)
-
 }
