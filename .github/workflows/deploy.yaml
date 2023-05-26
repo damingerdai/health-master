@@ -9,7 +9,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: ${{ matrix.io }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
