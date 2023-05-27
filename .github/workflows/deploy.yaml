@@ -21,7 +21,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.build-docker.outputs.digest }}
       - name: Save docker image to tar file
-        run: docker save health-master-web:${{ github.sha }} -o header-master.tar
+        run: docker save health-master:${{ github.sha }} -o health-master.tar
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.4
         with:
