@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-env:
-  REGISTRY_NAME: github.com
 
 jobs:
   deploy:
@@ -19,11 +17,11 @@ jobs:
       - name: Build docker
         id: build-docker
         run: |-
-          docker build . -t ${{ env.REGISTRY_NAME }}/damingerdai/health-master:${{ github.sha }} -f github.Dockerfile
+          docker build . -t health-master:${{ github.sha }} -f github.Dockerfile
       - name: Image digest
         run: echo ${{ steps.build-docker.outputs.digest }}
       - name: Save docker image to tar file
-        run: docker save ${{ env.REGISTRY_NAME }}/damingerdai/health-master-web:${{ github.sha }} -o header-master.tar
+        run: docker save health-master-web:${{ github.sha }} -o header-master.tar
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -41,7 +39,7 @@ jobs:
           sripts: |-
             cd /root/health-master; \
             docker load -o health-master.tar; \
-            kubectl set image deployment/health-master-api health-master=${{ env.REGISTRY_NAME }}/damingerdai/health-master-web:${{ github.sha }} -n health-master-namespace \
+            kubectl set image deployment/health-master-api health-master=health-master:${{ github.sha }} -n health-master-namespace \
             kubectl rollout status deployment/health-master-api -n health-master-namespace
             
 
