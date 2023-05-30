@@ -8,6 +8,7 @@ import (
 type srv struct {
 	db *gorm.DB
 
+	RoleService              *RoleService
 	UserService              *UserService
 	TokenService             *TokenService
 	UserBloodPressureService *UserBloodPressureService
@@ -16,12 +17,17 @@ type srv struct {
 func New(db *gorm.DB) *srv {
 
 	repo := repository.New(db)
+	roleRepository := repo.RoleRepository
+	userRepository := repo.UserRepository
+	userRoleRepository := repo.UserRoleRepository
+	userBloodPressureRepository := repo.UserBloodPressureRepository
 
 	return &srv{
 		db: db,
 
-		UserService:              NewUserService(repo.UserRepository),
-		TokenService:             NewTokenService(repo.UserRepository),
-		UserBloodPressureService: NewUserBloodPressureService(repo.UserBloodPressureRepository),
+		RoleService:              NewRoleService(roleRepository),
+		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository),
+		TokenService:             NewTokenService(userRepository),
+		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
 	}
 }

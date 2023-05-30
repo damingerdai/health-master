@@ -3,7 +3,7 @@ package model
 import "time"
 
 type User struct {
-	Id        string     `json:"id"`
+	Id        string     `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	Username  string     `json:"username" binding:"required"`
 	FirstName string     `json:"firstName" binding:"required"`
 	LastName  string     `json:"lastName" binding:"required"`
@@ -16,4 +16,9 @@ type User struct {
 
 func (User) TableName() string {
 	return "users"
+}
+
+type FullUser struct {
+	User
+	Role Role `json:"role,omitempty"`
 }

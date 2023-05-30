@@ -9,7 +9,7 @@ type RoleService struct {
 	roleRepository *repository.RoleRepository
 }
 
-func NewRoleRepository(roleRepository *repository.RoleRepository) *RoleService {
+func NewRoleService(roleRepository *repository.RoleRepository) *RoleService {
 	return &RoleService{
 		roleRepository: roleRepository,
 	}
@@ -17,4 +17,8 @@ func NewRoleRepository(roleRepository *repository.RoleRepository) *RoleService {
 
 func (roleService *RoleService) List() (*[]model.Role, error) {
 	return roleService.roleRepository.List()
+}
+
+func (roleService *RoleService) FindByName(name string) (*model.Role, error) {
+	return roleService.roleRepository.FindByName(name)
 }

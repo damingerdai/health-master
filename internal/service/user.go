@@ -10,21 +10,29 @@ import (
 )
 
 type UserService struct {
-	userRepository *repository.UserRepository
+	userRepository     *repository.UserRepository
+	roleRepository     *repository.RoleRepository
+	userRoleRepository *repository.UserRoleRepository
 }
 
-func NewUserService(userRepository *repository.UserRepository) *UserService {
-	return &UserService{userRepository}
+func NewUserService(
+	userRepository *repository.UserRepository,
+	roleRepository *repository.RoleRepository,
+	userRoleRepository *repository.UserRoleRepository) *UserService {
+	return &UserService{
+		userRepository:     userRepository,
+		roleRepository:     roleRepository,
+		userRoleRepository: userRoleRepository,
+	}
 }
 
-func (userService *UserService) Create(user *model.User) error {
+func (userService *UserService) Create(user *model.User) (*model.FullUser, error) {
 	existUser, err := userService.userRepository.FindByUserName(user.Username)
 	if err != nil {
-		return fmt.Errorf("fail to create user: %s", err.Error())
-
+		return nil, fmt.Errorf("fail to create user: %s", err.Error())
 	}
 	if existUser != nil && existUser.Id != "" {
-		return fmt.Errorf("username(%s) is exited", user.Username)
+		return nil, fmt.Errorf("username(%s) is exited", user.Username)
 	}
 	user.Password = util.GetMd5Hash(user.Password)
 	now := time.Now()
@@ -32,9 +40,26 @@ func (userService *UserService) Create(user *model.User) error {
 	user.UpdatedAt = &now
 	err = userService.userRepository.Create(user)
 	if err != nil {
-		return fmt.Errorf("fail to create user: %s", err.Error())
+		return nil, fmt.Errorf("fail to create user: %s", err.Error())
+
 	}
-	return nil
+	role, err := userService.roleRepository.FindByName("users")
+	if err != nil {
+		return nil, fmt.Errorf("fail to get role with '%s' -> %s ", "users", err.Error())
+	}
+	_, err = userService.userRoleRepository.Create(user.Id, role.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("fail to create user role: %s", err.Error())
+	}
+	fullUser := &model.FullUser{
+		User: *user,
+		Role: *role,
+	}
+	return fullUser, nil
 }
 
 func (userService *UserService) Find(id string) (*model.User, error) {

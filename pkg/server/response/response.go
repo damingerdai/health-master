@@ -1,7 +1,6 @@
 package response
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/damingerdai/health-master/pkg/errcode"
@@ -48,7 +47,6 @@ func (r *Response) ToErrorResponse(err *errcode.Error) {
 
 func (r *Response) ToErrorResponseWithError(err *errcode.Error, cause error) {
 	message := err.Message()
-	fmt.Println(cause.Error() != "")
 	if cause.Error() != "" {
 		message = cause.Error()
 	}

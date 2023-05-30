@@ -1,51 +1,59 @@
 package api
 
 import (
-	"net/http"
-
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func CreateUser(c *gin.Context) {
+	var err error
 	var user model.User
-	response := response.NewResponse(c)
-	if err := c.ShouldBindJSON(&user); err != nil {
-		response.ToErrorResponse(errcode.InvalidParams)
+	res := response.NewResponse(c)
+	err = c.ShouldBindJSON(&user)
+	if err != nil {
+		res.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
-	userService := service.NewUserService(repository.NewUserRepository(global.DBEngine))
-	if err := userService.Create(&user); err != nil {
-		response.ToErrorResponse(errcode.InvalidParams)
-		return
-	}
-	user.CreatedAt = nil
-	user.UpdatedAt = nil
-	user.Password = ""
-	c.JSON(http.StatusOK, user)
+	global.DBEngine.Transaction(func(tx *gorm.DB) error {
+		var err error
+		service := service.New(tx)
+		userService := service.UserService
+		fullUser, err := userService.Create(&user)
+		if err != nil {
+			global.Logger.Error(err.Error())
+			res.ToErrorResponse(errcode.CreateUserError)
+			return err
+		}
+		res.ToResponse(fullUser)
+
+		return nil
+	})
+
 }
 
 func GetUser(c *gin.Context) {
+	var res = response.NewResponse(c)
 	var id = c.Param("id")
-
-	userService := service.NewUserService(repository.NewUserRepository(global.DBEngine))
+	services := service.New(global.DBEngine)
+	userService := services.UserService
 
 	user, err := userService.Find(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	res.ToResponse(user)
 
 }
 
 func GetCurrentUser(c *gin.Context) {
 	var response = response.NewResponse(c)
+	var services = service.New(global.DBEngine)
 	userId := c.GetString("UserId")
 	if userId == "" {
 		var token string
@@ -59,9 +67,8 @@ func GetCurrentUser(c *gin.Context) {
 			return
 		}
 
-		userRepository := repository.NewUserRepository(global.DBEngine)
-		userService := service.NewUserService(userRepository)
-		tokenService := service.NewTokenService(userRepository)
+		userService := services.UserService
+		tokenService := services.TokenService
 
 		claims, err := tokenService.ParseToken(token[7:])
 		if err != nil {
@@ -82,8 +89,7 @@ func GetCurrentUser(c *gin.Context) {
 		response.ToResponse(user)
 
 	} else {
-		userRepository := repository.NewUserRepository(global.DBEngine)
-		userService := service.NewUserService(userRepository)
+		userService := services.UserService
 		user, err := userService.Find(userId)
 		if err != nil {
 			response.ToErrorResponse(errcode.ServerError)

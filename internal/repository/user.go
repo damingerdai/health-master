@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/damingerdai/health-master/internal/model"
 	"gorm.io/gorm"
@@ -18,7 +19,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 func (userRepository *UserRepository) Create(user *model.User) error {
 	result := userRepository.db.Create(user)
 	if result.Error != nil {
-		return errors.Unwrap(result.Error)
+		return result.Error
 	}
 	return nil
 }
@@ -36,6 +37,9 @@ func (userRepository *UserRepository) FindByUserName(username string) (*model.Us
 	var user model.User
 	result := userRepository.db.First(&user, "username = ?", username).Where("deleted_at IS NULL")
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, result.Error
 	}
 	return &user, nil
