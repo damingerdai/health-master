@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/damingerdai/health-master/internal/model"
 	"gorm.io/gorm"
