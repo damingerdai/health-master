@@ -24,7 +24,7 @@ export const UserBloodPressureForm: React.FC = () => {
     });
     return res.data;
   };
-  const { data, isLoading } = useSWR('api/user_blood_pressures', fetcher);
+  const { data, isLoading, mutate } = useSWR('api/user_blood_pressures', fetcher);
 
   return (
     <>
@@ -47,7 +47,13 @@ export const UserBloodPressureForm: React.FC = () => {
           )}
         </Box>
       </Box>
-      <AddUserBloodPressureModal isOpen={isOpen} onClose={onClose} />
+      <AddUserBloodPressureModal
+        isOpen={isOpen}
+        onClose={() => {
+          mutate();
+          onClose();
+        }}
+      />
     </>
   );
 };

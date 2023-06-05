@@ -56,7 +56,6 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
   useEffect(() => {
     const newYear = value[0];
     const newMonth = value[1];
-    const newDay = value[2];
     if (newMonth === '02') {
       const yearValue = parseInt(newYear, 10);
       if ((yearValue % 4 === 0 && yearValue % 100 !== 0) || (yearValue % 400 === 0)) {
@@ -70,9 +69,9 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
       setDays(generateNumberArray(1, 30));
     }
     if (valueChange) {
-      valueChange([newYear, newMonth, newDay]);
+      valueChange(value);
     }
-    helpers.setValue([...value]);
+    helpers.setValue(value);
   }, [value]);
 
   return (

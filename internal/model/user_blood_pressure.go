@@ -3,7 +3,7 @@ package model
 import "time"
 
 type UserBloodPressure struct {
-	Id                     string     `json:"id,omitempty"`
+	Id                     string     `json:"id,omitempty" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	UserId                 string     `json:"userId"`
 	DiastolicBloodPressure int32      `json:"diastolicBloodPressure"`
 	SystolicBloodPressure  int32      `json:"systolicBloodPressure"`

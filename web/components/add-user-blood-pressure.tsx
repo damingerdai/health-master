@@ -53,14 +53,15 @@ AddUserBloodPressureModalProps
     diastolicBloodPressure: Yup.number().min(0).required('请输入你的舒张压'),
     systolicBloodPressure: Yup.number().min(0).required('请输入你的收缩压'),
     pulse: Yup.number().min(0).required('请输入你的脉搏'),
-    logDate: Yup.string().required('请输入记录日期'),
-    logTime: Yup.string().required('请输入记录时间'),
+    logDate: Yup.array().of(Yup.string()).min(3).required('请输入记录日期'),
+    logTime: Yup.array().of(Yup.string()).min(2).required('请输入记录时间'),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // eslint-disable-next-line max-len
-      const logDateTime = `${values.logDate[0]}-${values.logDate[1].padStart(2, '0')}-${values.logDate[2]}T${values.logTime[0]}:${values.logTime[1]}:00Z`;
+      const logDate = `${values.logDate[0]}-${values.logDate[1].padStart(2, '0')}-${values.logDate[2].padStart(2, '0')}`;
+      const logTime = `${values.logTime[0]}:${values.logTime[1]}:00Z`;
+      const logDateTime = `${logDate}T${logTime}`;
       const data = {
         ...values,
         logDateTime,

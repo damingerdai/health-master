@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   InputGroup,
@@ -38,7 +39,7 @@ export const TimePickerInput: React.FC<TimePickerInputProps> = (props) => {
   const displayValue = useMemo(() => `${value[0]}:${value[1]}`, [value]);
 
   useEffect(() => {
-    helpers.setValue([...value]);
+    helpers.setValue(value);
   }, [value]);
 
   return (
@@ -53,6 +54,7 @@ export const TimePickerInput: React.FC<TimePickerInputProps> = (props) => {
             </Button>
           </InputRightElement>
         </InputGroup>
+        {meta.error && <FormErrorMessage>{meta.error}</FormErrorMessage>}
       </FormControl>
       <Picker
         isOpen={isOpen}
