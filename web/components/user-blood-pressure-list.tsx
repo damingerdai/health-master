@@ -44,7 +44,7 @@ export const UserBloodPressureList: React.FC<UserBloodPressureListProps> = (
                 <Td>{`${udp.pulse} 次/分`}</Td>
                 <Td>
                   {udp.logDatetime
-                    ? format(new Date(udp.logDatetime), 'PPP', { locale: zhCN })
+                    ? format(new Date(udp.logDatetime), 'PPPppp', { locale: zhCN })
                     : '未知'}
                 </Td>
               </Tr>
