@@ -9,4 +9,5 @@ data:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: '123456'
   POSTGRES_DB: postgres
-  
+  TZ: 'GMT+8'
+  PGTZ: 'GMT+8'
