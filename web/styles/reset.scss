@@ -1,0 +1,54 @@
+/**去除浏览器上自带的样式**/
+
+input {
+  /**去除iPhone、iPad的默认样式*/
+  -webkit-appearance: none;
+  border-radius: 0;
+  /**去除Chrome等浏览器文本框默认发光边框**/
+  &:focus {
+    outline: none;
+    /**以下两个去除高光样式**/
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-user-modify: read-write-plaintext-only;
+  }
+  &::-ms-clear {
+    /**去除IE10+浏览器文本框后面的小叉叉**/
+    display: none;
+  }
+}
+
+textarea {
+  -webkit-appearance: none;
+  /**禁止多行文本框textarea拖拽**/
+  resize: none;
+  /**去除Chrome等浏览器文本框默认发光边框**/
+  &:focus {
+    outline: none;
+    /**以下两个去除高光样式**/
+    /**-webkit-tap-highlight-color: rgba(0, 0, 0, 0);**/
+    /**-webkit-user-modify: read-write-plaintext-only;**/
+    -webkit-tap-highlight-color: transparent;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+  }
+}
+
+button {
+  /**去除chrome等浏览器中边框的阴影**/
+  border: none;
+  &:focus {
+    outline: none;
+    /**以下两个去除高光样式**/
+    /**-webkit-tap-highlight-color: rgba(0, 0, 0, 0);**/
+    /**-webkit-user-modify: read-write-plaintext-only;**/
+    -webkit-tap-highlight-color: transparent;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+  }
+}
+
+a {
+  &:active {
+    background-color: #ffffff;
+  }
+}

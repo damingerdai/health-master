@@ -6,6 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import '../styles/globals.scss';
+import '../styles/reset.scss';
 import { Router } from 'next/router';
 import { useEffect } from 'react';
 import Head from 'next/head';
@@ -24,7 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <ChakraProvider theme={theme}>
+      <ChakraProvider theme={theme} resetCSS>
         <Fonts />
         <Head>
           <title>Health Master Web</title>
