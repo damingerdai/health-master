@@ -34,7 +34,7 @@ COPY . .
 COPY .env.example .env
 RUN yarn build
 
-FROM node:18.16.0-alpine3.16 AS runner
+FROM node:20.2.0-alpine3.16 AS runner
 
 WORKDIR /app
 
