@@ -32,8 +32,8 @@ export const UserMenu: React.FC = () => {
 
   const linkBgColor = useColorModeValue('gray.800', 'gray.200');
 
-  const logout = async () => {
-    await dispatch(resetUserState());
+  const logout = () => {
+    dispatch(resetUserState());
     doLogout();
     router.push('/login');
   };
@@ -42,7 +42,7 @@ export const UserMenu: React.FC = () => {
     if (!id) {
       dispatch(fetchUser());
     }
-  }, []);
+  }, [id, dispatch]);
 
   if (!id) {
     return null;
