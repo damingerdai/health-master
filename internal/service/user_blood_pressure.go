@@ -1,6 +1,10 @@
 package service
 
 import (
+	"errors"
+	"fmt"
+	"strconv"
+
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 )
@@ -37,10 +41,32 @@ func (userBloodPressureService *UserBloodPressureService) List() (*[]model.UserB
 	return ubps, nil
 }
 
-func (userBloodPressureService *UserBloodPressureService) ListByUserId(userId string) (*[]model.UserBloodPressure, error) {
-	ubps, err := userBloodPressureService.userBloodPressureRepository.ListByUserId(userId)
+func (userBloodPressureRepository *UserBloodPressureService) ListByUserId(userId string, page, limit string) (*model.ListResponse[model.UserBloodPressure], error) {
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("page %s should be integer", page))
+	}
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("limit %s should be integer", limit))
+	}
+
+	ubps, err := userBloodPressureRepository.userBloodPressureRepository.ListByUserId(userId, pageInt, limitInt)
 	if err != nil {
 		return nil, err
 	}
-	return ubps, nil
+	count, err := userBloodPressureRepository.userBloodPressureRepository.Count(userId)
+	if err != nil {
+		return nil, err
+	}
+	resp := model.ListResponse[model.UserBloodPressure]{}
+	if ubps != nil {
+		resp.Data = *ubps
+	} else {
+		data := make([]model.UserBloodPressure, 0)
+		resp.Data = data
+	}
+	resp.Count = count
+
+	return &resp, nil
 }

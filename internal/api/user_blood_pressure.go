@@ -50,8 +50,10 @@ func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine)
 	userId := c.GetString("UserId")
+	page := c.DefaultQuery("page", "1")
+	limit := c.DefaultQuery("limit", "5")
 	userBloodPressureService := service.UserBloodPressureService
-	ubps, err := userBloodPressureService.ListByUserId(userId)
+	ubps, err := userBloodPressureService.ListByUserId(userId, page, limit)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ListUserBloodPressureError)
 	} else {

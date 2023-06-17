@@ -24,7 +24,8 @@ export const UserBloodPressureForm: React.FC = () => {
     });
     return res.data;
   };
-  const { data, isLoading, mutate } = useSWR('api/user_blood_pressures', fetcher);
+  const { data: list, isLoading, mutate } = useSWR('api/user_blood_pressures', fetcher);
+  const { data, count } = list ?? { data: [], count: 0 };
 
   return (
     <>
@@ -37,13 +38,16 @@ export const UserBloodPressureForm: React.FC = () => {
         </Flex>
         <Divider borderColor="gray.300" my="1rem" />
         <Box>
-          { isLoading && (
+          {isLoading && (
             <Center>
               <Spinner size="xl" />
             </Center>
           )}
-          { !isLoading && data && (
+          {!isLoading && data?.length && (
             <UserBloodPressureList userBloodPressures={data} />
+          )}
+          {!isLoading && !data?.length && (
+            <Box>没有血压记录</Box>
           )}
         </Box>
       </Box>
