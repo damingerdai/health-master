@@ -22,7 +22,7 @@ export const UserBloodPressureForm: React.FC = () => {
       method: 'GET',
       url: '/api/user_blood_pressures',
     });
-    return res.data
+    return res.data;
   };
   const { data: list, isLoading, mutate } = useSWR('api/user_blood_pressures', fetcher);
   const { data } = list ?? { data: [], count: 0 };
