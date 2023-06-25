@@ -5,18 +5,20 @@ import { UserBloodPressures } from '@/type/user-blood-pressure';
 
 interface UserBloodPressureState {
   userBloodPressuresStatus: RequestStatus,
-  userBloodPressures: UserBloodPressures
+  userBloodPressures: UserBloodPressures,
+  count: number
 }
 
 const initialState: UserBloodPressureState = {
   userBloodPressuresStatus: RequestStatus.IDLE,
   userBloodPressures: [],
+  count: 0
 };
 
 export const fetchUserBloodPressureList = createAsyncThunk(
   'userBloodPressureList',
   async () => {
-    const res = await request<{ data: UserBloodPressures }>({
+    const res = await request<{ code: number, data: { data: UserBloodPressures, count: number } }>({
       method: 'GET',
       url: '/api/user_blood_pressures',
     });
@@ -34,7 +36,8 @@ export const userBloodPressureSlice = createSlice({
     });
     builder.addCase(fetchUserBloodPressureList.fulfilled, (state, { payload }) => {
       state.userBloodPressuresStatus = RequestStatus.SUCCEEDED;
-      state.userBloodPressures = payload.map((p) => ({ ...p }));
+      state.userBloodPressures = payload.data.map((p) => ({ ...p }));
+      state.count = payload.count;
     });
     builder.addCase(fetchUserBloodPressureList.rejected, (state) => {
       state.userBloodPressuresStatus = RequestStatus.FAILED;

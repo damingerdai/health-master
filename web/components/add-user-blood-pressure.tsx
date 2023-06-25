@@ -59,9 +59,9 @@ AddUserBloodPressureModalProps
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const logDate = `${values.logDate[0]}-${values.logDate[1].padStart(2, '0')}-${values.logDate[2].padStart(2, '0')}`;
-      const logTime = `${values.logTime[0]}:${values.logTime[1]}:00Z`;
-      const logDateTime = `${logDate}T${logTime}`;
+      const logDate = (values.logDate as [string, string, string]).map(v => parseInt(v, 10));
+      const logTime = (values.logTime as [string, string]).map(v => parseInt(v, 10));
+      const logDateTime = new Date(logDate[0], logDate[1] -1, logDate[2], logTime[0], logTime[1])
       const data = {
         ...values,
         logDateTime,
