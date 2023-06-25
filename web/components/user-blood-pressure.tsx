@@ -18,14 +18,14 @@ import { UserBloodPressureList } from './user-blood-pressure-list';
 export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const fetcher = async () => {
-    const res = await request<{ data: UserBloodPressures }>({
+    const res = await request<{ code: number, data: { data: UserBloodPressures, count: number } }>({
       method: 'GET',
       url: '/api/user_blood_pressures',
     });
-    return res.data;
+    return res.data
   };
   const { data: list, isLoading, mutate } = useSWR('api/user_blood_pressures', fetcher);
-  const { data, count } = list ?? { data: [], count: 0 };
+  const { data } = list ?? { data: [], count: 0 };
 
   return (
     <>
@@ -43,10 +43,10 @@ export const UserBloodPressureForm: React.FC = () => {
               <Spinner size="xl" />
             </Center>
           )}
-          {!isLoading && data?.length && (
+          {!isLoading && data?.length > 0 && (
             <UserBloodPressureList userBloodPressures={data} />
           )}
-          {!isLoading && !data?.length && (
+          {!isLoading && data?.length === 0 && (
             <Box>没有血压记录</Box>
           )}
         </Box>
