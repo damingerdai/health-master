@@ -3,11 +3,6 @@ import { httpClient } from '@/lib/http-client';
 import { DataResponse, isErrorResponse } from '@/type/response';
 import { User } from '@/type/user';
 
-/**
- * https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-the-edge-runtime
- */
-export const runtime = 'edge';
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
