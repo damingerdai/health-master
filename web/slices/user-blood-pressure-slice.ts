@@ -12,7 +12,7 @@ interface UserBloodPressureState {
 const initialState: UserBloodPressureState = {
   userBloodPressuresStatus: RequestStatus.IDLE,
   userBloodPressures: [],
-  count: 0
+  count: 0,
 };
 
 export const fetchUserBloodPressureList = createAsyncThunk(

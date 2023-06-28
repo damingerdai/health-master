@@ -43,7 +43,7 @@ func (userBloodPressureRepository *UserBloodPressureRepository) List() (*[]model
 
 func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(userId string, page, limit int) (*[]model.UserBloodPressure, error) {
 	var ubps []model.UserBloodPressure
-	result := userBloodPressureRepository.db.Joins("User").Where("user_blood_pressure.user_id", userId).Where("user_blood_pressure.deleted_at IS NULL").Limit(limit).Offset(limit * (page - 1)).Order("user_blood_pressure.created_at desc").Find(&ubps)
+	result := userBloodPressureRepository.db.Joins("User").Where("user_blood_pressure.user_id", userId).Where("user_blood_pressure.deleted_at IS NULL").Limit(limit).Offset(limit * (page - 1)).Order("user_blood_pressure.log_datetime desc").Find(&ubps)
 	if result.Error != nil {
 		return nil, errors.Unwrap(result.Error)
 	}

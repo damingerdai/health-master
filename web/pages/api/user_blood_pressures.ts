@@ -13,6 +13,7 @@ export default async function handler(
         headers: {
           Authorization: req.headers.authorization,
         },
+        params: req.query,
       });
       res.status(200).json(data);
     } catch (err) {
