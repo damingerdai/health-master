@@ -2,6 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { isErrorResponse } from '@/type/response';
 import { httpClient } from '@/lib/http-client';
 
+/**
+ * https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-the-edge-runtime
+ */
+export const runtime = 'edge';
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -10,7 +15,10 @@ export default async function handler(
     if (req.method === 'POST') {
       const { headers } = req;
       const { username, password } = headers;
-      const resp = await httpClient.login(username as string, password as string);
+      const resp = await httpClient.login(
+        username as string,
+        password as string,
+      );
       if (isErrorResponse(resp)) {
         res.status(500).json({ code: -1, message: resp.message });
         return;
