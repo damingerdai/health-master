@@ -1,20 +1,20 @@
-import { httpClient } from "@/lib/http-client";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { httpClient } from '@/lib/http-client';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 /**
  * https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-the-edge-runtime
  */
-export const runtime = process.env.RUNTIME === "cloudflare" ? "edge" : "nodejs";
+export const runtime = process.env.RUNTIME === 'cloudflare' ? 'edge' : 'nodejs';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     try {
       const data = await httpClient.request({
-        method: "GET",
-        url: "/api/v1/user-blood-pressures",
+        method: 'GET',
+        url: '/api/v1/user-blood-pressures',
         headers: {
           Authorization: req.headers.authorization,
         },
@@ -25,6 +25,6 @@ export default async function handler(
       res.status(500).json(err);
     }
   } else {
-    res.status(500).json({ error: "only support get" });
+    res.status(500).json({ error: 'only support get' });
   }
 }

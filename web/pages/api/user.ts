@@ -1,26 +1,26 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { httpClient } from "@/lib/http-client";
-import { DataResponse, isErrorResponse } from "@/type/response";
-import { User } from "@/type/user";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { httpClient } from '@/lib/http-client';
+import { DataResponse, isErrorResponse } from '@/type/response';
+import { User } from '@/type/user';
 
 /**
  * https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-the-edge-runtime
  */
-export const runtime = process.env.RUNTIME === "cloudflare" ? "edge" : "nodejs";
+export const runtime = process.env.RUNTIME === 'cloudflare' ? 'edge' : 'nodejs';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     try {
       const resp = await httpClient.request<DataResponse<User>>({
         headers: {
           ...req.headers,
           Authorization: req.headers.authorization,
         },
-        method: "GET",
-        url: "/api/v1/user",
+        method: 'GET',
+        url: '/api/v1/user',
       });
 
       if (isErrorResponse(resp)) {
@@ -35,14 +35,14 @@ export default async function handler(
     } catch (err) {
       res.status(500).json(err);
     }
-  } else if (req.method === "POST") {
+  } else if (req.method === 'POST') {
     try {
       const data = await httpClient.request<DataResponse<User>>({
         headers: {
           Authorization: req.headers.authorization,
         },
-        method: "POST",
-        url: "/api/v1/user",
+        method: 'POST',
+        url: '/api/v1/user',
         data: req.body,
       });
       if (isErrorResponse(data)) {
@@ -54,6 +54,6 @@ export default async function handler(
       res.status(500).json(err);
     }
   } else {
-    res.status(500).json({ error: "only support get and post" });
+    res.status(500).json({ error: 'only support get and post' });
   }
 }

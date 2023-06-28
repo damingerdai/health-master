@@ -1,4 +1,4 @@
-import { UserBloodPressures } from '@/type/user-blood-pressure';
+import { UserBloodPressures } from "@/type/user-blood-pressure";
 import {
   Box,
   Table,
@@ -8,17 +8,21 @@ import {
   Th,
   Thead,
   Tr,
-} from '@chakra-ui/react';
-import { format } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
-import * as React from 'react';
+} from "@chakra-ui/react";
+import { format } from "date-fns";
+import { zhCN } from "date-fns/locale";
+import * as React from "react";
 
 interface UserBloodPressureListProps {
   userBloodPressures: UserBloodPressures;
 }
 
+const TableHeader: React.FC<React.PropsWithChildren> = ({ children }) => (
+  <Th fontSize="large">{children}</Th>
+);
+
 export const UserBloodPressureList: React.FC<UserBloodPressureListProps> = (
-  props,
+  props
 ) => {
   const { userBloodPressures } = props;
 
@@ -28,11 +32,11 @@ export const UserBloodPressureList: React.FC<UserBloodPressureListProps> = (
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>姓名</Th>
-              <Th>舒张压</Th>
-              <Th>收缩压</Th>
-              <Th>脉搏</Th>
-              <Th>记录时间</Th>
+              <TableHeader>姓名</TableHeader>
+              <TableHeader>舒张压</TableHeader>
+              <TableHeader>收缩压</TableHeader>
+              <TableHeader>脉搏</TableHeader>
+              <TableHeader>记录时间</TableHeader>
             </Tr>
           </Thead>
           <Tbody>
@@ -44,8 +48,10 @@ export const UserBloodPressureList: React.FC<UserBloodPressureListProps> = (
                 <Td>{`${udp.pulse} 次/分`}</Td>
                 <Td>
                   {udp.logDatetime
-                    ? format(new Date(udp.logDatetime), 'PPPp', { locale: zhCN })
-                    : '未知'}
+                    ? format(new Date(udp.logDatetime), "PPPp", {
+                        locale: zhCN,
+                      })
+                    : "未知"}
                 </Td>
               </Tr>
             ))}
