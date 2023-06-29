@@ -12,37 +12,34 @@ import {
   Portal,
   Box,
 } from '@chakra-ui/react';
-import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
-import { logout as doLogout } from '@/lib/request';
-import { fetchUser, resetUserState } from '@/slices/user-slice';
+import { logout as doLogout, request } from '@/lib/request';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { FiLogOut } from 'react-icons/fi';
 import { FaUser } from 'react-icons/fa';
+import useSWR from 'swr';
 
 export const UserMenu: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const fetcher = async () => {
+    const res = await request({
+      method: 'GET',
+      url: '/api/user',
+    });
+    return res.data;
+  };
   const router = useRouter();
-  const {
-    id, username, firstName, lastName,
-  } = useAppSelector(
-    (state) => state.user,
-  );
 
   const linkBgColor = useColorModeValue('gray.800', 'gray.200');
 
+  const { data: user } = useSWR('api/current-user', fetcher);
+  const {
+    id, username, firstName, lastName,
+  } = user ?? {};
+
   const logout = () => {
-    dispatch(resetUserState());
     doLogout();
     router.push('/login');
   };
-
-  useEffect(() => {
-    if (!id) {
-      dispatch(fetchUser());
-    }
-  }, [id, dispatch]);
 
   if (!id) {
     return null;
