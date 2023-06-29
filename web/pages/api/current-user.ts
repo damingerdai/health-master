@@ -15,12 +15,11 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const resp = await httpClient.request<DataResponse<User>>({
-        headers: {
-          ...req.headers,
-          Authorization: req.headers.authorization,
-        },
         method: 'GET',
         url: '/api/v1/user',
+        headers: {
+          Authorization: req.headers.authorization,
+        },
       });
 
       if (isErrorResponse(resp)) {

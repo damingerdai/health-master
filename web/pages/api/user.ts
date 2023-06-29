@@ -16,7 +16,6 @@ export default async function handler(
     try {
       const resp = await httpClient.request<DataResponse<User>>({
         headers: {
-          ...req.headers,
           Authorization: req.headers.authorization,
         },
         method: 'GET',
