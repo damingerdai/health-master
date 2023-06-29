@@ -61,3 +61,15 @@ func ListBloodPressures(c *gin.Context) {
 	}
 
 }
+
+func DeleteBloodPressure(c *gin.Context) {
+	resp := response.NewResponse(c)
+	service := service.New(global.DBEngine)
+	id := c.Params.ByName("id")
+	err := service.UserBloodPressureService.Delete(id)
+	if err != nil {
+		resp.ToErrorResponseWithError(errcode.DeleteUserBloodPressureError, err)
+	} else {
+		resp.ToResponse(gin.H{"success": true})
+	}
+}

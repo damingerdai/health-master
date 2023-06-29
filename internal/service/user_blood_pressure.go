@@ -41,7 +41,7 @@ func (userBloodPressureService *UserBloodPressureService) List() (*[]model.UserB
 	return ubps, nil
 }
 
-func (userBloodPressureRepository *UserBloodPressureService) ListByUserId(userId string, page, limit string) (*model.ListResponse[model.UserBloodPressure], error) {
+func (userBloodPressureService *UserBloodPressureService) ListByUserId(userId string, page, limit string) (*model.ListResponse[model.UserBloodPressure], error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("page %s should be integer", page))
@@ -51,11 +51,11 @@ func (userBloodPressureRepository *UserBloodPressureService) ListByUserId(userId
 		return nil, errors.New(fmt.Sprintf("limit %s should be integer", limit))
 	}
 
-	ubps, err := userBloodPressureRepository.userBloodPressureRepository.ListByUserId(userId, pageInt, limitInt)
+	ubps, err := userBloodPressureService.userBloodPressureRepository.ListByUserId(userId, pageInt, limitInt)
 	if err != nil {
 		return nil, err
 	}
-	count, err := userBloodPressureRepository.userBloodPressureRepository.Count(userId)
+	count, err := userBloodPressureService.userBloodPressureRepository.Count(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -69,4 +69,12 @@ func (userBloodPressureRepository *UserBloodPressureService) ListByUserId(userId
 	resp.Count = count
 
 	return &resp, nil
+}
+
+func (userBloodPressureService *UserBloodPressureService) Delete(id string) error {
+	err := userBloodPressureService.userBloodPressureRepository.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

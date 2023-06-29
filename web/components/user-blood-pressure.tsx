@@ -58,7 +58,13 @@ export const UserBloodPressureForm: React.FC = () => {
             </Center>
           )}
           {!isLoading && data?.length > 0 && (
-            <UserBloodPressureList userBloodPressures={data} />
+            <UserBloodPressureList
+              userBloodPressures={data}
+              onDeleteChange={() => {
+                setPage(1);
+                mutate();
+              }}
+            />
           )}
           {!isLoading && data?.length === 0 && <Box>没有血压记录</Box>}
         </Box>

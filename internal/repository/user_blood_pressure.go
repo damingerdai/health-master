@@ -57,3 +57,12 @@ func (userBloodPressureRepository *UserBloodPressureRepository) Count(userId str
 
 	return num, nil
 }
+
+func (userBloodPressureRepository *UserBloodPressureRepository) Delete(id string) error {
+	var ubp model.UserBloodPressure = model.UserBloodPressure{Id: id}
+	result := userBloodPressureRepository.db.Model(&ubp).Update("deleted_at", "now()")
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
