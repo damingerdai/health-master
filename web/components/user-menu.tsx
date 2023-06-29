@@ -23,7 +23,7 @@ export const UserMenu: React.FC = () => {
   const fetcher = async () => {
     const res = await request({
       method: 'GET',
-      url: '/api/user',
+      url: '/api/current-user',
     });
     return res.data;
   };

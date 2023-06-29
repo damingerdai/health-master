@@ -23,7 +23,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (token?: strin
     headers.Authorization = `Bearer ${token}`;
   }
   const res = await request({
-    url: '/api/user',
+    url: '/api/current-user',
     method: 'GET',
     headers,
   });
