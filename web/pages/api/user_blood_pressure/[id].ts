@@ -25,7 +25,7 @@ export default async function handler(
       res.status(500).json({
         err,
         query: req.query,
-        url: req.url
+        url: req.url,
       });
     }
   } else {
