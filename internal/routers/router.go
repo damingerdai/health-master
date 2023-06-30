@@ -1,10 +1,22 @@
 package routers
 
 import (
+	"time"
+
 	"github.com/damingerdai/health-master/internal/api"
 	"github.com/damingerdai/health-master/internal/middleware"
+	"github.com/damingerdai/health-master/pkg/limiter"
 	"github.com/gin-gonic/gin"
 )
+
+var rule = limiter.LimiterBucketRule{
+	Key:          "/auth",
+	FillInterval: time.Second,
+	Capacity:     10,
+	Quantum:      10,
+}
+
+var methodLimiters = limiter.NewMethodLimiter().AddBuckets(rule)
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
@@ -16,6 +28,7 @@ func NewRouter() *gin.Engine {
 
 	apiV1 := r.Group("/api/v1")
 	apiV1.Use(middleware.JWT())
+	apiV1.Use(middleware.RateLimiter(methodLimiters))
 	{
 		apiV1.POST("/user", api.CreateUser)
 		apiV1.GET("/user", api.GetCurrentUser)
