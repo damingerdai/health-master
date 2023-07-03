@@ -25,6 +25,6 @@ export default async function handler(
       res.status(500).json(err);
     }
   } else {
-    res.status(500).json({ error: `metho ${req.method} doesn't support` });
+    res.status(500).json({ error: `method ${req.method} doesn't support` });
   }
 }

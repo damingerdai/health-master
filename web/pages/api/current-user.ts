@@ -53,6 +53,6 @@ export default async function handler(
       res.status(500).json(err);
     }
   } else {
-    res.status(500).json({ error: 'only support get and post' });
+    res.status(500).json({ error: `method ${req.method} doesn't support` });
   }
 }
