@@ -2,6 +2,7 @@ import { AccessToken } from '@/type/token';
 import { User } from '@/type/user';
 import axios, { AxiosRequestConfig } from 'axios';
 import { toastInstance } from '../components/toast';
+import { getToken } from './token';
 
 const fclient = axios.create({
   withCredentials: true,
@@ -11,8 +12,9 @@ const fclient = axios.create({
 fclient.interceptors.request.use((config) => {
   const tokenString = localStorage.getItem('user_token');
   if (tokenString) {
+    const token = getToken();
     // eslint-disable-next-line no-param-reassign
-    config!.headers!.Authorization = `Bearer ${tokenString}`;
+    config!.headers!.Authorization = `Bearer ${token.accessToken}`;
   }
 
   return config;

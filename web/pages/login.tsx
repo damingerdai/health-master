@@ -16,7 +16,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import * as Yup from 'yup';
 import { login } from '@/lib/request';
@@ -41,7 +41,7 @@ const Login: NextPage = () => {
     const { username, password } = value;
     try {
       const { token, data: user } = await login(username, password);
-      localStorage.setItem('user_token', token.accessToken);
+      localStorage.setItem('user_token', JSON.stringify(token, null, 2));
       await dispatch(setCurrentUser(user));
       router.push('/');
     } catch (err) {
@@ -54,6 +54,10 @@ const Login: NextPage = () => {
     username: Yup.string().required('请输入你的用户名'),
     password: Yup.string().required('请输入你的密码'),
   });
+
+  useEffect(() => {
+    localStorage.removeItem('user_token');
+  }, []);
 
   return (
     <Box>
