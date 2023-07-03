@@ -45,10 +45,22 @@ services:
       - daming-health-master-redis-volume:/data/redis
     networks:
       - daming-health-master-network
+  kuma:
+    image: louislam/uptime-kuma:1.22.0-alpine
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    volumes:
+      - daming-health-master-kuma-volume:/app/data
+    container_name: uptime-kuma
+    networks:
+      - daming-health-master-network
 volumes:
   daming-health-master-volume:
     external: true
   daming-health-master-redis-volume:
+    external: true
+  daming-health-master-kuma-volume:
     external: true
 networks:
   daming-health-master-network:
