@@ -44,7 +44,7 @@ export const UserBloodPressureForm: React.FC = () => {
   const { data, count: sum } = list ?? { data: [], count: 0 };
 
   useEffect(() => {
-    if (isLoading) {
+    if (!isLoading) {
       setCount(sum);
     }
   }, [isLoading, sum]);
