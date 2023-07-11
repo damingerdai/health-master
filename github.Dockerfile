@@ -1,4 +1,4 @@
-FROM golang:1.20.5-alpine3.18 AS build
+FROM golang:1.20.6-alpine3.18 AS build
 
 RUN apk update && \
     apk upgrade && \
