@@ -1,4 +1,4 @@
-FROM golang:1.20.6-alpine3.18 AS build
+FROM golang:1.21.0-alpine3.18 AS build
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
     apk update && \
