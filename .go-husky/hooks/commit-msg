@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# copy from https://juejin.cn/post/6986426226248253476
+commit_msg=`cat $1`
+# email=`git config user.email`
+msg_re="^(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore|release)(\(.+\))?: .{1,100}"
+if [[ ! $commit_msg =~ $msg_re ]]
+then
+	echo "\nInvalid commit message submission format, please use the correct format:\
+	\nfeat: add comments\
+	\nfix: handle events on blur (close #28)\
+	\nFor details, please refer to the git commit submission specification: https://www.conventionalcommits.org/en/v1.0.0/"
+
+	exit 1
+fi
+echo $commit_msg "is valid commit message submission format"
