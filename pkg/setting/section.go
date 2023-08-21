@@ -3,6 +3,8 @@ package setting
 import (
 	"fmt"
 	"net/url"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/damingerdai/health-master/pkg/util"
@@ -66,6 +68,25 @@ func (s *Setting) ReadAllSection(value any) error {
 	}
 
 	return nil
+}
+
+func (s *Setting) BindEnvs(iface any, parts ...string) {
+	ifv := reflect.ValueOf(iface)
+	ift := reflect.TypeOf(iface)
+	for i := 0; i < ift.NumField(); i++ {
+		v := ifv.Field(i)
+		t := ift.Field(i)
+		tv, ok := t.Tag.Lookup("mapstructure")
+		if !ok {
+			tv = strings.ToUpper(t.Name)
+		}
+		switch v.Kind() {
+		case reflect.Struct:
+			s.BindEnvs(v.Interface(), append(parts, tv)...)
+		default:
+			s.vp.BindEnv(strings.Join(append(parts, tv), "."))
+		}
+	}
 }
 
 func (s *DatabaseSettingS) DBConnString() string {
