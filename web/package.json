@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
     "build": "next build",
+    "build:static": "next build && next export",
     "start": "next start",
     "lint": "next lint",
     "lint:ts": "eslint ./ --ext ts,tsx --fix"
