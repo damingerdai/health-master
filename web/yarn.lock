@@ -958,14 +958,14 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.13":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13":
   version "7.22.15"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.15.tgz#38f46494ccf6cf020bd4eed7124b425e83e523b8"
   integrity sha512-T0O+aa+4w0u06iNmapipJXMV4HoUir03hpx3/YqXXhu9xim3w+dVphjFWl1OH8NbZHw5Lbm9k45drDkgq2VNNA==
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.8.4":
   version "7.22.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.5.tgz#8564dd588182ce0047d55d7a75e93921107b57ec"
   integrity sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==
@@ -2821,9 +2821,9 @@
     "@types/react" "*"
 
 "@types/react@*":
-  version "18.2.13"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.13.tgz#a98c09bde8b18f80021935b11d2d29ef5f4dcb2f"
-  integrity sha512-vJ+zElvi/Zn9cVXB5slX2xL8PZodPCwPRDpittQdw43JR2AJ5k3vKdgJJyneV/cYgIbLQUwXa9JVDvUZXGba+Q==
+  version "18.2.21"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.21.tgz#774c37fd01b522d0b91aed04811b58e4e0514ed9"
+  integrity sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -7887,9 +7887,9 @@ react-is@^18.0.0:
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
 react-redux@^8.0.4:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-8.1.1.tgz#8e740f3fd864a4cd0de5ba9cdc8ad39cc9e7c81a"
-  integrity sha512-5W0QaKtEhj+3bC0Nj0NkqkhIv8gLADH/2kYFMTHxCVqQILiWzLv6MaLuV5wJU3BQEdHKzTfcvPN0WMS6SC1oyA==
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-8.1.2.tgz#9076bbc6b60f746659ad6d51cb05de9c5e1e9188"
+  integrity sha512-xJKYI189VwfsFc4CJvHqHlDrzyFTY/3vZACbE+rr/zQ34Xx1wQfB4OTOSeOSNrF6BDVe8OOdxIrAnMGXA3ggfw==
   dependencies:
     "@babel/runtime" "^7.12.1"
     "@types/hoist-non-react-statics" "^3.3.1"
