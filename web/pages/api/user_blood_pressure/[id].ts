@@ -22,7 +22,11 @@ export default async function handler(
       });
       res.status(200).json(resp.data);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json({
+        err,
+        query: req.query,
+        url: req.url,
+      });
     }
   } else {
     res.status(500).json({ error: `method ${req.method} doesn't support` });
