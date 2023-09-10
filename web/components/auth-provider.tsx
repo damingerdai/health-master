@@ -6,10 +6,13 @@ import { AuthContext } from '@/hooks/authContext';
 import { request } from '@/lib/request';
 import { getToken } from '@/lib/token';
 import { useRouter } from 'next/router';
+import { useSetAtom } from 'jotai';
+import { userAtom } from '@/store/user';
 
 export const AuthProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  const setUserAtom = useSetAtom(userAtom);
   const [_, setTrigger] = useState(0);
   const [userId, setUserId] = useState<string>('');
   const router = useRouter();
@@ -37,6 +40,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
         Authorization: token?.accessToken,
       },
     });
+    if (res.code === 200) {
+      setUserAtom(res.data);
+    }
+
     return res.data;
   };
 

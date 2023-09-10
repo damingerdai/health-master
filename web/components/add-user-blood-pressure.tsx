@@ -1,6 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/lib/redux-hooks';
 import { request } from '@/lib/request';
-import { fetchUserBloodPressureList } from '@/slices/user-blood-pressure-slice';
 import {
   Button,
   Flex,
@@ -15,6 +13,8 @@ import {
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '@/store/user';
 import { DatePickerInput } from './date-picker-input';
 import { TimePickerInput } from './time-picker-input';
 import { toastInstance } from './toast';
@@ -38,8 +38,8 @@ export const AddUserBloodPressureModal: React.FC<
 AddUserBloodPressureModalProps
 > = (props) => {
   const { isOpen, onClose } = props;
-  const dispatch = useAppDispatch();
-  const { id } = useAppSelector((state) => state.user);
+  const user = useAtomValue(userAtom);
+  const { id } = user;
 
   const initialValues = {
     diastolicBloodPressure: null,
@@ -74,7 +74,7 @@ AddUserBloodPressureModalProps
         url: 'api/user_blood_pressure',
         data,
       });
-      await dispatch(fetchUserBloodPressureList());
+
       onClose();
       setSubmitting(false);
     } catch (err: any) {
