@@ -1,10 +1,10 @@
-import { drawerStatusAtom } from '@/store/jotai';
 import {
   Box, Flex, HStack, IconButton, useColorModeValue,
 } from '@chakra-ui/react';
 import { useAtom } from 'jotai';
 import * as React from 'react';
 import { FiMenu } from 'react-icons/fi';
+import { drawerStatusAtom } from '@/store/drawer';
 import { ToggleThemeButton } from './toggle-theme-button';
 import { UserMenu } from './user-menu';
 

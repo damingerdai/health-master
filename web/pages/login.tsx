@@ -19,16 +19,16 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import * as Yup from 'yup';
+import { useSetAtom } from 'jotai';
 import { login } from '@/lib/request';
-import { useAppDispatch } from '@/lib/redux-hooks';
-import { setCurrentUser } from '@/slices/user-slice';
 import { useRouter } from 'next/router';
 import { ToggleThemeButton } from '@/components/toggle-theme-button';
+import { userAtom } from '@/store/user';
 
 const Login: NextPage = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const setUserAtom = useSetAtom(userAtom);
 
   const initialValues = {
     username: '',
@@ -42,7 +42,8 @@ const Login: NextPage = () => {
     try {
       const { token, data: user } = await login(username, password);
       localStorage.setItem('user_token', JSON.stringify(token, null, 2));
-      await dispatch(setCurrentUser(user));
+
+      setUserAtom(user);
       router.push('/');
     } catch (err) {
       console.error(err);

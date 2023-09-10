@@ -1,15 +1,15 @@
 import { Fonts } from '@/components/fonts';
 import { toastInstance } from '@/components/toast';
 import { theme } from '@/lib/theme';
-import { store } from '@/store';
+import { Provider as JotaiProvider } from 'jotai';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
-import { Provider } from 'react-redux';
 import '../styles/globals.scss';
 import '../styles/reset.scss';
 import { Router } from 'next/router';
 import { useEffect } from 'react';
 import Head from 'next/head';
+import { appStore } from '@/store';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Provider store={store}>
+    <JotaiProvider store={appStore}>
       <ChakraProvider theme={theme} resetCSS>
         <Fonts />
         <Head>
@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
         <Component {...pageProps} />
       </ChakraProvider>
-    </Provider>
+    </JotaiProvider>
   );
 }
 
