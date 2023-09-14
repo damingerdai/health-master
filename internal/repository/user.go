@@ -1,45 +1,57 @@
 package repository
 
 import (
-	"errors"
+	"context"
+	"time"
 
+	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
-	"gorm.io/gorm"
 )
 
 type UserRepository struct {
-	db *gorm.DB
+	db db.Connection
 }
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
+func NewUserRepository(db db.Connection) *UserRepository {
 	return &UserRepository{db}
 }
 
-func (userRepository *UserRepository) Create(user *model.User) error {
-	result := userRepository.db.Create(user)
-	if result.Error != nil {
-		return result.Error
+func (userRepository *UserRepository) Create(ctx context.Context, user *model.User) error {
+	statement := `
+		INSERT INTO users (username, first_name, last_name, password, gender, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING id, created_at, updated_at
+	`
+	var id string
+	var createdAt, updatedAt *time.Time
+	row := userRepository.db.QueryRow(ctx, statement, user.Username, user.FirstName, user.LastName, user.Password, user.Gender)
+	err := row.Scan(&id, &createdAt, &updatedAt)
+	if err != nil {
+		return nil
 	}
+	user.Id = id
+	user.CreatedAt = createdAt
+	user.UpdatedAt = updatedAt
+
 	return nil
 }
 
-func (userRepository *UserRepository) Find(id string) (*model.User, error) {
+func (userRepository *UserRepository) Find(ctx context.Context, id string) (*model.User, error) {
 	var user model.User
-	result := userRepository.db.First(&user, "id = ?", id).Where("deleted_at IS NULL")
-	if result.Error != nil {
-		return nil, result.Error
+	statement := "SELECT id,u sername, first_name, last_name, password, gender FROM users WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
+	row := userRepository.db.QueryRow(ctx, statement, id)
+	err := row.Scan(&user.Id, &user.Username, &user.FirstName, &user.LastName, &user.Password, &user.Gender)
+	if err != nil {
+		return nil, err
 	}
 	return &user, nil
 }
 
-func (userRepository *UserRepository) FindByUserName(username string) (*model.User, error) {
+func (userRepository *UserRepository) FindByUserName(ctx context.Context, username string) (*model.User, error) {
 	var user model.User
-	result := userRepository.db.First(&user, "username = ?", username).Where("deleted_at IS NULL")
-	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		return nil, result.Error
+	statement := "SELECT id,u sername, first_name, last_name, password, gender FROM users WHERE username = $1 AND deleted_at IS NULL LIMIT 1"
+	row := userRepository.db.QueryRow(ctx, statement, username)
+	err := row.Scan(&user.Id, &user.Username, &user.FirstName, &user.LastName, &user.Password, &user.Gender)
+	if err != nil {
+		return nil, err
 	}
 	return &user, nil
 }

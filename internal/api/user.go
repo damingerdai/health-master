@@ -2,12 +2,12 @@ package api
 
 import (
 	"github.com/damingerdai/health-master/global"
+	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func CreateUser(c *gin.Context) {
@@ -19,11 +19,11 @@ func CreateUser(c *gin.Context) {
 		res.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
-	global.DBEngine.Transaction(func(tx *gorm.DB) error {
+	db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
 		var err error
-		service := service.New(tx)
+		service := service.New(conn)
 		userService := service.UserService
-		fullUser, err := userService.Create(&user)
+		fullUser, err := userService.Create(c, &user)
 		if err != nil {
 			global.Logger.Error(err.Error())
 			res.ToErrorResponse(errcode.CreateUserError)
@@ -42,7 +42,7 @@ func GetUser(c *gin.Context) {
 	services := service.New(global.DBEngine)
 	userService := services.UserService
 
-	user, err := userService.Find(id)
+	user, err := userService.Find(c, id)
 	if err != nil {
 		res.ToErrorResponse(errcode.ServerError)
 		return
@@ -76,7 +76,7 @@ func GetCurrentUser(c *gin.Context) {
 			return
 		}
 		userId := claims.UserId
-		user, err := userService.Find(userId)
+		user, err := userService.Find(c, userId)
 		if err != nil {
 			response.ToErrorResponse(errcode.UnauthorizedTokenError)
 			return
@@ -90,7 +90,7 @@ func GetCurrentUser(c *gin.Context) {
 
 	} else {
 		userService := services.UserService
-		user, err := userService.Find(userId)
+		user, err := userService.Find(c, userId)
 		if err != nil {
 			response.ToErrorResponse(errcode.ServerError)
 			return

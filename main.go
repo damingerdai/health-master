@@ -96,7 +96,11 @@ func setupSetting() error {
 
 func setupDBEngine() error {
 	var err error
-	global.DBEngine, err = db.NewDBEngine(global.DatabaseSetting)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+
+	global.DBEngine, err = db.NewDBPool(ctx, global.DatabaseSetting.DBConnString())
 	if err != nil {
 		return err
 	}

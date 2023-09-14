@@ -4,12 +4,12 @@ import (
 	"errors"
 
 	"github.com/damingerdai/health-master/global"
+	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func CreateUserBloodPressure(c *gin.Context) {
@@ -20,10 +20,9 @@ func CreateUserBloodPressure(c *gin.Context) {
 		return
 	}
 
-	err := global.DBEngine.Transaction(func(tx *gorm.DB) error {
-		service := service.New(tx)
-
-		user, err := service.UserService.Find(userBloodPressure.UserId)
+	err := db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
+		service := service.New(conn)
+		user, err := service.UserService.Find(c, userBloodPressure.UserId)
 		if err != nil {
 			return err
 		}
@@ -31,7 +30,7 @@ func CreateUserBloodPressure(c *gin.Context) {
 			return errors.New("no user")
 		}
 
-		err = service.UserBloodPressureService.Create(&userBloodPressure)
+		err = service.UserBloodPressureService.Create(c, &userBloodPressure)
 		if err != nil {
 			return err
 		}
@@ -53,7 +52,7 @@ func ListBloodPressures(c *gin.Context) {
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
 	userBloodPressureService := service.UserBloodPressureService
-	ubps, err := userBloodPressureService.ListByUserId(userId, page, limit)
+	ubps, err := userBloodPressureService.ListByUserId(c, userId, page, limit)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ListUserBloodPressureError)
 	} else {
@@ -66,7 +65,7 @@ func DeleteBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine)
 	id := c.Params.ByName("id")
-	err := service.UserBloodPressureService.Delete(id)
+	err := service.UserBloodPressureService.Delete(c, id)
 	if err != nil {
 		resp.ToErrorResponseWithError(errcode.DeleteUserBloodPressureError, err)
 	} else {

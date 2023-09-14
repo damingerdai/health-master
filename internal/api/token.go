@@ -27,7 +27,7 @@ func CreateToken(c *gin.Context) {
 	userRepository := repository.NewUserRepository(global.DBEngine)
 	tokenService := service.NewTokenService(userRepository)
 
-	userToken, err := tokenService.CreateToken(username, password)
+	userToken, err := tokenService.CreateToken(c, username, password)
 	if err != nil {
 		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		return
@@ -64,7 +64,7 @@ func ParseToken(c *gin.Context) {
 		res.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		return
 	}
-	user, err := userService.Find(claims.UserId)
+	user, err := userService.Find(c, claims.UserId)
 	if err != nil {
 		res.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		return
