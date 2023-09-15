@@ -12,7 +12,7 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      const data = await httpClient.request({
+      const result = await httpClient.request({
         method: 'GET',
         url: '/api/v1/user-blood-pressures',
         headers: {
@@ -20,11 +20,15 @@ export default async function handler(
         },
         params: req.query,
       });
-      res.status(200).json(data);
+      if (result.data && !result?.data?.data) {
+        result.data.data = [];
+      }
+
+      res.status(200).json(result);
     } catch (err) {
       res.status(500).json(err);
     }
   } else {
-    res.status(500).json({ error: `method ${req.method} doesn't support` });
+    res.status(422).json({ error: `method ${req.method} doesn't support` });
   }
 }

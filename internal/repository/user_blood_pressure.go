@@ -99,7 +99,11 @@ func (userBloodPressureRepository *UserBloodPressureRepository) List(ctx context
 			Pulse:                  pulse,
 			UserId:                 userId,
 			User: &model.User{
-				Id: userId,
+				Id:        userId,
+				Username:  username,
+				FirstName: fristName,
+				LastName:  lastName,
+				Gender:    gender,
 			},
 
 			CreatedAt:   createdAt,
@@ -121,8 +125,8 @@ func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(ctx
 		FROM user_blood_pressure ubp
 		LEFT JOIN users u on u.id = ubp.user_id
 		WHERE ubp.user_id = $1 AND ubp.deleted_at IS NULL
-		LIMIT $2 offset $3
 		ORDER BY ubp.log_datetime DESC
+		LIMIT $2 OFFSET $3
 	`
 	rows, err := userBloodPressureRepository.db.Query(ctx, statement, userId, limit, limit*(page-1))
 	if err != nil {
@@ -145,7 +149,11 @@ func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(ctx
 			Pulse:                  pulse,
 			UserId:                 userId,
 			User: &model.User{
-				Id: userId,
+				Id:        userId,
+				Username:  username,
+				FirstName: fristName,
+				LastName:  lastName,
+				Gender:    gender,
 			},
 
 			CreatedAt:   createdAt,

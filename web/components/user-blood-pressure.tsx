@@ -74,9 +74,9 @@ export const UserBloodPressureForm: React.FC = () => {
               }}
             />
           )}
-          {!isLoading && data?.length === 0 && <Box>没有血压记录</Box>}
+          {!isLoading && data?.length === 0 && <Box h={5} fontSize={24} textAlign='center'>没有血压记录</Box>}
         </Box>
-        <Box>
+        { !(!isLoading && data?.length === 0) && (<Box>
           <Pagination
             pageSize={5}
             page={page - 1}
@@ -85,7 +85,7 @@ export const UserBloodPressureForm: React.FC = () => {
               setPage(newPage + 1);
             }}
           />
-        </Box>
+        </Box>)}
       </Box>
       <AddUserBloodPressureModal
         isOpen={isOpen}

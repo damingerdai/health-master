@@ -18,7 +18,7 @@ func NewRoleRepository(db db.Connection) *RoleRepository {
 }
 
 func (roleRepo *RoleRepository) List(ctx context.Context) (*[]model.Role, error) {
-	statement := "SELECT id, name, description FROM roles WHERE deleted_at IS NULL"
+	statement := "SELECT id, name, description FROM roles"
 	roles := make([]model.Role, 0, 2)
 	rows, err := roleRepo.db.Query(ctx, statement)
 	if err != nil {
@@ -40,7 +40,7 @@ func (roleRepo *RoleRepository) List(ctx context.Context) (*[]model.Role, error)
 }
 
 func (roleRepo *RoleRepository) FindByName(ctx context.Context, name string) (*model.Role, error) {
-	statement := "SELECT id, name, description FROM name = $1 AND roles WHERE deleted_at IS NULL"
+	statement := "SELECT id, name, description FROM roles WHERE name = $1 LIMIT 1"
 	row := roleRepo.db.QueryRow(ctx, statement, name)
 	var id, rname, description string
 	err := row.Scan(&id, &rname, &description)
