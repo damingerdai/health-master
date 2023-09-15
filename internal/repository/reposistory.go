@@ -1,9 +1,9 @@
 package repository
 
-import "gorm.io/gorm"
+import "github.com/damingerdai/health-master/internal/db"
 
 type repo struct {
-	db *gorm.DB
+	db db.Connection
 
 	RoleRepository              *RoleRepository
 	UserRepository              *UserRepository
@@ -11,7 +11,7 @@ type repo struct {
 	UserRoleRepository          *UserRoleRepository
 }
 
-func New(db *gorm.DB) *repo {
+func New(db db.Connection) *repo {
 	return &repo{
 		db: db,
 

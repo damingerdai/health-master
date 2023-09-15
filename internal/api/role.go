@@ -13,7 +13,7 @@ func ListRoles(c *gin.Context) {
 	srv := service.New(global.DBEngine)
 	roleService := srv.RoleService
 
-	roles, err := roleService.List()
+	roles, err := roleService.List(c)
 	if err != nil {
 		res.ToErrorResponse(errcode.ListRoleError)
 		return

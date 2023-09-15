@@ -22,10 +22,9 @@ func NewTokenService(userRepository *repository.UserRepository) *TokenService {
 	return &TokenService{userRepository}
 }
 
-func (ts *TokenService) CreateToken(username string, password string) (*model.UserToken, error) {
-	ctx := context.Background()
+func (ts *TokenService) CreateToken(ctx context.Context, username string, password string) (*model.UserToken, error) {
 	redisService := NewRedisService(global.RedisClient)
-	user, err := ts.userRepository.FindByUserName(username)
+	user, err := ts.userRepository.FindByUserName(ctx, username)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 )
@@ -15,10 +17,10 @@ func NewRoleService(roleRepository *repository.RoleRepository) *RoleService {
 	}
 }
 
-func (roleService *RoleService) List() (*[]model.Role, error) {
-	return roleService.roleRepository.List()
+func (roleService *RoleService) List(ctx context.Context) (*[]model.Role, error) {
+	return roleService.roleRepository.List(ctx)
 }
 
-func (roleService *RoleService) FindByName(name string) (*model.Role, error) {
-	return roleService.roleRepository.FindByName(name)
+func (roleService *RoleService) FindByName(ctx context.Context, name string) (*model.Role, error) {
+	return roleService.roleRepository.FindByName(ctx, name)
 }

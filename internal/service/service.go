@@ -1,12 +1,12 @@
 package service
 
 import (
+	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/repository"
-	"gorm.io/gorm"
 )
 
 type srv struct {
-	db *gorm.DB
+	db db.Connection
 
 	RoleService              *RoleService
 	UserService              *UserService
@@ -14,7 +14,7 @@ type srv struct {
 	UserBloodPressureService *UserBloodPressureService
 }
 
-func New(db *gorm.DB) *srv {
+func New(db db.Connection) *srv {
 
 	repo := repository.New(db)
 	roleRepository := repo.RoleRepository

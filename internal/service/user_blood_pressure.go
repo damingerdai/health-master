@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -17,31 +18,31 @@ func NewUserBloodPressureService(userBloodPressureRepository *repository.UserBlo
 	return &UserBloodPressureService{userBloodPressureRepository}
 }
 
-func (userBloodPressureService *UserBloodPressureService) Create(userBloodPressure *model.UserBloodPressure) error {
-	err := userBloodPressureService.userBloodPressureRepository.Create(userBloodPressure)
+func (userBloodPressureService *UserBloodPressureService) Create(ctx context.Context, userBloodPressure *model.UserBloodPressure) error {
+	err := userBloodPressureService.userBloodPressureRepository.Create(ctx, userBloodPressure)
 	if err != nil {
 		return nil
 	}
 	return nil
 }
 
-func (userBloodPressureService *UserBloodPressureService) Find(id string) (*model.UserBloodPressure, error) {
-	ubp, err := userBloodPressureService.userBloodPressureRepository.Find(id)
+func (userBloodPressureService *UserBloodPressureService) Find(ctx context.Context, id string) (*model.UserBloodPressure, error) {
+	ubp, err := userBloodPressureService.userBloodPressureRepository.Find(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	return ubp, nil
 }
 
-func (userBloodPressureService *UserBloodPressureService) List() (*[]model.UserBloodPressure, error) {
-	ubps, err := userBloodPressureService.userBloodPressureRepository.List()
+func (userBloodPressureService *UserBloodPressureService) List(ctx context.Context) (*[]model.UserBloodPressure, error) {
+	ubps, err := userBloodPressureService.userBloodPressureRepository.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return ubps, nil
 }
 
-func (userBloodPressureService *UserBloodPressureService) ListByUserId(userId string, page, limit string) (*model.ListResponse[model.UserBloodPressure], error) {
+func (userBloodPressureService *UserBloodPressureService) ListByUserId(ctx context.Context, userId string, page, limit string) (*model.ListResponse[model.UserBloodPressure], error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("page %s should be integer", page))
@@ -51,11 +52,11 @@ func (userBloodPressureService *UserBloodPressureService) ListByUserId(userId st
 		return nil, errors.New(fmt.Sprintf("limit %s should be integer", limit))
 	}
 
-	ubps, err := userBloodPressureService.userBloodPressureRepository.ListByUserId(userId, pageInt, limitInt)
+	ubps, err := userBloodPressureService.userBloodPressureRepository.ListByUserId(ctx, userId, pageInt, limitInt)
 	if err != nil {
 		return nil, err
 	}
-	count, err := userBloodPressureService.userBloodPressureRepository.Count(userId)
+	count, err := userBloodPressureService.userBloodPressureRepository.Count(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +72,8 @@ func (userBloodPressureService *UserBloodPressureService) ListByUserId(userId st
 	return &resp, nil
 }
 
-func (userBloodPressureService *UserBloodPressureService) Delete(id string) error {
-	err := userBloodPressureService.userBloodPressureRepository.Delete(id)
+func (userBloodPressureService *UserBloodPressureService) Delete(ctx context.Context, id string) error {
+	err := userBloodPressureService.userBloodPressureRepository.Delete(ctx, id)
 	if err != nil {
 		return err
 	}
