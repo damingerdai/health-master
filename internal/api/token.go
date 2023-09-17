@@ -12,6 +12,19 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// Create a token godoc
+//
+//	@Summary		create a token
+//	@Description	create a new token
+//	@Tags			token
+//	@Accept			json
+//	@Produce		json
+//	@Param			username	header		string			true	"username"
+//	@Param			password	header		string			true	"password"
+//	@Success		200			{object}	model.UserToken	"success"
+//	@Failure		400			{object}	errcode.Error	"bad request error"
+//	@Failure		500			{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/token [post]
 func CreateToken(c *gin.Context) {
 	response := response.NewResponse(c)
 	username := c.GetHeader("username")
@@ -35,6 +48,18 @@ func CreateToken(c *gin.Context) {
 	response.ToTokenResponse(userToken)
 }
 
+// parse a token godoc
+//
+//	@Summary		parse a token
+//	@Description	parse a exsited token
+//	@Tags			token
+//	@Accept			json
+//	@Produce		json
+//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Success		200				{object}	model.User		"sucess"
+//	@Failure		400				{object}	errcode.Error	"bad request error"
+//	@Failure		500				{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/token [get]
 func ParseToken(c *gin.Context) {
 	res := response.NewResponse(c)
 
