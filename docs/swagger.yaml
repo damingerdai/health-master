@@ -1,0 +1,376 @@
+definitions:
+  errcode.Error:
+    type: object
+  model.Role:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  model.User:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      firstName:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    required:
+    - firstName
+    - gender
+    - lastName
+    - password
+    - username
+    type: object
+  model.UserBloodPressure:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      diastolicBloodPressure:
+        type: integer
+      id:
+        type: string
+      logDatetime:
+        type: string
+      pulse:
+        type: integer
+      systolicBloodPressure:
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+      userId:
+        type: string
+    type: object
+  model.UserToken:
+    properties:
+      accessToken:
+        type: string
+      expired:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: health master open api
+  termsOfService: http://swagger.io/terms/
+  title: health master api
+  version: "1.0"
+paths:
+  /api/v1/roles:
+    get:
+      consumes:
+      - application/json
+      description: get all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.Role'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: get all roles
+      tags:
+      - roles
+  /api/v1/token:
+    get:
+      consumes:
+      - application/json
+      description: parse a exsited token
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: parse a token
+      tags:
+      - token
+    post:
+      consumes:
+      - application/json
+      description: create a new token
+      parameters:
+      - description: username
+        in: header
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: header
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.UserToken'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: create a token
+      tags:
+      - token
+  /api/v1/user:
+    post:
+      consumes:
+      - application/json
+      description: create a new user
+      parameters:
+      - description: create a user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: create a user
+      tags:
+      - user
+  /api/v1/user/:
+    get:
+      consumes:
+      - application/json
+      description: get user by user id
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: get currentuser
+      tags:
+      - user
+  /api/v1/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user by user id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: get user
+      tags:
+      - user
+  /api/v1/user_blood_pressure:
+    post:
+      consumes:
+      - application/json
+      description: create a user blood pressure
+      parameters:
+      - description: create a user blood pressure
+        in: body
+        name: user_blood_pressure
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserBloodPressure'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.UserBloodPressure'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: create a user blood pressure
+      tags:
+      - user_blood_pressure
+  /api/v1/user_blood_pressure/{id}:
+    post:
+      consumes:
+      - application/json
+      description: delete a user blood pressure record
+      parameters:
+      - description: user blood pressure id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: arrary
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: delete a user blood pressure record
+      tags:
+      - user_blood_pressure
+  /api/v1/user_blood_pressures:
+    post:
+      consumes:
+      - application/json
+      description: list all user blood pressure for single user
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: arrary
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: list all user blood pressure for single user
+      tags:
+      - user_blood_pressure
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping
+      tags:
+      - ping
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

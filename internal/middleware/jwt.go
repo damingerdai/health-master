@@ -8,6 +8,7 @@ import (
 	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
+	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -37,7 +38,13 @@ func JWT() gin.HandlerFunc {
 		} else {
 			srv := service.New(global.DBEngine)
 			tokenService := srv.TokenService
-			claims, err := tokenService.ParseToken(token[7:])
+			claims, err := tokenService.ParseToken(
+				util.IfFunc[string](
+					len(token) > 7,
+					func() string {
+						return token[7:]
+					},
+					func() string { return token }))
 			if err != nil {
 				if errors.Is(err, jwt.ErrTokenExpired) {
 					ecode = errcode.UnauthorizedTokenTimeout

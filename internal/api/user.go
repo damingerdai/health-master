@@ -10,6 +10,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// create a user godoc
+//
+//	@Summary		create a user
+//	@Description	create a new user
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body	model.User	true	"create a user"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.User		"sucess"
+//	@Failure		400	{object}	errcode.Error	"bad request error"
+//	@Failure		500	{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/user [post]
 func CreateUser(c *gin.Context) {
 	var err error
 	var user model.User
@@ -36,6 +49,19 @@ func CreateUser(c *gin.Context) {
 
 }
 
+// get user godoc
+//
+//	@Summary		get user
+//	@Description	get user by user id
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			id	path		string			true	"user id"
+//	@Success		200	{object}	model.User		"sucess"
+//	@Failure		400	{object}	errcode.Error	"bad request error"
+//	@Failure		500	{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/user/{id} [get]
 func GetUser(c *gin.Context) {
 	var res = response.NewResponse(c)
 	var id = c.Param("id")
@@ -51,6 +77,19 @@ func GetUser(c *gin.Context) {
 
 }
 
+// get currentuser godoc
+
+//	@Summary		get currentuser
+//	@Description	get user by user id
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			Authorization	header	string	true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.User		"sucess"
+//	@Failure		400	{object}	errcode.Error	"bad request error"
+//	@Failure		500	{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/user/ [get]
 func GetCurrentUser(c *gin.Context) {
 	var response = response.NewResponse(c)
 	var services = service.New(global.DBEngine)

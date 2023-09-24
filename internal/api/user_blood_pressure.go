@@ -12,6 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// create a user blood pressure godoc
+//
+//	@Summary		create a user blood pressure
+//	@Description	create a user blood pressure
+//	@Tags			user_blood_pressure
+//	@Accept			json
+//	@Produce		json
+//	@Param			user_blood_pressure	body	model.UserBloodPressure	true	"create a user blood pressure"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.UserBloodPressure	"sucess"
+//	@Failure		400	{object}	errcode.Error			"bad request error"
+//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Router			/api/v1/user_blood_pressure [post]
 func CreateUserBloodPressure(c *gin.Context) {
 	var userBloodPressure model.UserBloodPressure
 	resp := response.NewResponse(c)
@@ -45,6 +58,19 @@ func CreateUserBloodPressure(c *gin.Context) {
 	}
 }
 
+// list all user blood pressure for single user godoc
+//
+//	@Summary		list all user blood pressure for single user
+//	@Description	list all user blood pressure for single user
+//	@Tags			user_blood_pressure
+//	@Accept			json
+//	@Produce		json
+//	@Param			Authorization	header	string	true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Security		BearerAuth
+//	@Success		200	{arrary}	model.UserBloodPressure	"sucess"
+//	@Failure		400	{object}	errcode.Error			"bad request error"
+//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Router			/api/v1/user_blood_pressures [post]
 func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine)
@@ -61,6 +87,19 @@ func ListBloodPressures(c *gin.Context) {
 
 }
 
+// delete a user blood pressure record godoc
+//
+//	@Summary		delete a user blood pressure record
+//	@Description	delete a user blood pressure record
+//	@Tags			user_blood_pressure
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"user blood pressure id"
+//	@Security		BearerAuth
+//	@Success		200	{arrary}	model.SuccessReponseSwagger	"sucess"
+//	@Failure		400	{object}	errcode.Error				"bad request error"
+//	@Failure		500	{object}	errcode.Error				"internal server error"
+//	@Router			/api/v1/user_blood_pressure/{id} [post]
 func DeleteBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine)

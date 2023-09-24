@@ -20,3 +20,10 @@ func IfString(condition bool, trueVal, falseVal string) string {
 	}
 	return falseVal
 }
+
+func IfFunc[T any](condition bool, trueVal, falseVal func() T) T {
+	if condition {
+		return trueVal()
+	}
+	return falseVal()
+}

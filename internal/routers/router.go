@@ -7,6 +7,8 @@ import (
 	"github.com/damingerdai/health-master/internal/middleware"
 	"github.com/damingerdai/health-master/pkg/limiter"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var rule = limiter.LimiterBucketRule{
@@ -20,6 +22,7 @@ var methodLimiters = limiter.NewMethodLimiter().AddBuckets(rule)
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Use(middleware.AccessLog())
 
 	r.Any("ping", func(ctx *gin.Context) {
