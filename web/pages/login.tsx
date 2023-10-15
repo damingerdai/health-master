@@ -40,7 +40,7 @@ const Login: NextPage = () => {
   };
   const handleSubmit = async (
     value: Record<'username' | 'password', string>,
-    { setSubmitting }
+    { setSubmitting },
   ) => {
     const { username, password } = value;
     try {
@@ -66,15 +66,15 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <Header bgColor={'Background'}>
-        <Spacer></Spacer>
+      <Header bgColor="Background">
+        <Spacer />
         <HStack spacing={{ base: '1', md: '2' }}>
           <ToggleThemeButton />
         </HStack>
       </Header>
       <Flex
         bg={useColorModeValue('#f0f2f5', '#20202380')}
-        height={'calc(100vh - 64px)'}
+        height="calc(100vh - 64px)"
         justify="center"
         p={4}
       >
@@ -86,17 +86,17 @@ const Login: NextPage = () => {
           // pt={4}
           // h={'400px'}
         >
-          <Box w="100%" p={4} mt={{ md: '150px'}}>
+          <Box w="100%" p={4} mt={{ md: '150px' }}>
             <Flex
-              direction={'column'}
+              direction="column"
               bg="background"
               w="100%"
               rounded="lg"
               boxShadow="lg"
               p={4}
-              maxW={'380px'}
+              maxW="380px"
             >
-              <Flex justify={'center'}>
+              <Flex justify="center">
                 <Heading fontSize="4xl">登录</Heading>
               </Flex>
               <Box p={4}>
@@ -149,7 +149,7 @@ const Login: NextPage = () => {
                             <InputRightElement h="full">
                               <Button
                                 variant="ghost"
-                                onClick={() => setShowPassword(p => !p)}
+                                onClick={() => setShowPassword((p) => !p)}
                               >
                                 {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                               </Button>
@@ -194,12 +194,12 @@ const Login: NextPage = () => {
             <Stack align="center">
               <Heading fontSize="4xl">登录</Heading>
             </Stack>
-            
+
           </Stack> */}
         </Flex>
       </Flex>
       {/* <Box>
-        
+
         <Flex minH="100wh" align="center" justify="center">
           <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6} pt={4}>
             <Stack align="center">
