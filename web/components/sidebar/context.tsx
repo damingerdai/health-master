@@ -6,11 +6,13 @@ import { FiHome } from 'react-icons/fi';
 import { NavItem } from './item';
 
 interface SidebarContentProps extends BoxProps {
+  hasTitle: boolean;
   onClose: () => void;
 }
 
-export const SidebarContent: React.FC<SidebarContentProps> = ({ onClose, ...rest }) => (
+export const SidebarContent: React.FC<SidebarContentProps> = ({ hasTitle, onClose, ...rest }) => (
   <Box
+    bg={useColorModeValue('white', 'black')}
     transition="3s ease"
     borderRight="1px"
     borderRightColor={useColorModeValue('gray.200', 'gray.700')}
@@ -19,10 +21,11 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({ onClose, ...rest
     pos="fixed"
     {...rest}
   >
-    <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+    {hasTitle && <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
       <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">H & M</Text>
       <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
     </Flex>
+    }
     <Box>
       <NavItem path="dashboard" icon={FiHome}>
         仪表盘
