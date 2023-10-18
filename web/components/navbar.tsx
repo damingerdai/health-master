@@ -1,5 +1,12 @@
 import {
-  Box, Flex, FlexProps, HStack, IconButton, useColorModeValue,
+  Box,
+  Flex,
+  FlexProps,
+  HStack,
+  Text,
+  IconButton,
+  useBreakpointValue,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { useAtom } from 'jotai';
 import * as React from 'react';
@@ -10,6 +17,10 @@ import { UserMenu } from './user-menu';
 
 export const Navbar: React.FC<FlexProps> = (props) => {
   const [drawserStatus, setDrawserStatus] = useAtom(drawerStatusAtom);
+  const isDrawerMode = useBreakpointValue(
+    { base: true, lg: false },
+    { ssr: true },
+  );
 
   return (
     <Flex
@@ -26,14 +37,21 @@ export const Navbar: React.FC<FlexProps> = (props) => {
       flexWrap="wrap"
       {...props}
     >
-      <IconButton
-        display="flex"
-        icon={<FiMenu />}
-        onClick={() => setDrawserStatus(!drawserStatus)}
-        variant="outline"
-        aria-label="open menu"
-      />
-      <Box ml={2}>Health Master</Box>
+      {isDrawerMode && (
+        <IconButton
+          display="flex"
+          icon={<FiMenu />}
+          onClick={() => setDrawserStatus(!drawserStatus)}
+          variant="outline"
+          aria-label="open menu"
+        />
+      )}
+      <Box ml={2}>
+        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+          {!isDrawerMode ? 'Health Master' : 'H & M'}
+        </Text>
+      </Box>
+
       <Box flexGrow={1} />
 
       <HStack spacing={{ base: '1', md: '2' }}>

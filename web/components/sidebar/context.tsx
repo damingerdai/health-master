@@ -21,11 +21,12 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({ hasTitle, onClos
     pos="fixed"
     {...rest}
   >
-    {hasTitle && <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+    {hasTitle && (
+    <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
       <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">H & M</Text>
       <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
     </Flex>
-    }
+    )}
     <Box>
       <NavItem path="dashboard" icon={FiHome}>
         仪表盘

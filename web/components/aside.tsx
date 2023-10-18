@@ -2,31 +2,30 @@ import {
   Box,
   Drawer,
   DrawerContent,
-  useBreakpoint,
   useBreakpointValue,
   useColorModeValue,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
-import { SidebarContent } from './sidebar/context';
+import { useCallback } from 'react';
 import { drawerStatusAtom } from '@/store/drawer';
 import { useAtom } from 'jotai';
+import { SidebarContent } from './sidebar/context';
 
 export const Aside: React.FC = () => {
   const [drawserStatus, setDrawserStatus] = useAtom(drawerStatusAtom);
 
   const onClose = useCallback(
     () => setDrawserStatus(false),
-    [setDrawserStatus]
+    [setDrawserStatus],
   );
 
   const isDrawerMode = useBreakpointValue(
     { base: true, lg: false },
-    { ssr: true }
+    { ssr: true },
   );
 
   return (
-    <Box as="aside" w="240px" minW="240px" bg={useColorModeValue('#ffffff40', '#20202380')}>
+    <Box as="aside" w={isDrawerMode ? '0px' : '240px'} minW={isDrawerMode ? '0px' : '240px'} bg={useColorModeValue('#ffffff40', '#20202380')}>
       {isDrawerMode ? (
         <Drawer
           autoFocus={false}
@@ -38,7 +37,7 @@ export const Aside: React.FC = () => {
           size="full"
         >
           <DrawerContent>
-            <SidebarContent onClose={onClose} hasTitle={false} />
+            <SidebarContent onClose={onClose} hasTitle />
           </DrawerContent>
         </Drawer>
       ) : (

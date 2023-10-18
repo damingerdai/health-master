@@ -1,5 +1,6 @@
+import { AuthProvider } from '@/components/auth-provider';
+import { Layout } from '@/components/layout';
 import { ProtectRoute } from '@/components/protect-route';
-import { Siderbar } from '@/components/sidebar';
 import {
   Box, Card, CardBody, CardHeader, Flex, Text,
 } from '@chakra-ui/react';
@@ -26,30 +27,34 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <Box as="main" pb={8}>
-      <Siderbar>
-        <Flex flexWrap="wrap">
-          {cards.map((card) => (
-            <Box
-              key={card.name}
-              p={2}
-              width={{
-                base: '100%', sm: '50%', md: '50%', lg: '33%', xl: '25%',
-              }}
-            >
-              <Card>
-                <CardHeader>
-                  {card.title}
-                </CardHeader>
-                <CardBody>
-                  <Text>{card.name}</Text>
-                </CardBody>
-              </Card>
-            </Box>
-          ))}
-        </Flex>
-      </Siderbar>
-    </Box>
+    <Layout>
+      <AuthProvider>
+        <Box pb={8}>
+          <Flex flexWrap="wrap">
+            {cards.map((card) => (
+              <Box
+                key={card.name}
+                p={2}
+                width={{
+                  base: '100%',
+                  sm: '50%',
+                  md: '50%',
+                  lg: '33%',
+                  xl: '25%',
+                }}
+              >
+                <Card>
+                  <CardHeader>{card.title}</CardHeader>
+                  <CardBody>
+                    <Text>{card.name}</Text>
+                  </CardBody>
+                </Card>
+              </Box>
+            ))}
+          </Flex>
+        </Box>
+      </AuthProvider>
+    </Layout>
   );
 };
 

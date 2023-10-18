@@ -1,4 +1,6 @@
-import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
+import {
+  Box, Drawer, DrawerContent, useDisclosure,
+} from '@chakra-ui/react';
 import * as React from 'react';
 import { SidebarContent } from './context';
 import { Header } from './header';
@@ -11,7 +13,7 @@ export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
-        hasTitle={true}
+        hasTitle
       />
       <Drawer
         autoFocus={false}
@@ -23,7 +25,7 @@ export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} hasTitle={true}/>
+          <SidebarContent onClose={onClose} hasTitle />
         </DrawerContent>
       </Drawer>
       <Header onOpen={onOpen} />
