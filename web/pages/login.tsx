@@ -81,10 +81,6 @@ const Login: NextPage = () => {
         <Flex
           mx="auto"
           maxW="lg"
-          // p={4}
-          // px={4}
-          // pt={4}
-          // h={'400px'}
         >
           <Box w="100%" p={4} mt={{ md: '150px' }}>
             <Flex
