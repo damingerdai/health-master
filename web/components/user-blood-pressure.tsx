@@ -7,6 +7,7 @@ import {
   Heading,
   Spinner,
   useDisclosure,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import useSWR from 'swr';
 import * as React from 'react';
@@ -51,7 +52,7 @@ export const UserBloodPressureForm: React.FC = () => {
 
   return (
     <>
-      <Box>
+      <Box bg={useColorModeValue('white', '#20202380')} p={2}>
         <Flex direction="column" alignItems="start">
           <Heading fontSize="2xl">血压记录</Heading>
           <Button bg="tomato" onClick={onOpen}>

@@ -8,7 +8,7 @@ import { Layout } from '@/components/layout';
 const Home: NextPage = () => (
   <Layout>
     <AuthProvider>
-      <Box m={2}>
+      <Box p={2} h="100%">
         <UserBloodPressureForm />
       </Box>
     </AuthProvider>
