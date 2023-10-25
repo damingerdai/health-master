@@ -42,6 +42,7 @@ func NewRouter() *gin.Engine {
 
 		apiV1.POST("/user-blood-pressure", api.CreateUserBloodPressure)
 		apiV1.DELETE("/user-blood-pressure/:id", api.DeleteBloodPressure)
+		apiV1.GET("/user-blood-pressure/:id/export", api.DowonloadBloodPressure)
 		apiV1.GET("/user-blood-pressures", api.ListBloodPressures)
 
 		apiV1.GET("/roles", api.ListRoles)

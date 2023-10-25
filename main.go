@@ -49,14 +49,14 @@ func init() {
 	log.Println("setup logger")
 }
 
-//	@title						health master api
-//	@version					1.0
-//	@description				health master open api
-//	@termsOfService				http://swagger.io/terms/
-//	@securityDefinitions.apiKey	BearerAuth
-//	@in							header
-//	@name						Authorization
-//	@description				Type "Bearer" followed by a space and JWT token.
+// @title						health master api
+// @version					1.0
+// @description				health master open api
+// @termsOfService				http://swagger.io/terms/
+// @securityDefinitions.apiKey	BearerAuth
+// @in							header
+// @name						Authorization
+// @description				Type "Bearer" followed by a space and JWT token.
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
