@@ -24,7 +24,7 @@ export const Navbar: React.FC<FlexProps> = (props) => {
 
   return (
     <Flex
-      as="nav"
+      as="header"
       w="100%"
       px={{ base: 4, md: 4 }}
       height="14"

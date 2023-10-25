@@ -52,12 +52,14 @@ export const UserBloodPressureForm: React.FC = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue('white', '#20202380')} p={2}>
-        <Flex direction="column" alignItems="start">
+      <Box bg={useColorModeValue('white', '#20202380')} p={2} borderRadius={8}>
+        <Flex direction="column">
           <Heading fontSize="2xl">血压记录</Heading>
-          <Button bg="tomato" onClick={onOpen}>
-            添加
-          </Button>
+          <Flex justifyContent="flex-end">
+            <Button bg="tomato" onClick={onOpen}>
+              添加
+            </Button>
+          </Flex>
         </Flex>
         <Divider borderColor="gray.300" my="1rem" />
         <Box>

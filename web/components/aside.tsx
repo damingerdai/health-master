@@ -25,7 +25,13 @@ export const Aside: React.FC = () => {
   );
 
   return (
-    <Box as="aside" w={isDrawerMode ? '0px' : '240px'} minW={isDrawerMode ? '0px' : '240px'} bg={useColorModeValue('#ffffff40', '#20202380')}>
+    <Box
+      as="aside"
+      w={isDrawerMode ? '0px' : '240px'}
+      minW={isDrawerMode ? '0px' : '240px'}
+      bg={useColorModeValue('#ffffff40', '#20202380')}
+      zIndex="100"
+    >
       {isDrawerMode ? (
         <Drawer
           autoFocus={false}

@@ -9,9 +9,9 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => (
     <Box
       as="section"
       display="flex"
-      flex="auto"
+      // flex="auto"
       bg={useColorModeValue('#f0f2f5', '#20202380')}
-      h="calc(100vh - 64px)"
+      // h="calc(100vh - 56px)"
       w="100%"
     >
       <Aside />

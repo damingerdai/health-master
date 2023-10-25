@@ -12,13 +12,14 @@ interface SidebarContentProps extends BoxProps {
 
 export const SidebarContent: React.FC<SidebarContentProps> = ({ hasTitle, onClose, ...rest }) => (
   <Box
+    as="nav"
     bg={useColorModeValue('white', 'black')}
     transition="3s ease"
     borderRight="1px"
     borderRightColor={useColorModeValue('gray.200', 'gray.700')}
     w={{ base: 'full', md: 60 }}
     h="100%"
-    pos="fixed"
+    // pos="fixed"
     {...rest}
   >
     {hasTitle && (
