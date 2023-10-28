@@ -115,7 +115,56 @@ func (userBloodPressureRepository *UserBloodPressureRepository) List(ctx context
 	return &ubps, nil
 }
 
-func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(ctx context.Context, userId string, page, limit int) (*[]model.UserBloodPressure, error) {
+func (userBloodPressureRepository *UserBloodPressureRepository) ListByUserId(ctx context.Context, userId string) (*[]model.UserBloodPressure, error) {
+	var ubps []model.UserBloodPressure
+	statement := `
+		SELECT 
+			ubp.id, ubp.diastolic_blood_pressure, ubp.systolic_blood_pressure, ubp.pulse, 
+			ubp.created_at, ubp.updated_at, ubp.log_datetime,
+			ubp.user_id, u.username, u.first_name, u.last_name, u.gender
+		FROM user_blood_pressure ubp
+		LEFT JOIN users u on u.id = ubp.user_id
+		WHERE ubp.user_id = $1 AND ubp.deleted_at IS NULL
+		ORDER BY ubp.log_datetime DESC
+	`
+	rows, err := userBloodPressureRepository.db.Query(ctx, statement, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var rid, userId, username, fristName, lastName, gender string
+		var createdAt, updatedAt, logDatetime *time.Time
+		var diastolicBloodPressure, systolicBloodPressure, pulse int32
+		err := rows.Scan(&rid, &diastolicBloodPressure, &systolicBloodPressure, &pulse, &createdAt, &updatedAt, &logDatetime, &userId, &username, &fristName, &lastName, &gender)
+		if err != nil {
+			return nil, err
+		}
+		userBloodPressure := model.UserBloodPressure{
+			Id:                     rid,
+			DiastolicBloodPressure: diastolicBloodPressure,
+			SystolicBloodPressure:  systolicBloodPressure,
+			Pulse:                  pulse,
+			UserId:                 userId,
+			User: &model.User{
+				Id:        userId,
+				Username:  username,
+				FirstName: fristName,
+				LastName:  lastName,
+				Gender:    gender,
+			},
+
+			CreatedAt:   createdAt,
+			UpdatedAt:   updatedAt,
+			LogDatetime: logDatetime,
+		}
+		ubps = append(ubps, userBloodPressure)
+	}
+	return &ubps, nil
+}
+
+func (userBloodPressureRepository *UserBloodPressureRepository) PagingQueryByUserId(ctx context.Context, userId string, page, limit int) (*[]model.UserBloodPressure, error) {
 	var ubps []model.UserBloodPressure
 	statement := `
 		SELECT 

@@ -2,6 +2,8 @@ package api
 
 import (
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
@@ -78,7 +80,7 @@ func ListBloodPressures(c *gin.Context) {
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
 	userBloodPressureService := service.UserBloodPressureService
-	ubps, err := userBloodPressureService.ListByUserId(c, userId, page, limit)
+	ubps, err := userBloodPressureService.PagingQueryByUserId(c, userId, page, limit)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ListUserBloodPressureError)
 	} else {
@@ -110,4 +112,21 @@ func DeleteBloodPressure(c *gin.Context) {
 	} else {
 		resp.ToResponse(gin.H{"success": true})
 	}
+}
+
+func DowonloadBloodPressure(c *gin.Context) {
+	resp := response.NewResponse(c)
+	service := service.New(global.DBEngine)
+	id := c.Params.ByName("id")
+	f, err := service.UserBloodPressureService.CreateExcelizeFile(c, id)
+	if err != nil {
+		resp.ToErrorResponseWithError(errcode.DeleteUserBloodPressureError, err)
+		return
+	}
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Transfer-Encoding", "binary")
+	now := time.Now()
+	fileName := now.Format("20060102_150405.xlsx")
+	c.Header("Content-Disposition", fmt.Sprintf("attachment;filename=\"%s-%s\"", id, fileName))
+	f.Write(c.Writer)
 }

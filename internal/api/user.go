@@ -79,17 +79,17 @@ func GetUser(c *gin.Context) {
 
 // get currentuser godoc
 
-//	@Summary		get currentuser
-//	@Description	get user by user id
-//	@Tags			user
-//	@Accept			json
-//	@Produce		json
-//	@Param			Authorization	header	string	true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Security		BearerAuth
-//	@Success		200	{object}	model.User		"sucess"
-//	@Failure		400	{object}	errcode.Error	"bad request error"
-//	@Failure		500	{object}	errcode.Error	"internal server error"
-//	@Router			/api/v1/user/ [get]
+// @Summary		get currentuser
+// @Description	get user by user id
+// @Tags			user
+// @Accept			json
+// @Produce		json
+// @Param			Authorization	header	string	true	"Insert your access token"	default(Bearer <Add access token here>)
+// @Security		BearerAuth
+// @Success		200	{object}	model.User		"sucess"
+// @Failure		400	{object}	errcode.Error	"bad request error"
+// @Failure		500	{object}	errcode.Error	"internal server error"
+// @Router			/api/v1/user/ [get]
 func GetCurrentUser(c *gin.Context) {
 	var response = response.NewResponse(c)
 	var services = service.New(global.DBEngine)
