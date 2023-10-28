@@ -55,8 +55,8 @@ UserBloodPressureListProps
   };
 
   return (
-    <Box overflowX="auto">
-      <TableContainer>
+    <Box>
+      <TableContainer overflowX="hidden">
         <Table variant="simple">
           <Thead>
             <Tr>

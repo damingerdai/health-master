@@ -22,6 +22,7 @@ export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
+  //const currentUser = useAtomValue(userAtom);
 
   const fetcher = async () => {
     const res = await request<{
@@ -59,6 +60,15 @@ export const UserBloodPressureForm: React.FC = () => {
             <Button bg="tomato" onClick={onOpen}>
               添加
             </Button>
+            {/* <Button colorScheme='cyan' ml={1} onClick={() => {
+              request({
+                method: 'POST',
+                url: 'api/user_blood_pressure/download',
+                data: {
+                  userId: currentUser.id
+                }
+              })
+            }}>导出</Button> */}
           </Flex>
         </Flex>
         <Divider borderColor="gray.300" my="1rem" />
