@@ -61,6 +61,16 @@ func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*m
 	return &userToken, nil
 }
 
+func (ts *TokenService) CreateTmpToken(ctx context.Context, user *model.User, expireTime time.Time) (*model.UserToken, error) {
+	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime)
+	if err != nil {
+		return nil, err
+	}
+	userToken := model.UserToken{AccessToken: *token, Expired: expireTime}
+
+	return &userToken, nil
+}
+
 func (ts *TokenService) ParseToken(token string) (*model.Claims, error) {
 	secret := global.JwtSetting.GetJwtSecret()
 	claims, err := tokens.ParseToken(token, secret)

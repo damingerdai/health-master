@@ -14,6 +14,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { UserBloodPressures } from '@/type/user-blood-pressure';
 import { request } from '@/lib/request';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '@/store/user';
+import { downloadFile } from '@/lib/download-file';
 import { AddUserBloodPressureModal } from './add-user-blood-pressure';
 import { UserBloodPressureList } from './user-blood-pressure-list';
 import { Pagination } from './pagination';
@@ -22,6 +25,7 @@ export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
+  const currentUser = useAtomValue(userAtom);
 
   const fetcher = async () => {
     const res = await request<{
@@ -56,18 +60,25 @@ export const UserBloodPressureForm: React.FC = () => {
         <Flex direction="column">
           <Heading fontSize="2xl">血压记录</Heading>
           <Flex justifyContent="flex-end">
-            <Button bg="tomato" onClick={onOpen}>
+            <Button bg="tomato" onClick={onOpen} mr={1}>
               添加
             </Button>
-            {/* <Button colorScheme='cyan' ml={1} onClick={() => {
-              request({
-                method: 'POST',
-                url: 'api/user_blood_pressure/download',
-                data: {
-                  userId: currentUser.id
-                }
-              })
-            }}>导出</Button> */}
+            <Button
+              colorScheme="cyan"
+              ml={1}
+              onClick={async () => {
+                const { downloadUrl } = await request({
+                  method: 'POST',
+                  url: '/api/user_blood_pressure/download',
+                  data: {
+                    userId: currentUser.id,
+                  },
+                });
+                downloadFile(downloadUrl);
+              }}
+            >
+              导出
+            </Button>
           </Flex>
         </Flex>
         <Divider borderColor="gray.300" my="1rem" />

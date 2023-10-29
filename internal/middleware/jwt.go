@@ -3,12 +3,12 @@ package middleware
 import (
 	"errors"
 	"regexp"
+	"strings"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
-	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -16,7 +16,7 @@ import (
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		url := c.Request.URL.String()
-		if ok, _ := regexp.MatchString("^/api/v1/(token|ping)$", url); ok {
+		if ok, _ := regexp.MatchString("^/api/v1/(token|ping|tmptoken)$", url); ok {
 			c.Next()
 			return
 		}
@@ -28,23 +28,20 @@ func JWT() gin.HandlerFunc {
 			token string
 			ecode = errcode.Success
 		)
-		if s, exist := c.GetQuery("Authorization"); exist {
+		if s, exist := c.GetQuery("accessToken"); exist {
 			token = s
 		} else {
 			token = c.GetHeader("Authorization")
+			if strings.HasPrefix(token, "Bearer ") {
+				token = token[7:]
+			}
 		}
 		if token == "" {
 			ecode = errcode.NotFoundAuthorization
 		} else {
 			srv := service.New(global.DBEngine)
 			tokenService := srv.TokenService
-			claims, err := tokenService.ParseToken(
-				util.IfFunc[string](
-					len(token) > 7,
-					func() string {
-						return token[7:]
-					},
-					func() string { return token }))
+			claims, err := tokenService.ParseToken(token)
 			if err != nil {
 				if errors.Is(err, jwt.ErrTokenExpired) {
 					ecode = errcode.UnauthorizedTokenTimeout

@@ -2,6 +2,8 @@ package api
 
 import (
 	"errors"
+	"strings"
+	"time"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/repository"
@@ -96,4 +98,47 @@ func ParseToken(c *gin.Context) {
 	}
 	user.Password = ""
 	res.ToResponse(user)
+}
+
+func GetTmpToken(c *gin.Context) {
+	res := response.NewResponse(c)
+
+	var token string
+	if s, exist := c.GetQuery("accessToken"); exist {
+		token = s
+	} else {
+		token = c.GetHeader("Authorization")
+	}
+	if strings.HasPrefix(token, "Bearer ") {
+		token = token[7:]
+	}
+
+	srv := service.New(global.DBEngine)
+	tokenService := srv.TokenService
+	userService := srv.UserService
+	claims, err := tokenService.ParseToken(token)
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			res.ToErrorResponse(errcode.UnauthorizedTokenTimeout)
+		} else {
+			res.ToErrorResponse(errcode.UnauthorizedTokenError)
+		}
+		return
+	}
+	if claims == nil {
+		res.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		return
+	}
+	user, err := userService.Find(c, claims.UserId)
+	if err != nil {
+		res.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		return
+	}
+	now := time.Now()
+	expireTime := now.Add(1 * time.Minute)
+	userToken, err := tokenService.CreateTmpToken(c, user, expireTime)
+	if err != nil {
+		res.ToErrorResponse(errcode.ServerError)
+	}
+	res.ToResponse(userToken)
 }
