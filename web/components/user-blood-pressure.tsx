@@ -22,7 +22,6 @@ export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
-  //const currentUser = useAtomValue(userAtom);
 
   const fetcher = async () => {
     const res = await request<{
