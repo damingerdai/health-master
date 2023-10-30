@@ -1,7 +1,7 @@
 import { httpClient } from '@/lib/http-client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const baseURL = process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST;
+const baseURL = process.env.NEXT_PUBLIC_REACT_APP_BACKEND_DOWNLOAD_HOST || process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST;
 
 export default async function handler(
   req: NextApiRequest,
