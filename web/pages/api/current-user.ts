@@ -12,47 +12,51 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method === 'GET') {
-    try {
-      const resp = await httpClient.request<DataResponse<User>>({
-        method: 'GET',
-        url: '/api/v1/user',
-        headers: {
-          Authorization: req.headers.authorization,
-        },
-      });
+  try {
+    if (req.method === 'GET') {
+      try {
+        const resp = await httpClient.request<DataResponse<User>>({
+          method: 'GET',
+          url: '/api/v1/user',
+          headers: {
+            Authorization: req.headers.authorization,
+          },
+        });
 
-      if (isErrorResponse(resp)) {
-        if (resp.code === 10000006) {
-          res.status(401).json(resp.message);
+        if (isErrorResponse(resp)) {
+          if (resp.code === 10000006) {
+            res.status(401).json(resp.message);
+            return;
+          }
+          res.status(500).json(resp.message);
           return;
         }
-        res.status(500).json(resp.message);
-        return;
+        res.status(200).json(resp);
+      } catch (err) {
+        res.status(500).json(err);
       }
-      res.status(200).json(resp);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  } else if (req.method === 'POST') {
-    try {
-      const data = await httpClient.request<DataResponse<User>>({
-        headers: {
-          Authorization: req.headers.authorization,
-        },
-        method: 'POST',
-        url: '/api/v1/user',
-        data: req.body,
-      });
-      if (isErrorResponse(data)) {
-        res.status(500).json(data.message);
-      } else {
-        res.status(200).json(data);
+    } else if (req.method === 'POST') {
+      try {
+        const data = await httpClient.request<DataResponse<User>>({
+          headers: {
+            Authorization: req.headers.authorization,
+          },
+          method: 'POST',
+          url: '/api/v1/user',
+          data: req.body,
+        });
+        if (isErrorResponse(data)) {
+          res.status(500).json(data.message);
+        } else {
+          res.status(200).json(data);
+        }
+      } catch (err) {
+        res.status(500).json(err);
       }
-    } catch (err) {
-      res.status(500).json(err);
+    } else {
+      res.status(500).json({ error: `method ${req.method} doesn't support` });
     }
-  } else {
-    res.status(500).json({ error: `method ${req.method} doesn't support` });
+  } catch (err) {
+    res.status(500).send(err);
   }
 }

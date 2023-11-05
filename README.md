@@ -7,6 +7,7 @@ health master
 ```bash
 docker volume create daming-health-master-volume
 docker volume create daming-health-master-redis-volume
+docker volume create daming-health-master-kuma-volume
 docker network create daming-health-master-network
 
 docker-compose pull
