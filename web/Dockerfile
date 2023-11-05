@@ -1,4 +1,4 @@
-FROM node:20.8.1-alpine3.18 AS deps
+FROM node:20.9.0-alpine3.18 AS deps
 
 ENV SELF_SIGNED_CERT_IN_CHAIN=true
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
@@ -21,7 +21,7 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-FROM node:20.8.1-alpine3.18 AS builder
+FROM node:20.9.0-alpine3.18 AS builder
 
 ENV SELF_SIGNED_CERT_IN_CHAIN=true
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
@@ -34,7 +34,7 @@ COPY . .
 COPY .env.example .env
 RUN yarn build
 
-FROM node:20.8.1-alpine3.18 AS runner
+FROM node:20.9.0-alpine3.18 AS runner
 
 WORKDIR /app
 
