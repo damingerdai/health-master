@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Table,
   TableContainer,
@@ -55,8 +54,8 @@ UserBloodPressureListProps
   };
 
   return (
-    <Box>
-      <TableContainer overflowX="hidden">
+    <>
+      <TableContainer className="table-responsive" whiteSpace="normal">
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -108,6 +107,6 @@ UserBloodPressureListProps
           }
         }}
       />
-    </Box>
+    </>
   );
 };

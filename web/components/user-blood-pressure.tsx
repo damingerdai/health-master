@@ -4,10 +4,12 @@ import {
   Center,
   Divider,
   Flex,
-  Heading,
   Spinner,
   useDisclosure,
   useColorModeValue,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from '@chakra-ui/react';
 import useSWR from 'swr';
 import * as React from 'react';
@@ -56,32 +58,36 @@ export const UserBloodPressureForm: React.FC = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue('white', '#20202380')} p={2} borderRadius={8}>
-        <Flex direction="column">
-          <Heading fontSize="2xl">血压记录</Heading>
-          <Flex justifyContent="flex-end">
-            <Button bg="tomato" onClick={onOpen} mr={1}>
-              添加
-            </Button>
-            <Button
-              colorScheme="cyan"
-              ml={1}
-              onClick={async () => {
-                const { downloadUrl } = await request({
-                  method: 'POST',
-                  url: '/api/user_blood_pressure/download',
-                  data: {
-                    userId: currentUser.id,
-                  },
-                });
-                downloadFile(downloadUrl);
-              }}
-            >
-              导出
-            </Button>
-          </Flex>
+      <Breadcrumb mb="2">
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href="/">
+            血压记录
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+      <Box bg={useColorModeValue('white', '#20202380')} borderRadius={6}>
+        <Flex justifyContent="flex-end" py="2" pr="2" borderLeftWidth="4px" borderLeftColor="orange.500" borderLeftStyle="solid">
+          <Button bg="tomato" onClick={onOpen} mr={1}>
+            添加
+          </Button>
+          <Button
+            colorScheme="cyan"
+            ml={1}
+            onClick={async () => {
+              const { downloadUrl } = await request({
+                method: 'POST',
+                url: '/api/user_blood_pressure/download',
+                data: {
+                  userId: currentUser.id,
+                },
+              });
+              downloadFile(downloadUrl);
+            }}
+          >
+            导出
+          </Button>
         </Flex>
-        <Divider borderColor="gray.300" my="1rem" />
+        <Divider borderColor="gray.300" />
         <Box>
           {isLoading && (
             <Center>
@@ -99,8 +105,7 @@ export const UserBloodPressureForm: React.FC = () => {
           )}
           {!isLoading && data?.length === 0 && <Box h={5} fontSize={24} textAlign="center">没有血压记录</Box>}
         </Box>
-        { !(!isLoading && data?.length === 0) && (
-        <Box>
+        {!(!isLoading && data?.length === 0) && (
           <Pagination
             pageSize={5}
             page={page - 1}
@@ -109,16 +114,15 @@ export const UserBloodPressureForm: React.FC = () => {
               setPage(newPage + 1);
             }}
           />
-        </Box>
         )}
+        <AddUserBloodPressureModal
+          isOpen={isOpen}
+          onClose={() => {
+            mutate();
+            onClose();
+          }}
+        />
       </Box>
-      <AddUserBloodPressureModal
-        isOpen={isOpen}
-        onClose={() => {
-          mutate();
-          onClose();
-        }}
-      />
     </>
   );
 };
