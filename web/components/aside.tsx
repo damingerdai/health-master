@@ -20,7 +20,7 @@ export const Aside: React.FC = () => {
   );
 
   const isDrawerMode = useBreakpointValue(
-    { base: true, lg: false },
+    { base: true, sm: false },
     { ssr: true },
   );
 
