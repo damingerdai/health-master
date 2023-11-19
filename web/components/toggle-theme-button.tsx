@@ -2,9 +2,15 @@ import {
   Box, Button, useColorMode, useColorModeValue,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { IoSunny, IoMoon } from 'react-icons/io5';
 import { useSystemColorMode } from '../hooks/useSystemColorMode';
+
+declare global {
+  interface Document {
+    startViewTransition: (params: () => void) => { ready: Promise<void> };
+  }
+}
 
 const themes = ['light', 'dark'];
 
@@ -12,9 +18,49 @@ export const ToggleThemeButton: React.FC = () => {
   const systemColorMode = useSystemColorMode();
   const { colorMode, toggleColorMode, setColorMode } = useColorMode();
   const bg = useColorModeValue('rgb(253 186 116 / 1)', 'rgba(82 82 91 / 1)');
-  useEffect(() => {
+
+  const viewTransitionAnimate = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      // eslint-disable-next-line no-restricted-globals
+      Math.max(x, innerWidth - x),
+      // eslint-disable-next-line no-restricted-globals
+      Math.max(y, innerHeight - y),
+    );
+    const isDark = colorMode === 'dark';
+    const root = document.documentElement;
+    const transition = document.startViewTransition(() => {
+      root.classList.remove(isDark ? 'chakra-ui-dark' : 'chakra-ui-light');
+      root.classList.add(!isDark ? 'chakra-ui-dark' : 'chakra-ui-light');
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+      document.documentElement.animate(
+        {
+          clipPath: isDark ? [...clipPath].reverse() : clipPath,
+        },
+        {
+          duration: 500,
+          easing: 'ease-in',
+          pseudoElement: isDark
+            ? '::view-transition-old(root)'
+            : '::view-transition-new(root)',
+        },
+      );
+      toggleColorMode();
+    });
+  };
+
+  useLayoutEffect(() => {
     setColorMode(systemColorMode);
-  }, [systemColorMode]);
+  }, [setColorMode, systemColorMode]);
 
   return (
     <Box
@@ -49,7 +95,15 @@ export const ToggleThemeButton: React.FC = () => {
               bgColor: checked ? 'rgb(255 255 255 / 1)' : 'transparent',
             }}
             aria-label={theme === 'light' ? 'switch to light mode' : 'switch to dark mode'}
-            onClick={toggleColorMode}
+            // onClick={toggleColorMode}
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              if (!document || !('startViewTransition' in document)) {
+                toggleColorMode();
+                return;
+              }
+              viewTransitionAnimate(event);
+            }}
           >
             {theme === 'light' ? <IoSunny /> : <IoMoon />}
           </Button>

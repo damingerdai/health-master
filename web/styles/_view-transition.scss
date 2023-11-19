@@ -1,0 +1,21 @@
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+.chakra-ui-dark::view-transition-old(root) {
+  z-index: 1;
+}
+
+.chakra-ui-dark::view-transition-new(root) {
+  z-index: 999;
+}
+
+::view-transition-old(root) {
+  z-index: 999;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
