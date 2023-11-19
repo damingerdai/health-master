@@ -11,8 +11,9 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => (
       display="flex"
       // flex="auto"
       bg={useColorModeValue('#f0f2f5', '#20202380')}
-      h="calc(100vh - 56px)"
+      h="100%"
       w="100%"
+      minH="calc(100vh - 56px)"
     >
       <Aside />
       <Box as="main" w="100%">{children}</Box>
