@@ -20,7 +20,7 @@ jobs:
         os: [ubuntu-latest]
         node-version: [20.x]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Nodejs ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -47,7 +47,7 @@ jobs:
         go-version: ["1.21.4"]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup go ${{ matrix.go-version }}
         uses: actions/setup-go@v4
         with:
