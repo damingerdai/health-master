@@ -53,6 +53,14 @@ services:
     container_name: uptime-kuma
     networks:
       - daming-health-master-network
+  pgweb:
+    image: sosedoff/pgweb:0.14.2
+    container_name: pgweb
+    ports:
+      - 8081:8081
+    networks:
+      - daming-health-master-network
+
 volumes:
   daming-health-master-volume:
     external: true
