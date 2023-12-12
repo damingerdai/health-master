@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgweb
+  namespace: health-master-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgweb
+  template:
+    metadata:
+      labels:
+        app: pgweb
+        name: pgweb
+    spec:
+      containers:
+        - name: pgweb
+          image: sosedoff/pgweb:0.14.2
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: pgweb-config

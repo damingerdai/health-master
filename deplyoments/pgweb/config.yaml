@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  PGWEB_AUTH_PASS: "12345"
+  PGWEB_AUTH_USER: admin
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: pgweb-config
+  namespace: health-master-namespace
