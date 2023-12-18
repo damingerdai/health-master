@@ -45,6 +45,6 @@
     "prettify": "^0.1.7",
     "sass": "^1.55.0",
     "typescript": "5.2.2",
-    "vercel": "^31.0.0"
+    "vercel": "^32.0.0"
   }
 }
