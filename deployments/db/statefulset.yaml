@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:15.0
+          image: postgres:16.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
