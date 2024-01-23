@@ -90,20 +90,25 @@ export const UserBloodPressureForm: React.FC = () => {
         <Divider borderColor="gray.300" />
         <Box>
           {isLoading && (
-            <Center>
+            <Center my={8}>
               <Spinner size="xl" />
             </Center>
           )}
-          {!isLoading && data?.length > 0 && (
-            <UserBloodPressureList
-              userBloodPressures={data}
-              onDeleteChange={() => {
-                setPage(1);
-                mutate();
-              }}
-            />
-          )}
-          {!isLoading && data?.length === 0 && <Box h={5} fontSize={24} textAlign="center">没有血压记录</Box>}
+          {
+            !isLoading && (
+            <Box>
+              {data?.length > 0 ? (
+                <UserBloodPressureList
+                  userBloodPressures={data}
+                  onDeleteChange={() => {
+                    setPage(1);
+                    mutate();
+                  }}
+                />
+              ) : (<Box h={5} my={8} fontSize={24} textAlign="center">没有血压记录</Box>)}
+            </Box>
+            )
+          }
         </Box>
         {!(!isLoading && data?.length === 0) && (
           <Pagination

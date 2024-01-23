@@ -2,7 +2,7 @@ import {
   Box, Button, useColorMode, useColorModeValue,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { IoSunny, IoMoon } from 'react-icons/io5';
 import { useSystemColorMode } from '../hooks/useSystemColorMode';
 
@@ -58,7 +58,7 @@ export const ToggleThemeButton: React.FC = () => {
     });
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setColorMode(systemColorMode);
   }, [setColorMode, systemColorMode]);
 

@@ -2,7 +2,6 @@ package setting
 
 import (
 	"fmt"
-	"net/url"
 	"reflect"
 	"strings"
 	"time"
@@ -94,7 +93,7 @@ func (s *DatabaseSettingS) DBConnString() string {
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Shanghai",
 		s.Host,
 		s.User,
-		url.QueryEscape(s.Password),
+		s.Password,
 		s.DB,
 		s.Port,
 		util.If(s.SSL, "require", "disable"))
