@@ -21,7 +21,9 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.build-docker.outputs.digest }}
       - name: Save docker image to tar file
-        run: docker save health-master:${{ github.sha }} -o health-master.tar
+        run: |
+          docker save health-master:${{ github.sha }} -o health-master.tar
+          chmod 664 health-master.tar
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -41,6 +43,3 @@ jobs:
             docker load -o health-master.tar; \
             kubectl set image deployment/health-master-api health-master-api=health-master:${{ github.sha }} -n health-master-namespace \
             kubectl rollout status deployment/health-master-api -n health-master-namespace
-            
-
-            
