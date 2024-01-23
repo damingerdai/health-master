@@ -68,8 +68,11 @@ spec:
           image: redis:7.2.4-alpine3.19
           resources:
             requests:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           command:
             - redis-server
             - /etc/redis/redis.conf
