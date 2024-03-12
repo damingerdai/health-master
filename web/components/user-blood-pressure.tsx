@@ -35,7 +35,7 @@ export const UserBloodPressureForm: React.FC = () => {
       data: { data: UserBloodPressures; count: number };
     }>({
       method: 'GET',
-      url: '/api/user_blood_pressures',
+      url: '/api/user-blood-pressures',
       params: {
         page,
         limit: 5,
@@ -47,7 +47,7 @@ export const UserBloodPressureForm: React.FC = () => {
     data: list,
     isLoading,
     mutate,
-  } = useSWR(`api/user_blood_pressures?page=${page}`, fetcher);
+  } = useSWR(`api/user-blood-pressures?page=${page}`, fetcher);
   const { data, count: sum } = list ?? { data: [], count: 0 };
 
   useEffect(() => {

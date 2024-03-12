@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { useCallback, useState } from 'react';
@@ -5,7 +7,7 @@ import useSWR from 'swr';
 import { AuthContext } from '@/hooks/authContext';
 import { request } from '@/lib/request';
 import { getToken } from '@/lib/token';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useSetAtom } from 'jotai';
 import { userAtom } from '@/store/user';
 
@@ -20,13 +22,18 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
 
   const signin = useCallback((userToken: string, callback?: VoidFunction) => {
     setTrigger((i) => i + 1);
-    localStorage.setItem('user_token', userToken);
-    localStorage.removeItem('requestId');
+    if (localStorage) {
+      localStorage.setItem('user_token', userToken);
+      localStorage.removeItem('requestId');
+    }
+
     if (callback) callback();
   }, []);
 
   const signout = useCallback((callback?: VoidFunction) => {
-    localStorage.removeItem('user_token');
+    if (localStorage) {
+      localStorage.removeItem('user_token');
+    }
     if (callback) {
       callback();
     }

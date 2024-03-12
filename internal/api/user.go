@@ -42,6 +42,7 @@ func CreateUser(c *gin.Context) {
 			res.ToErrorResponse(errcode.CreateUserError)
 			return err
 		}
+		fullUser.Password = ""
 		res.ToResponse(fullUser)
 
 		return nil
@@ -73,6 +74,7 @@ func GetUser(c *gin.Context) {
 		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
+	user.Password = ""
 	res.ToResponse(user)
 
 }
