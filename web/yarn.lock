@@ -3604,9 +3604,9 @@ iterator.prototype@^1.1.2:
     set-function-name "^2.0.1"
 
 jotai@^2.0.2:
-  version "2.5.1"
-  resolved "https://registry.npmmirror.com/jotai/-/jotai-2.5.1.tgz#eed05a32a4ac1264c531a77e86478f7ad3197ca3"
-  integrity sha512-vanPCCSuHczUXNbVh/iUunuMfrWRL4FdBtAbTRmrfqezJcKb8ybBTg8iivyYuUHapjcDETyJe1E4inlo26bVHA==
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-2.7.1.tgz#5d0db56e75375d4f41a2e9f1a23750e9e5d8cb24"
+  integrity sha512-bsaTPn02nFgWNP6cBtg/htZhCu4s0wxqoklRHePp6l/vlsypR9eLn7diRliwXYWMXDpPvW/LLA2afI8vwgFFaw==
 
 js-prettify@~1.4.0:
   version "1.4.0"
