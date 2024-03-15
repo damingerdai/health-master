@@ -7,7 +7,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/jackc/pgx-gofrs-uuid v0.0.0-20230224015001-1d428863c2e2
-	github.com/jackc/pgx/v5 v5.5.2
+	github.com/jackc/pgx/v5 v5.5.4
 	github.com/joho/godotenv v1.5.1
 	github.com/juju/ratelimit v1.0.2
 	github.com/mssola/user_agent v0.6.0
