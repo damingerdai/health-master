@@ -38,7 +38,7 @@ UserBloodPressureListProps
     try {
       await request({
         method: 'DELETE',
-        url: `/api/user_blood_pressure/${ubp.id}`,
+        url: `/api/user-blood-pressure/${ubp.id}`,
       });
       toastInstance({
         title: '删除成功',

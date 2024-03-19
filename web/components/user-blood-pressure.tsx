@@ -76,7 +76,7 @@ export const UserBloodPressureForm: React.FC = () => {
             onClick={async () => {
               const { downloadUrl } = await request({
                 method: 'POST',
-                url: '/api/user_blood_pressure/download',
+                url: '/api/user-blood-pressure/download',
                 data: {
                   userId: currentUser.id,
                 },
