@@ -44,7 +44,7 @@
     "prettier": "^3.0.0",
     "prettify": "^0.1.7",
     "sass": "^1.55.0",
-    "typescript": "5.2.2",
+    "typescript": "5.4.3",
     "vercel": "^31.0.0"
   }
 }
