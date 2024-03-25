@@ -5,7 +5,7 @@ Server:
   WriteTimeout: 60s
 Database:
   Host: 127.0.0.1
-  Port: 6543
+  Port: 5432
   User: postgres
   Password: 123456
   DB: postgres

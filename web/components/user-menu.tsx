@@ -13,7 +13,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { logout as doLogout, request } from '@/lib/request';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { FiLogOut } from 'react-icons/fi';
 import { FaUser } from 'react-icons/fa';

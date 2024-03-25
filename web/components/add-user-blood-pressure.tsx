@@ -71,7 +71,7 @@ AddUserBloodPressureModalProps
       delete data.logTime;
       await request({
         method: 'post',
-        url: 'api/user_blood_pressure',
+        url: 'api/user-blood-pressure',
         data,
       });
 

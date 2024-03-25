@@ -51,7 +51,9 @@ fclient.interceptors.response.use((response) => {
   } else if (response && response.data) {
     const res = response.data;
     if (res.code === 10000003 || res.code === 10000006) {
-      window.location.href = '/login';
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
     }
   }
 
@@ -65,12 +67,14 @@ export async function request<T = any>(
     const data = await fclient<T>(options);
     return (data.data) as T;
   } catch (err: any) {
-    if (err?.response?.status === 401) {
-      window.location.href = '/login';
-    } else if (err?.response?.status === 403) {
-      window.location.href = '/login';
-    } else if (err?.response?.status === 404) {
-      window.location.href = '/login';
+    if (typeof window !== 'undefined') {
+      if (err?.response?.status === 401) {
+        window.location.href = '/login';
+      } else if (err?.response?.status === 403) {
+        window.location.href = '/login';
+      } else if (err?.response?.status === 404) {
+        window.location.href = '/login';
+      }
     }
     if (err?.response) {
       throw err.response.data || '';
