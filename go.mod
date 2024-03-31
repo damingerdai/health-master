@@ -1,6 +1,6 @@
 module github.com/damingerdai/health-master
 
-go 1.22
+go 1.22.1
 
 require (
 	github.com/gin-gonic/gin v1.9.1
