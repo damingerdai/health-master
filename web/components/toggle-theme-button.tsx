@@ -1,6 +1,8 @@
 'use client';
 
-import { Box, Button, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box, Button, useColorMode, useColorModeValue,
+} from '@chakra-ui/react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { IoSunny, IoMoon } from 'react-icons/io5';
@@ -20,7 +22,7 @@ export const ToggleThemeButton: React.FC = () => {
   const bg = useColorModeValue('rgb(253 186 116 / 1)', 'rgba(82 82 91 / 1)');
 
   const viewTransitionAnimate = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     const x = event.clientX;
     const y = event.clientY;
@@ -28,7 +30,7 @@ export const ToggleThemeButton: React.FC = () => {
       // eslint-disable-next-line no-restricted-globals
       Math.max(x, innerWidth - x),
       // eslint-disable-next-line no-restricted-globals
-      Math.max(y, innerHeight - y)
+      Math.max(y, innerHeight - y),
     );
     const isDark = colorMode === 'dark';
     const root = document.documentElement;
@@ -52,7 +54,7 @@ export const ToggleThemeButton: React.FC = () => {
           pseudoElement: isDark
             ? '::view-transition-old(root)'
             : '::view-transition-new(root)',
-        }
+        },
       );
       toggleColorMode();
     });
@@ -72,7 +74,7 @@ export const ToggleThemeButton: React.FC = () => {
       fontSize="1rem"
       bg={bg}
     >
-      {themes.map(theme => {
+      {themes.map((theme) => {
         const checked = colorMode === theme;
         return (
           <Button

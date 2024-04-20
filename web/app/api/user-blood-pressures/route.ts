@@ -10,11 +10,11 @@ export function GET(req: NextRequest) {
       method: 'GET',
       url: `/api/v1/user-blood-pressures${req.nextUrl.search}`,
     })
-    .then(resp => {
+    .then((resp) => {
       if (resp.data && !resp?.data?.data) {
         resp.data.data = [];
       }
       return NextResponse.json(resp);
     })
-    .catch(err => NextResponse.json(err, { status: 500 }));
+    .catch((err) => NextResponse.json(err, { status: 500 }));
 }

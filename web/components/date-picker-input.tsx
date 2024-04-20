@@ -29,13 +29,17 @@ interface IDatePickerInputProps extends InputProps {
   valueChange?: (val: string[]) => void;
 }
 
-export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
-  const { name, display, valueChange, ...rest } = props;
-  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
+export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
+  const {
+    name, display, valueChange, ...rest
+  } = props;
+  const {
+    isOpen, onOpen, onClose, onToggle,
+  } = useDisclosure();
   const [field, meta, helpers] = useField(name);
   const currentDate = new Date();
   const [years] = useState<string[]>(
-    generateNumberArray(1975, currentDate.getFullYear())
+    generateNumberArray(1975, currentDate.getFullYear()),
   );
   const [months] = useState<string[]>(generateNumberArray(1, 12));
   const [days, setDays] = useState<string[]>(generateNumberArray(1, 31));
@@ -49,7 +53,7 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
 
   const displayValue = useMemo(
     () => `${value[0]}-${value[1]}-${value[2]}`,
-    [value]
+    [value],
   );
 
   useEffect(() => {
@@ -58,8 +62,8 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
     if (newMonth === '02') {
       const yearValue = parseInt(newYear, 10);
       if (
-        (yearValue % 4 === 0 && yearValue % 100 !== 0) ||
-        yearValue % 400 === 0
+        (yearValue % 4 === 0 && yearValue % 100 !== 0)
+        || yearValue % 400 === 0
       ) {
         setDays(generateNumberArray(1, 29));
       } else {
@@ -97,7 +101,7 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
         onClose={onClose}
         options={options}
         value={value}
-        onValueChange={val => {
+        onValueChange={(val) => {
           setValue([...val]);
           helpers.setTouched(true);
         }}

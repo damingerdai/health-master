@@ -1,4 +1,6 @@
-import { Avatar, Box, Divider, Flex, Text } from '@chakra-ui/react';
+import {
+  Avatar, Box, Divider, Flex, Text,
+} from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import * as React from 'react';
 import { ProtectRoute } from '@/components/protect-route';
@@ -8,7 +10,9 @@ import { AuthProvider } from '@/components/auth-provider';
 
 const Profile: NextPage = () => {
   const currentUser = useAtomValue(userAtom);
-  const { username, firstName, lastName, gender } = currentUser;
+  const {
+    username, firstName, lastName, gender,
+  } = currentUser;
 
   return (
     <AuthProvider>

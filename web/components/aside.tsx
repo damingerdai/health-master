@@ -16,12 +16,12 @@ export const Aside: React.FC = () => {
 
   const onClose = useCallback(
     () => setDrawserStatus(false),
-    [setDrawserStatus]
+    [setDrawserStatus],
   );
 
   const isDrawerMode = useBreakpointValue(
     { base: true, sm: false },
-    { ssr: true }
+    { ssr: true },
   );
 
   return (
