@@ -4,7 +4,20 @@ import { PasswordInput } from '@/components/password-input';
 import { toastInstance } from '@/components/toast';
 import { request } from '@/lib/request';
 import {
-  Box, Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Radio, RadioGroup, Stack, useColorModeValue,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Heading,
+  Input,
+  Link,
+  Radio,
+  RadioGroup,
+  Stack,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -108,7 +121,12 @@ export default function Register() {
                 onSubmit={handleSubmit}
               >
                 {({
-                  values, errors, touched, isSubmitting, handleChange, setFieldValue,
+                  values,
+                  errors,
+                  touched,
+                  isSubmitting,
+                  handleChange,
+                  setFieldValue,
                 }) => (
                   <Form>
                     <Stack spacing={4}>
@@ -143,7 +161,9 @@ export default function Register() {
                           value={values.firstName}
                         />
                         {!!errors.firstName && touched.firstName ? (
-                          <FormErrorMessage>{errors.firstName}</FormErrorMessage>
+                          <FormErrorMessage>
+                            {errors.firstName}
+                          </FormErrorMessage>
                         ) : (
                           <FormHelperText>请输入你的姓</FormHelperText>
                         )}
@@ -166,7 +186,9 @@ export default function Register() {
                           <FormHelperText>请输入你的名</FormHelperText>
                         )}
                       </FormControl>
-                      <FormControl isInvalid={!!errors.gender && touched.gender}>
+                      <FormControl
+                        isInvalid={!!errors.gender && touched.gender}
+                      >
                         <FormLabel htmlFor="gender">性别</FormLabel>
                         <RadioGroup
                           id="gender"
@@ -207,7 +229,9 @@ export default function Register() {
                           !!errors.confirmPassword && touched.confirmPassword
                         }
                       >
-                        <FormLabel htmlFor="confirmPassword">确认密码</FormLabel>
+                        <FormLabel htmlFor="confirmPassword">
+                          确认密码
+                        </FormLabel>
                         <PasswordInput
                           id="confirmPassword"
                           name="confirmPassword"
@@ -233,7 +257,6 @@ export default function Register() {
                         >
                           注册
                         </Button>
-
                       </Stack>
                       <Box mt={4}>
                         已有账号？

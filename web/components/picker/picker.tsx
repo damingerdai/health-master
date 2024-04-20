@@ -29,7 +29,13 @@ interface PickerProps {
 
 export const Picker: React.FC<PickerProps> = (props) => {
   const {
-    confirmText, cancelText, isOpen, onClose, onOpen, options, onValueChange,
+    confirmText,
+    cancelText,
+    isOpen,
+    onClose,
+    onOpen,
+    options,
+    onValueChange,
   } = props;
 
   const [values, setValues] = useState<string[]>([]);
@@ -91,20 +97,20 @@ export const Picker: React.FC<PickerProps> = (props) => {
                 'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
             }}
           >
-            {
-              times(options.length).map((i) => (
-                <PickerColum
-                  key={i}
-                  options={options[i]}
-                  value={values[i]}
-                  onChange={(val) => {
-                    const newValues = Array.isArray(values) ? [...values] : [values];
-                    newValues[i] = val;
-                    setValues(newValues);
-                  }}
-                />
-              ))
-            }
+            {times(options.length).map((i) => (
+              <PickerColum
+                key={i}
+                options={options[i]}
+                value={values[i]}
+                onChange={(val) => {
+                  const newValues = Array.isArray(values)
+                    ? [...values]
+                    : [values];
+                  newValues[i] = val;
+                  setValues(newValues);
+                }}
+              />
+            ))}
             <Box
               pos="absolute"
               top="50%"

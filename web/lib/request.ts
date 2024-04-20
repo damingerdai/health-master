@@ -20,52 +20,58 @@ fclient.interceptors.request.use((config) => {
   return config;
 });
 
-fclient.interceptors.response.use((response) => {
-  const { status } = response;
-  if ((status < 200 || (status >= 300 && status !== -302)) && !toastInstance.isActive('SERVICE_ERROR')) {
-    toastInstance({
-      id: 'SERVICE_ERROR',
-      title: '系统内部异常 - 请稍微再试',
-      position: 'bottom',
-      status: 'error',
-      duration: 9000,
-      isClosable: true,
-    });
-  }
+fclient.interceptors.response.use(
+  (response) => {
+    const { status } = response;
+    if (
+      (status < 200 || (status >= 300 && status !== -302))
+      && !toastInstance.isActive('SERVICE_ERROR')
+    ) {
+      toastInstance({
+        id: 'SERVICE_ERROR',
+        title: '系统内部异常 - 请稍微再试',
+        position: 'bottom',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
 
-  return { ...response };
-}, (err) => {
-  const { code, message, response } = err;
-  if (
-    (code === 'ECONNABORTED' || message === 'Network Error')
-    && !toastInstance.isActive('NETWORK_ERROR')
-  ) {
-    toastInstance({
-      id: 'NETWORK_ERROR',
-      title: '网络超时 - 刷新页面以恢复',
-      position: 'bottom',
-      status: 'error',
-      duration: 9000,
-      isClosable: true,
-    });
-  } else if (response && response.data) {
-    const res = response.data;
-    if (res.code === 10000003 || res.code === 10000006) {
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+    return { ...response };
+  },
+  (err) => {
+    const { code, message, response } = err;
+    if (
+      (code === 'ECONNABORTED' || message === 'Network Error')
+      && !toastInstance.isActive('NETWORK_ERROR')
+    ) {
+      toastInstance({
+        id: 'NETWORK_ERROR',
+        title: '网络超时 - 刷新页面以恢复',
+        position: 'bottom',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (response && response.data) {
+      const res = response.data;
+      if (res.code === 10000003 || res.code === 10000006) {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
       }
     }
-  }
 
-  return Promise.reject(err);
-});
+    return Promise.reject(err);
+  },
+);
 
 export async function request<T = any>(
   options: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const data = await fclient<T>(options);
-    return (data.data) as T;
+    return data.data as T;
   } catch (err: any) {
     if (typeof window !== 'undefined') {
       if (err?.response?.status === 401) {
@@ -85,9 +91,16 @@ export async function request<T = any>(
 }
 
 // eslint-disable-next-line consistent-return
-export const login = async (username: string, password: string): Promise<{ code: number, token: AccessToken, data: User }> => {
+export const login = async (
+  username: string,
+  password: string,
+): Promise<{ code: number; token: AccessToken; data: User }> => {
   try {
-    const { data } = await fclient<{ code: number, token: AccessToken, data: User }>({
+    const { data } = await fclient<{
+      code: number;
+      token: AccessToken;
+      data: User;
+    }>({
       method: 'POST',
       url: '/api/login',
       headers: {

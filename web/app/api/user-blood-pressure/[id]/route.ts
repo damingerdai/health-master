@@ -1,7 +1,10 @@
 import { httpClient } from '@/lib/http-client';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
   const { id } = params;
   const authorization = req.headers.get('Authorization');
   try {

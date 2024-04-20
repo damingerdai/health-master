@@ -16,7 +16,9 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => (
       minH="calc(100vh - 56px)"
     >
       <Aside />
-      <Box as="main" w="100%">{children}</Box>
+      <Box as="main" w="100%">
+        {children}
+      </Box>
     </Box>
   </>
 );

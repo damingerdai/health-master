@@ -32,7 +32,14 @@ export const NavItem: React.FC<React.PropsWithChildren<NavItemProps>> = ({
         }}
         {...rest}
       >
-        {icon && <Icon mr="4" fontSize="16" _groupHover={{ color: hoverColor }} as={icon} />}
+        {icon && (
+          <Icon
+            mr="4"
+            fontSize="16"
+            _groupHover={{ color: hoverColor }}
+            as={icon}
+          />
+        )}
         {children}
       </Flex>
     </Link>

@@ -11,9 +11,9 @@ import {
 import * as React from 'react';
 
 interface DeleteUserBloodPressureModalProps {
-  isOpen: boolean
-  onClose: () => void
-  confirm: () => void
+  isOpen: boolean;
+  onClose: () => void;
+  confirm: () => void;
 }
 
 export const DeleteUserBloodPressureModal: React.FC<

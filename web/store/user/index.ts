@@ -5,7 +5,7 @@ interface UserState {
   username: string;
   firstName: string;
   lastName: string;
-  gender: string
+  gender: string;
 }
 
 export const initialUserState: UserState = {

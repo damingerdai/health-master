@@ -28,7 +28,10 @@ export class HttpClient {
     }
   }
 
-  public async login(username: string, password: string): Promise<TokenResponse & DataResponse<User>> {
+  public async login(
+    username: string,
+    password: string,
+  ): Promise<TokenResponse & DataResponse<User>> {
     try {
       const { data: tokenRes } = await this.axiosInstance<TokenResponse>({
         method: 'POST',

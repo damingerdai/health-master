@@ -96,7 +96,9 @@ export const ToggleThemeButton: React.FC = () => {
             _hover={{
               bgColor: checked ? 'rgb(255 255 255 / 1)' : 'transparent',
             }}
-            aria-label={theme === 'light' ? 'switch to light mode' : 'switch to dark mode'}
+            aria-label={
+              theme === 'light' ? 'switch to light mode' : 'switch to dark mode'
+            }
             // onClick={toggleColorMode}
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();

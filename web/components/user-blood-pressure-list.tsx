@@ -13,13 +13,16 @@ import { zhCN } from 'date-fns/locale';
 import * as React from 'react';
 import { useState } from 'react';
 import { TableHeader } from '@/components/table';
-import { UserBloodPressure, UserBloodPressures } from '@/type/user-blood-pressure';
+import {
+  UserBloodPressure,
+  UserBloodPressures,
+} from '@/type/user-blood-pressure';
 import { request } from '@/lib/request';
 import { DeleteUserBloodPressureModal } from './delete-user-blood-pressure';
 import { toastInstance } from './toast';
 
 interface UserBloodPressureListProps {
-  userBloodPressures: UserBloodPressures,
+  userBloodPressures: UserBloodPressures;
   onDeleteChange: () => void;
 }
 
@@ -28,7 +31,9 @@ UserBloodPressureListProps
 > = (props) => {
   const { userBloodPressures, onDeleteChange } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedUserBloodPressure, setSelecetedUserBloodPressure] = useState<UserBloodPressure | undefined>(undefined);
+  const [selectedUserBloodPressure, setSelecetedUserBloodPressure] = useState<
+  UserBloodPressure | undefined
+  >(undefined);
   const onDoClose = () => {
     onClose();
     setSelecetedUserBloodPressure(undefined);
@@ -47,7 +52,10 @@ UserBloodPressureListProps
       });
     } catch (ex: any) {
       toastInstance({
-        title: '删除失败', description: ex.message, status: 'error', isClosable: true,
+        title: '删除失败',
+        description: ex.message,
+        status: 'error',
+        isClosable: true,
       });
     }
     onDoClose();

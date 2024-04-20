@@ -51,14 +51,20 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
 
   const options = useMemo(() => [years, months, days], [years, months, days]);
 
-  const displayValue = useMemo(() => `${value[0]}-${value[1]}-${value[2]}`, [value]);
+  const displayValue = useMemo(
+    () => `${value[0]}-${value[1]}-${value[2]}`,
+    [value],
+  );
 
   useEffect(() => {
     const newYear = value[0];
     const newMonth = value[1];
     if (newMonth === '02') {
       const yearValue = parseInt(newYear, 10);
-      if ((yearValue % 4 === 0 && yearValue % 100 !== 0) || (yearValue % 400 === 0)) {
+      if (
+        (yearValue % 4 === 0 && yearValue % 100 !== 0)
+        || yearValue % 400 === 0
+      ) {
         setDays(generateNumberArray(1, 29));
       } else {
         setDays(generateNumberArray(1, 28));
@@ -72,6 +78,7 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = (props) => {
       valueChange(value);
     }
     helpers.setValue(value);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (

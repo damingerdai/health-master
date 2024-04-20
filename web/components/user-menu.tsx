@@ -60,24 +60,28 @@ export const UserMenu: React.FC = () => {
           <MenuGroup>
             <MenuItem>
               <Avatar mr="6px" size="sm" name={username} />
-              <span>
-                {`${firstName} ${lastName}`}
-              </span>
+              <span>{`${firstName} ${lastName}`}</span>
             </MenuItem>
           </MenuGroup>
           <MenuGroup>
             <MenuItem>
               <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FaUser} />
-              <Link href="/profile" color={linkBgColor}>个人主页</Link>
+              <Link href="/profile" color={linkBgColor}>
+                个人主页
+              </Link>
             </MenuItem>
           </MenuGroup>
           <MenuDivider />
           <MenuGroup>
             <MenuItem onClick={logout}>
-              <Icon mr="12px" ml=".5rem" size="sm" color="orange" as={FiLogOut} />
-              <Box as="span">
-                登出
-              </Box>
+              <Icon
+                mr="12px"
+                ml=".5rem"
+                size="sm"
+                color="orange"
+                as={FiLogOut}
+              />
+              <Box as="span">登出</Box>
             </MenuItem>
           </MenuGroup>
         </MenuList>

@@ -60,13 +60,18 @@ export const UserBloodPressureForm: React.FC = () => {
     <>
       <Breadcrumb mb="2">
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href="/">
-            血压记录
-          </BreadcrumbLink>
+          <BreadcrumbLink href="/">血压记录</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
       <Box bg={useColorModeValue('white', '#20202380')} borderRadius={6}>
-        <Flex justifyContent="flex-end" py="2" pr="2" borderLeftWidth="4px" borderLeftColor="orange.500" borderLeftStyle="solid">
+        <Flex
+          justifyContent="flex-end"
+          py="2"
+          pr="2"
+          borderLeftWidth="4px"
+          borderLeftColor="orange.500"
+          borderLeftStyle="solid"
+        >
           <Button bg="tomato" onClick={onOpen} mr={1}>
             添加
           </Button>
@@ -94,8 +99,7 @@ export const UserBloodPressureForm: React.FC = () => {
               <Spinner size="xl" />
             </Center>
           )}
-          {
-            !isLoading && (
+          {!isLoading && (
             <Box>
               {data?.length > 0 ? (
                 <UserBloodPressureList
@@ -105,10 +109,13 @@ export const UserBloodPressureForm: React.FC = () => {
                     mutate();
                   }}
                 />
-              ) : (<Box h={5} my={8} fontSize={24} textAlign="center">没有血压记录</Box>)}
+              ) : (
+                <Box h={5} my={8} fontSize={24} textAlign="center">
+                  没有血压记录
+                </Box>
+              )}
             </Box>
-            )
-          }
+          )}
         </Box>
         {!(!isLoading && data?.length === 0) && (
           <Pagination

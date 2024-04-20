@@ -78,10 +78,7 @@ const Login: NextPage = () => {
         justify="center"
         p={4}
       >
-        <Flex
-          mx="auto"
-          maxW="lg"
-        >
+        <Flex mx="auto" maxW="lg">
           <Box w="100%" p={4} mt={{ md: '150px' }}>
             <Flex
               direction="column"

@@ -54,10 +54,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
     return res.data;
   };
 
-  const {
-    data: currentUser,
-    isLoading: loadingCurrentUser,
-  } = useSWR('api/user', fetcher);
+  const { data: currentUser, isLoading: loadingCurrentUser } = useSWR(
+    'api/user',
+    fetcher,
+  );
 
   const [value, setValue] = useState({
     signin,

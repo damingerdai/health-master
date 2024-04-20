@@ -3,9 +3,9 @@ import { UserBloodPressures } from '@/type/user-blood-pressure';
 import { atom } from 'jotai';
 
 interface UserBloodPressureState {
-  userBloodPressuresStatus: RequestStatus,
-  userBloodPressures: UserBloodPressures,
-  count: number
+  userBloodPressuresStatus: RequestStatus;
+  userBloodPressures: UserBloodPressures;
+  count: number;
 }
 
 const initialState: UserBloodPressureState = {

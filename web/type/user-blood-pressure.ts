@@ -7,8 +7,8 @@ export interface UserBloodPressure {
   systolicBloodPressure: number;
   pulse: number;
   user?: User;
-  createdAt?: Date,
-  logDatetime?: Date
+  createdAt?: Date;
+  logDatetime?: Date;
 }
 
 export type UserBloodPressures = UserBloodPressure[];

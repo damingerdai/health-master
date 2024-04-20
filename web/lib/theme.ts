@@ -46,5 +46,9 @@ const config = {
 };
 
 export const theme = extendTheme({
-  config, styles, components, fonts, colors,
+  config,
+  styles,
+  components,
+  fonts,
+  colors,
 });

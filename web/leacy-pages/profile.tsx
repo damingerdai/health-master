@@ -29,7 +29,6 @@ const Profile: NextPage = () => {
             <Text>性别：</Text>
             <Text>{gender}</Text>
           </Flex>
-
         </Box>
       </Box>
     </AuthProvider>

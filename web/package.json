@@ -9,7 +9,8 @@
     "build:static": "next build && next export",
     "start": "next start",
     "lint": "next lint",
-    "lint:ts": "eslint ./ --ext ts,tsx --fix"
+    "lint:ts": "eslint ./ --ext ts,tsx --fix",
+    "prettify": "prettier --write --log-level silent \"**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -42,7 +43,7 @@
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-next": "^14.1.4",
-    "prettier": "^3.0.0",
+    "prettier": "^3.2.5",
     "prettify": "^0.1.7",
     "sass": "^1.55.0",
     "typescript": "5.2.2",

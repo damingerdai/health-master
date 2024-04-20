@@ -3,7 +3,10 @@ const isSafari = () => navigator.userAgent.toLowerCase().indexOf('safari') > -1;
 
 export const downloadFile = (sUrl: string): boolean => {
   if (/(iP)/g.test(navigator.userAgent)) {
-    alert('Your device does not support files downloading. Please try again in desktop browser.');
+    // eslint-disable-next-line no-alert
+    alert(
+      'Your device does not support files downloading. Please try again in desktop browser.',
+    );
     return false;
   }
 

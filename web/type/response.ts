@@ -1,6 +1,6 @@
 import { AccessToken } from './token';
 
-export type ErrorResponse = { code: number, message };
+export type ErrorResponse = { code: number; message };
 
 export type TokenResponse = { token: AccessToken } | ErrorResponse;
 

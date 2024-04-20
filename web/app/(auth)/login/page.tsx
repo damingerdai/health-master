@@ -84,11 +84,7 @@ export default function Login() {
                 onSubmit={handleSubmit}
               >
                 {({
-                  values,
-                  errors,
-                  touched,
-                  handleChange,
-                  isSubmitting,
+                  values, errors, touched, handleChange, isSubmitting,
                 }) => (
                   <Form>
                     <Stack spacing={4}>
@@ -105,9 +101,7 @@ export default function Login() {
                           value={values.username}
                         />
                         {!!errors.username && touched.username ? (
-                          <FormErrorMessage>
-                            {errors.username}
-                          </FormErrorMessage>
+                          <FormErrorMessage>{errors.username}</FormErrorMessage>
                         ) : (
                           <FormHelperText>请输入你的用户名</FormHelperText>
                         )}
@@ -134,9 +128,7 @@ export default function Login() {
                           </InputRightElement>
                         </InputGroup>
                         {!!errors.password && touched.password ? (
-                          <FormErrorMessage>
-                            {errors.password}
-                          </FormErrorMessage>
+                          <FormErrorMessage>{errors.password}</FormErrorMessage>
                         ) : (
                           <FormHelperText>请输入你的密码</FormHelperText>
                         )}
@@ -157,7 +149,6 @@ export default function Login() {
                         <Link href="./register">点击创建</Link>
                       </Box>
                     </Stack>
-
                   </Form>
                 )}
               </Formik>

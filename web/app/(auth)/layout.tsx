@@ -22,7 +22,9 @@ export default function RootLayout({
           <ToggleThemeButton />
         </HStack>
       </Header>
-      <Box bg={bg} as="main" h="100%" minH="calc(100vh - 64px)">{children}</Box>
+      <Box bg={bg} as="main" h="100%" minH="calc(100vh - 64px)">
+        {children}
+      </Box>
     </>
   );
 }

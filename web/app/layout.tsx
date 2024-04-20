@@ -16,9 +16,7 @@ export default function RootLayout({
   return (
     <html lang="zh">
       <body className={fonts.inter.className}>
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
         <ToastContainer />
       </body>
     </html>

@@ -27,13 +27,14 @@ type ColorMode = 'dark' | 'light';
 
 const isClient = () => typeof window !== 'undefined';
 
-const getMatchMedia = (): MediaQueryList | undefined => (isClient()
-  ? window.matchMedia && window.matchMedia(MEDIA_QUERY)
-  : undefined);
+const getMatchMedia = (): MediaQueryList | undefined => (isClient() ? window.matchMedia && window.matchMedia(MEDIA_QUERY) : undefined);
 
 const getColorMode = (matchQueryList: MediaQueryList | undefined): ColorMode => (matchQueryList && matchQueryList.matches ? MODE_DARK : MODE_LIGHT);
 
-const getBindingEvents = (matchQueryList: MediaQueryList | undefined, handler: () => void): { bindEvent: () => void; unbindEvent: () => void } => {
+const getBindingEvents = (
+  matchQueryList: MediaQueryList | undefined,
+  handler: () => void,
+): { bindEvent: () => void; unbindEvent: () => void } => {
   if (matchQueryList && matchQueryList.addEventListener) {
     return {
       bindEvent: (): void => matchQueryList.addEventListener('change', handler),
@@ -48,17 +49,23 @@ const getBindingEvents = (matchQueryList: MediaQueryList | undefined, handler: (
 };
 
 export function useSystemColorMode(): ColorMode {
-  const [colorMode, setColorMode] = useState<ColorMode>(getColorMode(getMatchMedia()));
+  const [colorMode, setColorMode] = useState<ColorMode>(
+    getColorMode(getMatchMedia()),
+  );
 
   const handleChange = (): void => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    isClient() && window.requestAnimationFrame(() => setColorMode(getColorMode(getMatchMedia())));
+    isClient()
+      && window.requestAnimationFrame(() => setColorMode(getColorMode(getMatchMedia())));
   };
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (isClient()) {
-      const { bindEvent, unbindEvent } = getBindingEvents(getMatchMedia(), handleChange);
+      const { bindEvent, unbindEvent } = getBindingEvents(
+        getMatchMedia(),
+        handleChange,
+      );
 
       bindEvent();
 
