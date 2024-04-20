@@ -48,7 +48,7 @@ export default function Login() {
       const { token, data: user } = await login(username, password);
       localStorage.setItem('user_token', JSON.stringify(token, null, 2));
       setUserAtom(user);
-      router.push('/');
+      router.push('/dashboard');
     } catch (err) {
       console.error(err);
     }

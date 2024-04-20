@@ -1,25 +1,15 @@
-'use client';
-
-import { toastInstance } from '@/components/toast';
+import { GlobalLoading } from '@/components/loading';
 import {
-  Button, Center, Container, Text,
+  Container,
 } from '@chakra-ui/react';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
+  redirect('/login');
+
   return (
     <Container>
-      <Center>
-        <Text> Health Master App</Text>
-        <Button onClick={() => {
-          toastInstance({
-            title: 'hello world',
-            status: 'success',
-          });
-        }}
-        >
-          click
-        </Button>
-      </Center>
+      <GlobalLoading />
     </Container>
   );
 }
