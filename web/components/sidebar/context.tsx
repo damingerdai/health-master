@@ -3,11 +3,13 @@ import {
   BoxProps,
   CloseButton,
   Flex,
+  Spacer,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiHome } from 'react-icons/fi';
+import { CiSettings } from 'react-icons/ci';
 import { NavItem } from './item';
 
 interface SidebarContentProps extends BoxProps {
@@ -22,16 +24,16 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
 }) => (
   <Box
     as="nav"
+    display="flex"
+    flexDir="column"
     bg={useColorModeValue('white', 'black')}
     transition="3s ease"
     borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-    // w={{ base: 'full', md: 60 }}
     w="full"
     h="100%"
     __css={{
       textWrap: 'nowrap',
     }}
-    // pos="fixed"
     {...rest}
   >
     {hasTitle && (
@@ -42,13 +44,15 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
     )}
-    <Box>
+    <Flex flexDir="column" flexGrow="1" px={2}>
       <NavItem path="dashboard" icon={FiHome}>
         仪表盘
       </NavItem>
       <NavItem path="/blood-pressure" icon={FiHome}>
         血压管理
       </NavItem>
-    </Box>
+      <Spacer />
+      <NavItem path="/settings" icon={CiSettings}>设置</NavItem>
+    </Flex>
   </Box>
 );

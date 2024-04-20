@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { UserMenu } from '@/components/user-menu';
 
 export default function RootLayout({
   children,
@@ -70,20 +71,8 @@ export default function RootLayout({
           </Box>
           <Spacer />
           <HStack spacing={{ base: '1', md: '2' }}>
-            {/* <Text>{drawerMode}</Text> */}
-            {/* <Select
-              placeholder="Select option"
-              value={drawerMode}
-              onChange={(e) => {
-                const { value } = e.target;
-                setDrawerMode(value as 'side' | 'over' | 'push');
-              }}
-            >
-              <option value="side">Side</option>
-              <option value="over">Over</option>
-              <option value="push">Push</option>
-            </Select> */}
             <ToggleThemeButton />
+            <UserMenu />
           </HStack>
         </Header>
         <Flex bg={bg} as="main" h="calc(100vh - 64px)">

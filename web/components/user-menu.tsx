@@ -11,6 +11,7 @@ import {
   MenuList,
   Portal,
   Box,
+  Tooltip,
 } from '@chakra-ui/react';
 import { logout as doLogout, request } from '@/lib/request';
 import { useRouter } from 'next/navigation';
@@ -47,14 +48,16 @@ export const UserMenu: React.FC = () => {
 
   return (
     <Menu placement="bottom">
-      <MenuButton
-        cursor="pointer"
-        py={2}
-        transform="all 0.3s"
-        _focus={{ boxShadow: 'none' }}
-      >
-        <Avatar size="sm" name={username} />
-      </MenuButton>
+      <Tooltip label={`${firstName} ${lastName}`}>
+        <MenuButton
+          cursor="pointer"
+          py={2}
+          transform="all 0.3s"
+          _focus={{ boxShadow: 'none' }}
+        >
+          <Avatar size="sm" name={username} />
+        </MenuButton>
+      </Tooltip>
       <Portal>
         <MenuList maxW={{ base: '6rem', md: '8rem' }}>
           <MenuGroup>

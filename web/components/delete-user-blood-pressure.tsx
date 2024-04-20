@@ -32,7 +32,7 @@ DeleteUserBloodPressureModalProps
           <Button colorScheme="gray" mr={3} onClick={onClose}>
             取消
           </Button>
-          <Button variant="ghost" onClick={confirm}>
+          <Button variant="ghost" color="red" onClick={confirm}>
             确定
           </Button>
         </ModalFooter>

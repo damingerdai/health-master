@@ -102,7 +102,7 @@ export const UserBloodPressureForm: React.FC = () => {
             </Center>
           )}
           {!isLoading && (
-            <Box minH="200px">
+            <Box minH="100px">
               {data?.length > 0 ? (
                 <UserBloodPressureList
                   userBloodPressures={data}
