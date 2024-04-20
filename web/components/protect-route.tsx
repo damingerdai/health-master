@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export const ProtectRoute = (WrappedComponent) => function Wrapper(props) {
   const [authenticated, setAuthenticated] = useState(false);
@@ -17,6 +17,7 @@ export const ProtectRoute = (WrappedComponent) => function Wrapper(props) {
     };
     checkToken();
   }, []);
+  
   if (authenticated) {
     return <WrappedComponent {...props} />;
   }
