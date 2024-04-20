@@ -4,3 +4,4 @@ set -e
 
 echo '+web lint --check'
 yarn --cwd=web lint:ts
+yarn --cwd=web prettify
