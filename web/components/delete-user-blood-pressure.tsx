@@ -17,8 +17,8 @@ interface DeleteUserBloodPressureModalProps {
 }
 
 export const DeleteUserBloodPressureModal: React.FC<
-  DeleteUserBloodPressureModalProps
-> = props => {
+DeleteUserBloodPressureModalProps
+> = (props) => {
   const { isOpen, onClose, confirm } = props;
 
   return (

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     if (isErrorResponse(resp)) {
       return NextResponse.json(
         { code: -1, message: resp.message },
-        { status: 500 }
+        { status: 500 },
       );
     }
     const { token, data } = resp;

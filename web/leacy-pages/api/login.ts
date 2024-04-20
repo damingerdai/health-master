@@ -9,7 +9,7 @@ export const runtime = process.env.RUNTIME === 'cloudflare' ? 'edge' : 'nodejs';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   try {
     if (req.method === 'POST') {
@@ -17,7 +17,7 @@ export default async function handler(
       const { username, password } = headers;
       const resp = await httpClient.login(
         username as string,
-        password as string
+        password as string,
       );
       if (isErrorResponse(resp)) {
         res.status(500).json({ code: -1, message: resp.message });

@@ -1,4 +1,6 @@
-import { Flex, FlexProps, Icon, useColorModeValue } from '@chakra-ui/react';
+import {
+  Flex, FlexProps, Icon, useColorModeValue,
+} from '@chakra-ui/react';
 import { Link } from '@chakra-ui/next-js';
 import * as React from 'react';
 import { IconType } from 'react-icons/lib';

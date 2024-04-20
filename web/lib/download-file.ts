@@ -5,7 +5,7 @@ export const downloadFile = (sUrl: string): boolean => {
   if (/(iP)/g.test(navigator.userAgent)) {
     // eslint-disable-next-line no-alert
     alert(
-      'Your device does not support files downloading. Please try again in desktop browser.'
+      'Your device does not support files downloading. Please try again in desktop browser.',
     );
     return false;
   }

@@ -21,18 +21,20 @@ interface TimePickerInputProps extends InputProps {
   name: string;
 }
 
-export const TimePickerInput: React.FC<TimePickerInputProps> = props => {
+export const TimePickerInput: React.FC<TimePickerInputProps> = (props) => {
   const { display, name, ...rest } = props;
   const [field, meta, helpers] = useField(name);
-  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
+  const {
+    isOpen, onOpen, onClose, onToggle,
+  } = useDisclosure();
   const currentDate = new Date();
   const [value, setValue] = useState<string[]>([
     currentDate.getHours().toString(10).padStart(2, '0'),
     currentDate.getMinutes().toString(10).padStart(2, '0'),
   ]);
   const options = [
-    range(24).map(i => (i < 10 ? `0${i}` : i.toString(10))),
-    range(60).map(i => (i < 10 ? `0${i}` : i.toString(10))),
+    range(24).map((i) => (i < 10 ? `0${i}` : i.toString(10))),
+    range(60).map((i) => (i < 10 ? `0${i}` : i.toString(10))),
   ];
   const displayValue = useMemo(() => `${value[0]}:${value[1]}`, [value]);
 
@@ -60,7 +62,7 @@ export const TimePickerInput: React.FC<TimePickerInputProps> = props => {
         onClose={onClose}
         options={options}
         value={value}
-        onValueChange={val => {
+        onValueChange={(val) => {
           setValue([...val]);
           helpers.setTouched(true);
         }}

@@ -2,7 +2,9 @@
 
 import { Header } from '@/components/header';
 import { ToggleThemeButton } from '@/components/toggle-theme-button';
-import { Text, HStack, Spacer, Box, useColorModeValue } from '@chakra-ui/react';
+import {
+  Text, HStack, Spacer, Box, useColorModeValue,
+} from '@chakra-ui/react';
 
 export default function RootLayout({
   children,

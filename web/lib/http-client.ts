@@ -30,7 +30,7 @@ export class HttpClient {
 
   public async login(
     username: string,
-    password: string
+    password: string,
   ): Promise<TokenResponse & DataResponse<User>> {
     try {
       const { data: tokenRes } = await this.axiosInstance<TokenResponse>({

@@ -27,12 +27,12 @@ interface UserBloodPressureListProps {
 }
 
 export const UserBloodPressureList: React.FC<
-  UserBloodPressureListProps
-> = props => {
+UserBloodPressureListProps
+> = (props) => {
   const { userBloodPressures, onDeleteChange } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedUserBloodPressure, setSelecetedUserBloodPressure] = useState<
-    UserBloodPressure | undefined
+  UserBloodPressure | undefined
   >(undefined);
   const onDoClose = () => {
     onClose();
@@ -76,7 +76,7 @@ export const UserBloodPressureList: React.FC<
             </Tr>
           </Thead>
           <Tbody>
-            {userBloodPressures.map(ubp => (
+            {userBloodPressures.map((ubp) => (
               <Tr key={ubp.id}>
                 <Td>{`${ubp.user?.firstName} ${ubp.user?.lastName}`}</Td>
                 <Td>{`${ubp.diastolicBloodPressure} mmHg`}</Td>
@@ -85,8 +85,8 @@ export const UserBloodPressureList: React.FC<
                 <Td>
                   {ubp.logDatetime
                     ? format(new Date(ubp.logDatetime), 'PPPp', {
-                        locale: zhCN,
-                      })
+                      locale: zhCN,
+                    })
                     : '未知'}
                 </Td>
                 <Td>

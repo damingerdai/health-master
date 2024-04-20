@@ -41,7 +41,7 @@ export default function Login() {
 
   const handleSubmit = async (
     value: Record<'username' | 'password', string>,
-    { setSubmitting }
+    { setSubmitting },
   ) => {
     const { username, password } = value;
     try {
@@ -83,7 +83,9 @@ export default function Login() {
                 validationSchema={validationSchemas}
                 onSubmit={handleSubmit}
               >
-                {({ values, errors, touched, handleChange, isSubmitting }) => (
+                {({
+                  values, errors, touched, handleChange, isSubmitting,
+                }) => (
                   <Form>
                     <Stack spacing={4}>
                       <FormControl
@@ -119,7 +121,7 @@ export default function Login() {
                           <InputRightElement h="full">
                             <Button
                               variant="ghost"
-                              onClick={() => setShowPassword(p => !p)}
+                              onClick={() => setShowPassword((p) => !p)}
                             >
                               {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                             </Button>

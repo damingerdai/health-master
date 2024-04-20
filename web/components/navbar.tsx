@@ -15,11 +15,11 @@ import { drawerStatusAtom } from '@/store/drawer';
 import { ToggleThemeButton } from './toggle-theme-button';
 import { UserMenu } from './user-menu';
 
-export const Navbar: React.FC<FlexProps> = props => {
+export const Navbar: React.FC<FlexProps> = (props) => {
   const [drawserStatus, setDrawserStatus] = useAtom(drawerStatusAtom);
   const isDrawerMode = useBreakpointValue(
     { base: true, lg: false },
-    { ssr: true }
+    { ssr: true },
   );
 
   return (
