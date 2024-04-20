@@ -22,6 +22,7 @@ import {
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UserMenu } from '@/components/user-menu';
+import { AuthRequired } from '@/components/auth';
 
 export default function RootLayout({
   children,
@@ -76,7 +77,9 @@ export default function RootLayout({
           </HStack>
         </Header>
         <Flex bg={bg} as="main" h="calc(100vh - 64px)">
-          <Box w="100%">{children}</Box>
+          <Box w="100%">
+            <AuthRequired>{children}</AuthRequired>
+          </Box>
         </Flex>
       </Box>
     </Flex>

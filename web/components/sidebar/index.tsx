@@ -1,6 +1,4 @@
-import {
-  Box, Drawer, DrawerContent, useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
 import * as React from 'react';
 import { SidebarContent } from './context';
 import { Header } from './header';

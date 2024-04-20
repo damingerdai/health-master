@@ -9,7 +9,7 @@ const fclient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-fclient.interceptors.request.use((config) => {
+fclient.interceptors.request.use(config => {
   const tokenString = localStorage.getItem('user_token');
   if (tokenString) {
     const token = getToken();
@@ -21,11 +21,11 @@ fclient.interceptors.request.use((config) => {
 });
 
 fclient.interceptors.response.use(
-  (response) => {
+  response => {
     const { status } = response;
     if (
-      (status < 200 || (status >= 300 && status !== -302))
-      && !toastInstance.isActive('SERVICE_ERROR')
+      (status < 200 || (status >= 300 && status !== -302)) &&
+      !toastInstance.isActive('SERVICE_ERROR')
     ) {
       toastInstance({
         id: 'SERVICE_ERROR',
@@ -39,11 +39,11 @@ fclient.interceptors.response.use(
 
     return { ...response };
   },
-  (err) => {
+  err => {
     const { code, message, response } = err;
     if (
-      (code === 'ECONNABORTED' || message === 'Network Error')
-      && !toastInstance.isActive('NETWORK_ERROR')
+      (code === 'ECONNABORTED' || message === 'Network Error') &&
+      !toastInstance.isActive('NETWORK_ERROR')
     ) {
       toastInstance({
         id: 'NETWORK_ERROR',
@@ -63,11 +63,11 @@ fclient.interceptors.response.use(
     }
 
     return Promise.reject(err);
-  },
+  }
 );
 
 export async function request<T = any>(
-  options: AxiosRequestConfig,
+  options: AxiosRequestConfig
 ): Promise<T> {
   try {
     const data = await fclient<T>(options);
@@ -93,7 +93,7 @@ export async function request<T = any>(
 // eslint-disable-next-line consistent-return
 export const login = async (
   username: string,
-  password: string,
+  password: string
 ): Promise<{ code: number; token: AccessToken; data: User }> => {
   try {
     const { data } = await fclient<{

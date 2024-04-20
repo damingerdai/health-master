@@ -52,7 +52,9 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
         血压管理
       </NavItem>
       <Spacer />
-      <NavItem path="/settings" icon={CiSettings}>设置</NavItem>
+      <NavItem path="/settings" icon={CiSettings}>
+        设置
+      </NavItem>
     </Flex>
   </Box>
 );

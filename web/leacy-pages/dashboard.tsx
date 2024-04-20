@@ -1,9 +1,7 @@
 import { AuthProvider } from '@/components/auth-provider';
 import { Layout } from '@/components/layout';
 import { ProtectRoute } from '@/components/protect-route';
-import {
-  Box, Card, CardBody, CardHeader, Flex, Text,
-} from '@chakra-ui/react';
+import { Box, Card, CardBody, CardHeader, Flex, Text } from '@chakra-ui/react';
 import * as React from 'react';
 
 const Dashboard: React.FC = () => {
@@ -31,7 +29,7 @@ const Dashboard: React.FC = () => {
       <AuthProvider>
         <Box pb={8}>
           <Flex flexWrap="wrap">
-            {cards.map((card) => (
+            {cards.map(card => (
               <Box
                 key={card.name}
                 p={2}

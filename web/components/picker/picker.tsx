@@ -27,7 +27,7 @@ interface PickerProps {
   onValueChange?: (val: string | string[]) => void;
 }
 
-export const Picker: React.FC<PickerProps> = (props) => {
+export const Picker: React.FC<PickerProps> = props => {
   const {
     confirmText,
     cancelText,
@@ -97,12 +97,12 @@ export const Picker: React.FC<PickerProps> = (props) => {
                 'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
             }}
           >
-            {times(options.length).map((i) => (
+            {times(options.length).map(i => (
               <PickerColum
                 key={i}
                 options={options[i]}
                 value={values[i]}
-                onChange={(val) => {
+                onChange={val => {
                   const newValues = Array.isArray(values)
                     ? [...values]
                     : [values];
