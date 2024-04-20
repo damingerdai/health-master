@@ -14,7 +14,7 @@ interface HeaderProps extends FlexProps {
   onOpen: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = (props) => {
+export const Header: React.FC<HeaderProps> = props => {
   const { onOpen, ...rest } = props;
 
   return (

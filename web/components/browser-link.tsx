@@ -2,8 +2,8 @@ import { Box, LinkBoxProps } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
 export const BrowserLink: React.FC<
-React.PropsWithChildren<LinkBoxProps & { href: string }>
-> = (props) => {
+  React.PropsWithChildren<LinkBoxProps & { href: string }>
+> = props => {
   const { children, href, ...rest } = props;
 
   return (

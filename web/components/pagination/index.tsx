@@ -1,8 +1,6 @@
 /* eslint-disable react/no-array-index-key,no-nested-ternary, */
 import * as React from 'react';
-import {
-  Button, HStack, IconButton, Stack,
-} from '@chakra-ui/react';
+import { Button, HStack, IconButton, Stack } from '@chakra-ui/react';
 import { ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons';
 
 interface PaginationProps {
@@ -18,28 +16,28 @@ interface PaginationProps {
   nextIcon?: React.ReactElement;
   colorScheme?: string;
   fontWeight?:
-  | 'hairline'
-  | 'thin'
-  | 'light'
-  | 'normal'
-  | 'medium'
-  | 'semibold'
-  | 'bold'
-  | 'extrabold'
-  | 'black';
+    | 'hairline'
+    | 'thin'
+    | 'light'
+    | 'normal'
+    | 'medium'
+    | 'semibold'
+    | 'bold'
+    | 'extrabold'
+    | 'black';
   borderRadius?:
-  | 'none'
-  | 'sm'
-  | 'base'
-  | 'md'
-  | 'lg'
-  | 'xl'
-  | '2xl'
-  | '3xl'
-  | 'full';
+    | 'none'
+    | 'sm'
+    | 'base'
+    | 'md'
+    | 'lg'
+    | 'xl'
+    | '2xl'
+    | '3xl'
+    | 'full';
 }
 
-export const Pagination: React.FC<PaginationProps> = (props) => {
+export const Pagination: React.FC<PaginationProps> = props => {
   const {
     count,
     pageSize,
@@ -69,12 +67,14 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
     onPageChange(newPage);
   };
 
-  const shouldRender = (idx: number) => idx === page
-    || Math.abs(idx - page) <= margin
-    || idx === numberOfPages - 1
-    || idx === 0;
+  const shouldRender = (idx: number) =>
+    idx === page ||
+    Math.abs(idx - page) <= margin ||
+    idx === numberOfPages - 1 ||
+    idx === 0;
 
-  const shouldRenderEllipsis = (idx: number) => idx === page || Math.abs(idx - page) === margin + 1;
+  const shouldRenderEllipsis = (idx: number) =>
+    idx === page || Math.abs(idx - page) === margin + 1;
 
   return (
     <Stack p={5}>
@@ -87,7 +87,7 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
           variant={variant}
           aria-label="previous"
           icon={previousIcon}
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
             handlePageClick(page - 1);
           }}
@@ -95,45 +95,47 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
         />
         {Array(numberOfPages)
           .fill(0)
-          .map((_, i) => (shouldRender(i) ? (
-            <Button
-              key={i}
-              {...rest}
-              fontWeight={fontWeight}
-              borderRadius={borderRadius}
-              size={size}
-              variant={page === i ? selectedVariant : variant}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageClick(i);
-              }}
-              colorScheme={colorScheme}
-            >
-              {i + 1}
-            </Button>
-          ) : shouldRenderEllipsis(i) ? (
-            <Button
-              key={i}
-              {...rest}
-              fontWeight={fontWeight}
-              borderRadius={borderRadius}
-              size={size}
-              variant={variant}
-              pointerEvents="none"
-              colorScheme={colorScheme}
-            >
-              ...
-            </Button>
-          ) : (
-            <React.Fragment key={i} />
-          )))}
+          .map((_, i) =>
+            shouldRender(i) ? (
+              <Button
+                key={i}
+                {...rest}
+                fontWeight={fontWeight}
+                borderRadius={borderRadius}
+                size={size}
+                variant={page === i ? selectedVariant : variant}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageClick(i);
+                }}
+                colorScheme={colorScheme}
+              >
+                {i + 1}
+              </Button>
+            ) : shouldRenderEllipsis(i) ? (
+              <Button
+                key={i}
+                {...rest}
+                fontWeight={fontWeight}
+                borderRadius={borderRadius}
+                size={size}
+                variant={variant}
+                pointerEvents="none"
+                colorScheme={colorScheme}
+              >
+                ...
+              </Button>
+            ) : (
+              <React.Fragment key={i} />
+            )
+          )}
         <IconButton
           {...rest}
           fontWeight={fontWeight}
           borderRadius={borderRadius}
           aria-label="next"
           icon={nextIcon}
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
             handlePageClick(page + 1);
           }}

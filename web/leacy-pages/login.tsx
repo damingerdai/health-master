@@ -40,7 +40,7 @@ const Login: NextPage = () => {
   };
   const handleSubmit = async (
     value: Record<'username' | 'password', string>,
-    { setSubmitting },
+    { setSubmitting }
   ) => {
     const { username, password } = value;
     try {
@@ -142,7 +142,7 @@ const Login: NextPage = () => {
                             <InputRightElement h="full">
                               <Button
                                 variant="ghost"
-                                onClick={() => setShowPassword((p) => !p)}
+                                onClick={() => setShowPassword(p => !p)}
                               >
                                 {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                               </Button>

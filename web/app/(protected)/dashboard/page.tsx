@@ -1,9 +1,7 @@
 'use client';
 
 import { AuthProvider } from '@/components/auth-provider';
-import {
-  Box, Card, CardBody, CardHeader, Flex, Text,
-} from '@chakra-ui/react';
+import { Box, Card, CardBody, CardHeader, Flex, Text } from '@chakra-ui/react';
 import * as React from 'react';
 
 export default function Dashboard() {
@@ -30,7 +28,7 @@ export default function Dashboard() {
     <AuthProvider>
       <Box pb={8}>
         <Flex flexWrap="wrap">
-          {cards.map((card) => (
+          {cards.map(card => (
             <Box
               key={card.name}
               p={2}

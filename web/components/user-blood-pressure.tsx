@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Box,
   Button,
@@ -100,7 +102,7 @@ export const UserBloodPressureForm: React.FC = () => {
             </Center>
           )}
           {!isLoading && (
-            <Box>
+            <Box minH="200px">
               {data?.length > 0 ? (
                 <UserBloodPressureList
                   userBloodPressures={data}

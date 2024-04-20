@@ -46,8 +46,8 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
       <NavItem path="dashboard" icon={FiHome}>
         仪表盘
       </NavItem>
-      <NavItem path="/" icon={FiHome}>
-        首 页
+      <NavItem path="/blood-pressure" icon={FiHome}>
+        血压管理
       </NavItem>
     </Box>
   </Box>

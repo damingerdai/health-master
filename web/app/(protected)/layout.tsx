@@ -27,19 +27,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const { isOpen, onClose, onToggle } = useDisclosure({ defaultIsOpen: true });
   const bg = useColorModeValue('#f0f2f5', '#20202380');
-  const [drawerMode] = useState<'side' | 'over' | 'push'>(
-    'side',
-  );
+  const [drawerMode] = useState<'side' | 'over' | 'push'>('side');
 
   return (
     <Flex flexDir="row" w="100%">
       {drawerMode === 'side' && (
-        <motion.aside
-          initial={false}
-          animate={{ width: isOpen ? 320 : 0 }}
-        >
+        <motion.aside initial={false} animate={{ width: isOpen ? 320 : 0 }}>
           <SidebarContent onClose={onClose} hasTitle />
         </motion.aside>
       )}
@@ -66,6 +61,7 @@ export default function RootLayout({
         <Header bgColor="Background" position="sticky" top={0}>
           <IconButton
             aria-label="hamburger menu"
+            bg="transparent"
             icon={<HamburgerIcon />}
             onClick={onToggle}
           />

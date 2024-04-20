@@ -3,7 +3,7 @@
 import { Flex, FlexProps, useColorModeValue } from '@chakra-ui/react';
 import * as React from 'react';
 
-export const Header: React.FC<FlexProps> = (props) => (
+export const Header: React.FC<FlexProps> = props => (
   <Flex
     as="nav"
     px={4}

@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
   const token = getToken();
 
   const signin = useCallback((userToken: string, callback?: VoidFunction) => {
-    setTrigger((i) => i + 1);
+    setTrigger(i => i + 1);
     if (localStorage) {
       localStorage.setItem('user_token', userToken);
       localStorage.removeItem('requestId');
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
 
   const { data: currentUser, isLoading: loadingCurrentUser } = useSWR(
     'api/user',
-    fetcher,
+    fetcher
   );
 
   const [value, setValue] = useState({
