@@ -18,8 +18,8 @@ interface UserBloodPressureNumberInputProps extends NumberInputProps {
 }
 
 export const UserBloodPressureNumberInput: React.FC<
-UserBloodPressureNumberInputProps
-> = (props) => {
+  UserBloodPressureNumberInputProps
+> = props => {
   const { name, display, ...rest } = props;
 
   const [field, meta, helpers] = useField(name);
@@ -29,7 +29,7 @@ UserBloodPressureNumberInputProps
       <FormLabel>{display}</FormLabel>
       <NumberInput
         name={field.name}
-        onChange={(e) => {
+        onChange={e => {
           helpers.setValue(typeof e === 'string' ? parseInt(e, 10) : e);
         }}
         {...rest}

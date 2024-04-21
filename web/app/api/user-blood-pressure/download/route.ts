@@ -1,8 +1,9 @@
 import { httpClient } from '@/lib/http-client';
 import { NextRequest, NextResponse } from 'next/server';
 
-const baseURL = process.env.NEXT_PUBLIC_REACT_APP_BACKEND_DOWNLOAD_HOST
-  || process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST;
+const baseURL =
+  process.env.NEXT_PUBLIC_REACT_APP_BACKEND_DOWNLOAD_HOST ||
+  process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST;
 
 export async function POST(req: NextRequest) {
   const { userId } = await req.json();

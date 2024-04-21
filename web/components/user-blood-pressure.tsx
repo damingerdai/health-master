@@ -124,7 +124,7 @@ export const UserBloodPressureForm: React.FC = () => {
             pageSize={5}
             page={page - 1}
             count={count}
-            onPageChange={(newPage) => {
+            onPageChange={newPage => {
               setPage(newPage + 1);
             }}
           />

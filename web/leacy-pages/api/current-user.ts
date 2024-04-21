@@ -10,7 +10,7 @@ export const runtime = process.env.RUNTIME === 'cloudflare' ? 'edge' : 'nodejs';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   try {
     if (req.method === 'GET') {

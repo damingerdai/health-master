@@ -1,11 +1,10 @@
 'use client';
 
-import {
-  Box, Button, useColorMode, useColorModeValue,
-} from '@chakra-ui/react';
+import { Box, Button, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { IoSunny, IoMoon } from 'react-icons/io5';
+import gsap from 'gsap';
 import { useSystemColorMode } from '../hooks/useSystemColorMode';
 
 declare global {
@@ -22,7 +21,7 @@ export const ToggleThemeButton: React.FC = () => {
   const bg = useColorModeValue('rgb(253 186 116 / 1)', 'rgba(82 82 91 / 1)');
 
   const viewTransitionAnimate = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const x = event.clientX;
     const y = event.clientY;
@@ -30,7 +29,7 @@ export const ToggleThemeButton: React.FC = () => {
       // eslint-disable-next-line no-restricted-globals
       Math.max(x, innerWidth - x),
       // eslint-disable-next-line no-restricted-globals
-      Math.max(y, innerHeight - y),
+      Math.max(y, innerHeight - y)
     );
     const isDark = colorMode === 'dark';
     const root = document.documentElement;
@@ -44,17 +43,15 @@ export const ToggleThemeButton: React.FC = () => {
         `circle(0px at ${x}px ${y}px)`,
         `circle(${endRadius}px at ${x}px ${y}px)`,
       ];
-      document.documentElement.animate(
+      gsap.fromTo(
+        document.documentElement,
         {
-          clipPath: isDark ? [...clipPath].reverse() : clipPath,
+          '--view-transition-clip-path': isDark ? clipPath[1] : clipPath[0],
         },
         {
-          duration: 500,
-          easing: 'ease-in',
-          pseudoElement: isDark
-            ? '::view-transition-old(root)'
-            : '::view-transition-new(root)',
-        },
+          '--view-transition-clip-path': isDark ? clipPath[0] : clipPath[1],
+          ease: isDark ? 'elastic.in(1,0.3)' : 'elastic.out(1, 0.3)',
+        }
       );
       toggleColorMode();
     });
@@ -62,7 +59,8 @@ export const ToggleThemeButton: React.FC = () => {
 
   useEffect(() => {
     setColorMode(systemColorMode);
-  }, [setColorMode, systemColorMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [systemColorMode]);
 
   return (
     <Box
@@ -74,7 +72,7 @@ export const ToggleThemeButton: React.FC = () => {
       fontSize="1rem"
       bg={bg}
     >
-      {themes.map((theme) => {
+      {themes.map(theme => {
         const checked = colorMode === theme;
         return (
           <Button

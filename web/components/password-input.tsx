@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 
 interface PasswordInputProps extends InputProps {}
 
-export const PasswordInput: React.FC<PasswordInputProps> = (props) => {
+export const PasswordInput: React.FC<PasswordInputProps> = props => {
   const { type = 'password', ...rest } = props;
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -27,7 +27,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = (props) => {
     <InputGroup>
       <Input type={showPassword ? 'text' : 'password'} {...rest} />
       <InputRightElement h="full">
-        <Button variant="ghost" onClick={() => setShowPassword((p) => !p)}>
+        <Button variant="ghost" onClick={() => setShowPassword(p => !p)}>
           {showPassword ? <ViewIcon /> : <ViewOffIcon />}
         </Button>
       </InputRightElement>

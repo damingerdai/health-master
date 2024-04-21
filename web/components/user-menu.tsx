@@ -33,9 +33,7 @@ export const UserMenu: React.FC = () => {
   const linkBgColor = useColorModeValue('gray.800', 'gray.200');
 
   const { data: user } = useSWR('api/current-user', fetcher);
-  const {
-    id, username, firstName, lastName,
-  } = user ?? {};
+  const { id, username, firstName, lastName } = user ?? {};
 
   const logout = () => {
     doLogout();

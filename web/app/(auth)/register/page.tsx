@@ -45,13 +45,13 @@ export default function Register() {
       .required('请输入你的密码')
       .matches(
         /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
-        '密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间',
+        '密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间'
       ),
     confirmPassword: Yup.string()
       .required('请输入你的密码')
       .matches(
         /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
-        '密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间',
+        '密码只能由数字和字母组成，并且要同时含有数字和字母，且长度要在8-16位之间'
       ),
   });
 
@@ -108,11 +108,11 @@ export default function Register() {
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchemas}
-                validate={(values) => {
+                validate={values => {
                   if (
-                    values.password
-                    && values.confirmPassword
-                    && values.password !== values.confirmPassword
+                    values.password &&
+                    values.confirmPassword &&
+                    values.password !== values.confirmPassword
                   ) {
                     return { confirmPassword: '两次密码不一致' };
                   }
@@ -193,7 +193,7 @@ export default function Register() {
                         <RadioGroup
                           id="gender"
                           name="gender"
-                          onChange={(v) => setFieldValue('gender', v)}
+                          onChange={v => setFieldValue('gender', v)}
                           value={values.gender}
                         >
                           <Stack direction="row">
