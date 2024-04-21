@@ -63,7 +63,7 @@ UserBloodPressureListProps
 
   return (
     <>
-      <TableContainer className="table-responsive" whiteSpace="normal">
+      <TableContainer className="table-responsive" whiteSpace="normal" __css={{ textWrap: 'nowrap' }}>
         <Table variant="simple">
           <Thead>
             <Tr>
