@@ -13,7 +13,7 @@ export default function RootLayout({
 
   return (
     <>
-      <Header bgColor="Background" position="sticky" top={0}>
+      <Header zIndex="999" bgColor="Background" position="sticky" top={0}>
         <Text>Health Master</Text>
         <Spacer />
         <HStack spacing={{ base: '1', md: '2' }}>

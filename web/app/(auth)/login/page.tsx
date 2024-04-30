@@ -60,6 +60,7 @@ export default function Login() {
     <Flex
       bg={useColorModeValue('#f0f2f5', '#20202380')}
       h="100%"
+      minH="calc(100vh - 64px)"
       justify="center"
       p={4}
     >
