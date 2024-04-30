@@ -8,7 +8,7 @@ interface PaginationProps {
   count: number;
   pageSize: number;
   margin?: number;
-  onPageChange: (page: number) => any;
+  onPageChange: (page: number) => void;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   variant?: 'solid' | 'ghost' | 'outline' | 'link';
   selectedVariant?: 'solid' | 'ghost' | 'outline' | 'link';

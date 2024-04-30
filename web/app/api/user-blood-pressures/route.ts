@@ -14,6 +14,7 @@ export function GET(req: NextRequest) {
       if (resp.data && !resp?.data?.data) {
         resp.data.data = [];
       }
+
       return NextResponse.json(resp);
     })
     .catch(err => NextResponse.json(err, { status: 500 }));

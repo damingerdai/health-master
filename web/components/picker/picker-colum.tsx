@@ -88,6 +88,7 @@ export const PickerColum: React.FC<PickerColumProps> = props => {
     const touchY = e.targetTouches[0].pageY;
     if (!isMoving) {
       setIsMoving(true);
+
       return;
     }
     let nextScrollerTranslate = startScrollerTranslate + touchY - startTouchY;

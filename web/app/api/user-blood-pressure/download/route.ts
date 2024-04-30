@@ -18,5 +18,6 @@ export async function POST(req: NextRequest) {
 
   const { accessToken } = data;
   const downloadUrl = `${baseURL}/api/v1/user-blood-pressure/${userId}/export?accessToken=${accessToken}`;
+
   return NextResponse.json({ downloadUrl });
 }

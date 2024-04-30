@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
       );
     }
     const { token, data } = resp;
+
     return NextResponse.json({ code: 0, token, data });
   } catch (err) {
     return NextResponse.json(err, { status: 500 });

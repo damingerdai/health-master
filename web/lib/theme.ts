@@ -2,7 +2,7 @@ import { extendTheme } from '@chakra-ui/react';
 import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 
 const styles = {
-  global: (props: StyleFunctionProps | Record<string, any>) => ({
+  global: (props: StyleFunctionProps | Record<string, unknown>) => ({
     body: {
       // bg: mode('#f0e7db', '#202023')(props),
       bg: mode('#ffffff', '#202023')(props),
@@ -25,7 +25,7 @@ const components = {
     },
   },
   Link: {
-    baseStyle: (props: StyleFunctionProps | Record<string, any>) => ({
+    baseStyle: (props: StyleFunctionProps | Record<string, unknown>) => ({
       color: mode('#3d7aed', '#ff63c3')(props),
       textUnderlineOffset: 3,
     }),

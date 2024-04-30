@@ -66,12 +66,15 @@ fclient.interceptors.response.use(
   }
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function request<T = any>(
   options: AxiosRequestConfig
 ): Promise<T> {
   try {
     const data = await fclient<T>(options);
+
     return data.data as T;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (typeof window !== 'undefined') {
       if (err?.response?.status === 401) {
@@ -108,7 +111,9 @@ export const login = async (
         password,
       },
     });
+
     return data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     toastInstance.closeAll();
     toastInstance({

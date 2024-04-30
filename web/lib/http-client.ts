@@ -15,11 +15,13 @@ export class HttpClient {
     this.axiosInstance = axiosInstance;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async request<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
       const { data } = await this.axiosInstance<T>(config);
 
       return data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.response && err.response.data) {
         throw err.response.data;
@@ -57,6 +59,7 @@ export class HttpClient {
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw userRes;
       }
+
       return {
         code: 200,
         token: {
@@ -66,6 +69,7 @@ export class HttpClient {
           ...userRes.data,
         },
       };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.response && err.response.data) {
         return err.response.data;

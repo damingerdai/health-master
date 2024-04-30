@@ -87,6 +87,7 @@ export const AddUserBloodPressureModal: React.FC<
 
       onClose();
       setSubmitting(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toastInstance({
         id: 'SERVICE_ERROR',

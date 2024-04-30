@@ -25,9 +25,11 @@ export default async function handler(
       if (isErrorResponse(resp)) {
         if (resp.code === 10000006) {
           res.status(401).json(resp.message);
+
           return;
         }
         res.status(500).json(resp.message);
+
         return;
       }
       res.status(200).json(resp);

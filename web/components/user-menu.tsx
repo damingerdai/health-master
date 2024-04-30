@@ -26,6 +26,7 @@ export const UserMenu: React.FC = () => {
       method: 'GET',
       url: '/api/current-user',
     });
+
     return res.data;
   };
   const router = useRouter();

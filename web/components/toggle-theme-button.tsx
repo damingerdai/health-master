@@ -59,7 +59,6 @@ export const ToggleThemeButton: React.FC = () => {
 
   useEffect(() => {
     setColorMode(systemColorMode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [systemColorMode]);
 
   return (
@@ -74,6 +73,7 @@ export const ToggleThemeButton: React.FC = () => {
     >
       {themes.map(theme => {
         const checked = colorMode === theme;
+
         return (
           <Button
             key={theme}
@@ -102,6 +102,7 @@ export const ToggleThemeButton: React.FC = () => {
               event.preventDefault();
               if (!document || !('startViewTransition' in document)) {
                 toggleColorMode();
+
                 return;
               }
               viewTransitionAnimate(event);

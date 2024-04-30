@@ -1,8 +1,7 @@
+/* eslint-disable react/no-unknown-property */
 import * as React from 'react';
-import { memo } from 'react';
 
-// eslint-disable-next-line react/display-name
-export const Fonts: React.MemoExoticComponent<React.FC> = memo(() => (
+export const Fonts: React.MemoExoticComponent<React.FC> = React.memo(() => (
   <>
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <style jsx global>

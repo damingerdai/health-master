@@ -50,6 +50,7 @@ export const UserBloodPressureList: React.FC<
         status: 'success',
         isClosable: true,
       });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (ex: any) {
       toastInstance({
         title: '删除失败',
@@ -89,8 +90,8 @@ export const UserBloodPressureList: React.FC<
                 <Td>
                   {ubp.logDatetime
                     ? format(new Date(ubp.logDatetime), 'PPPp', {
-                        locale: zhCN,
-                      })
+                      locale: zhCN,
+                    })
                     : '未知'}
                 </Td>
                 <Td>

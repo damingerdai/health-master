@@ -69,6 +69,7 @@ export default function Register() {
         },
       });
       router.push('/login');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toastInstance({
         title: '注册报错',
@@ -116,6 +117,7 @@ export default function Register() {
                   ) {
                     return { confirmPassword: '两次密码不一致' };
                   }
+
                   return {};
                 }}
                 onSubmit={handleSubmit}

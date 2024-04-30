@@ -51,5 +51,6 @@ export const AuthRequired: React.FC<React.PropsWithChildren> = ({
       </Box>
     );
   }
+
   return children;
 };

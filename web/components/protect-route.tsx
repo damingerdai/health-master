@@ -22,5 +22,6 @@ export const ProtectRoute = WrappedComponent =>
     if (authenticated) {
       return <WrappedComponent {...props} />;
     }
+
     return null;
   };

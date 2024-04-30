@@ -20,6 +20,7 @@ const generateNumberArray = (begin: number, end: number) => {
   for (let i = begin; i <= end; i++) {
     array.push((i < 10 ? '0' : '') + i);
   }
+
   return array;
 };
 
@@ -74,7 +75,6 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
       valueChange(value);
     }
     helpers.setValue(value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (

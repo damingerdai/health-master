@@ -21,6 +21,7 @@ export default async function handler(
       );
       if (isErrorResponse(resp)) {
         res.status(500).json({ code: -1, message: resp.message });
+
         return;
       }
       const { token, data } = resp;
@@ -28,6 +29,7 @@ export default async function handler(
     } else {
       res.status(500).json({ error: `method ${req.method} doesn't support` });
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (err.response?.data) {
       res.status(500).json({ code: -1, message: err.response.data.message });

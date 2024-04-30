@@ -16,8 +16,10 @@ export async function GET(req: NextRequest) {
       if (resp.code === 10000006) {
         return NextResponse.json(resp.message, { status: 401 });
       }
+
       return NextResponse.json(resp.message, { status: 500 });
     }
+
     return NextResponse.json(resp);
   } catch (err) {
     return NextResponse.json(err, { status: 500 });

@@ -7,6 +7,7 @@ export const downloadFile = (sUrl: string): boolean => {
     alert(
       'Your device does not support files downloading. Please try again in desktop browser.'
     );
+
     return false;
   }
 
@@ -26,6 +27,7 @@ export const downloadFile = (sUrl: string): boolean => {
       const e = document.createEvent('MouseEvents');
       e.initEvent('click', true, true);
       link.dispatchEvent(e);
+
       return true;
     }
 
@@ -34,6 +36,7 @@ export const downloadFile = (sUrl: string): boolean => {
     }
 
     window.open(sUrl, '_self');
+
     return true;
   }
 
