@@ -12,15 +12,16 @@ type srv struct {
 	UserService              *UserService
 	TokenService             *TokenService
 	UserBloodPressureService *UserBloodPressureService
+	WeightRecordService      *WeightRecordService
 }
 
 func New(db db.Connection) *srv {
-
 	repo := repository.New(db)
 	roleRepository := repo.RoleRepository
 	userRepository := repo.UserRepository
 	userRoleRepository := repo.UserRoleRepository
 	userBloodPressureRepository := repo.UserBloodPressureRepository
+	weigthRecordRepository := repo.WeightRecordRepository
 
 	return &srv{
 		db: db,
@@ -29,5 +30,6 @@ func New(db db.Connection) *srv {
 		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository),
 		TokenService:             NewTokenService(userRepository),
 		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
+		WeightRecordService:      NewWeightRecordService(weigthRecordRepository),
 	}
 }

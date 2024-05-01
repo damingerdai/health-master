@@ -5,6 +5,7 @@ import (
 	"time"
 
 	pgxuuid "github.com/jackc/pgx-gofrs-uuid"
+	pgxdecimal "github.com/jackc/pgx-shopspring-decimal"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
@@ -28,6 +29,7 @@ func NewDBPool(ctx context.Context, dbUrl string) (*pgxpool.Pool, error) {
 	}
 	poolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
 		pgxuuid.Register(conn.TypeMap())
+		pgxdecimal.Register(conn.TypeMap())
 		return nil
 	}
 

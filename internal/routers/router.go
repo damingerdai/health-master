@@ -48,6 +48,8 @@ func NewRouter() *gin.Engine {
 
 		apiV1.GET("/roles", api.ListRoles)
 
+		apiV1.POST("/weight-record", api.AddWeightRecord)
+
 	}
 
 	return r
