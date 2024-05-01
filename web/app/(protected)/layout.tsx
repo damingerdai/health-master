@@ -68,7 +68,7 @@ export default function RootLayout({
             onClick={onToggle}
           />
           <Box px={1}>
-            <Text>Health Master</Text>
+            <Text fontWeight="700">Health Master</Text>
           </Box>
           <Spacer />
           <HStack spacing={{ base: '1', md: '2' }}>
