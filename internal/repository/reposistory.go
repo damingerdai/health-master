@@ -9,6 +9,7 @@ type repo struct {
 	UserRepository              *UserRepository
 	UserBloodPressureRepository *UserBloodPressureRepository
 	UserRoleRepository          *UserRoleRepository
+	WeightRecordRepository      *WeightRecordRepository
 }
 
 func New(db db.Connection) *repo {
@@ -19,5 +20,6 @@ func New(db db.Connection) *repo {
 		UserRepository:              NewUserRepository(db),
 		UserBloodPressureRepository: NewUserBloodPressureRepository(db),
 		UserRoleRepository:          NewUserRoleRepository(db),
+		WeightRecordRepository:      NewWeigthRecordRepository(db),
 	}
 }
