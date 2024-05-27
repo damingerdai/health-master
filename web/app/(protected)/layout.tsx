@@ -18,8 +18,10 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  useBreakpointValue,
+  useMediaQuery,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { UserMenu } from '@/components/user-menu';
 import { AuthRequired } from '@/components/auth';
@@ -29,9 +31,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isOpen, onClose, onToggle } = useDisclosure({ defaultIsOpen: true });
+  const { isOpen, onClose, onOpen, onToggle } = useDisclosure({
+    defaultIsOpen: true,
+  });
   const bg = useColorModeValue('#f0f2f5', '#20202380');
-  const [drawerMode] = useState<'side' | 'over' | 'push'>('side');
+  const [drawerMode, setDrawerMode] = useState<'side' | 'over' | 'push'>(
+    'side'
+  );
+  const [isMobile] = useMediaQuery('(max-width: 720px)');
+
+  useEffect(() => {
+    if (isMobile) {
+      setDrawerMode('over');
+      onClose();
+    } else {
+      setDrawerMode('side');
+    }
+  }, [isMobile]);
 
   return (
     <Flex flexDir="row" w="100%">
@@ -53,7 +69,7 @@ export default function RootLayout({
           <DrawerOverlay />
           <DrawerContent width="240px !important">
             <DrawerCloseButton />
-            <DrawerHeader>
+            <DrawerHeader pl={{ base: 0 }}>
               <SidebarContent onClose={onClose} hasTitle />
             </DrawerHeader>
           </DrawerContent>

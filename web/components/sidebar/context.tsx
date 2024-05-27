@@ -41,7 +41,6 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           H & M
         </Text>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
     )}
     <Flex flexDir="column" flexGrow="1" px={2}>
