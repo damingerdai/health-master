@@ -43,7 +43,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
         </Text>
       </Flex>
     )}
-    <Flex flexDir="column" flexGrow="1" px={2}>
+    <Flex flexDir="column" flexGrow="1" px={2} fontWeight="400">
       <NavItem path="dashboard" icon={FiHome}>
         仪表盘
       </NavItem>
