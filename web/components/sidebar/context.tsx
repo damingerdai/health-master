@@ -1,7 +1,6 @@
 import {
   Box,
   BoxProps,
-  CloseButton,
   Flex,
   Spacer,
   Text,
@@ -9,6 +8,8 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiHome } from 'react-icons/fi';
+import { GiBodyHeight } from 'react-icons/gi';
+import { MdBloodtype } from 'react-icons/md';
 import { CiSettings } from 'react-icons/ci';
 import { NavItem } from './item';
 
@@ -29,7 +30,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
     bg={useColorModeValue('white', 'black')}
     transition="3s ease"
     borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-    w="full"
+    // w={{ base: '240px', md: 'full' }}
     h="100%"
     __css={{
       textWrap: 'nowrap',
@@ -43,12 +44,15 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
         </Text>
       </Flex>
     )}
-    <Flex flexDir="column" flexGrow="1" px={2} fontWeight="400">
+    <Flex h="100%" flexDir="column" flexGrow="1" px={2} fontWeight="400">
       <NavItem path="dashboard" icon={FiHome}>
         仪表盘
       </NavItem>
-      <NavItem path="/blood-pressure" icon={FiHome}>
+      <NavItem path="/blood-pressure" icon={MdBloodtype}>
         血压管理
+      </NavItem>
+      <NavItem path="/weight" icon={GiBodyHeight}>
+        体重管理
       </NavItem>
       <Spacer />
       <NavItem path="/settings" icon={CiSettings}>

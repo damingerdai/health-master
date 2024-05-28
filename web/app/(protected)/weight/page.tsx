@@ -1,4 +1,4 @@
-import { UserBloodPressureForm } from '@/components/user-blood-pressure';
+import { WeightManagement } from '@/components/weight-management';
 import {
   Box,
   Breadcrumb,
@@ -8,14 +8,13 @@ import {
 
 export default function Page() {
   return (
-    <Box p={4} h="100%">
+    <Box p={4}>
       <Breadcrumb mb="2">
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href="/">血压记录</BreadcrumbLink>
+          <BreadcrumbLink href="/">体重管理</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-
-      <UserBloodPressureForm />
+      <WeightManagement />
     </Box>
   );
 }

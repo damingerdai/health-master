@@ -15,10 +15,9 @@ import {
   Drawer,
   DrawerCloseButton,
   DrawerContent,
-  DrawerHeader,
+  DrawerBody,
   DrawerOverlay,
   Flex,
-  useBreakpointValue,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -69,9 +68,9 @@ export default function RootLayout({
           <DrawerOverlay />
           <DrawerContent width="240px !important">
             <DrawerCloseButton />
-            <DrawerHeader pl={{ base: 0 }}>
+            <DrawerBody px={0}>
               <SidebarContent onClose={onClose} hasTitle />
-            </DrawerHeader>
+            </DrawerBody>
           </DrawerContent>
         </Drawer>
       )}

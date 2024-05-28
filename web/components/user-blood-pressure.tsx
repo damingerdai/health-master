@@ -60,84 +60,77 @@ export const UserBloodPressureForm: React.FC = () => {
   }, [isLoading, sum]);
 
   return (
-    <>
-      <Breadcrumb mb="2">
-        <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href="/">血压记录</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
-      <Box bg={useColorModeValue('white', '#20202380')} borderRadius={6}>
-        <Flex
-          justifyContent="flex-end"
-          py="2"
-          pr="2"
-          borderLeftWidth="4px"
-          borderLeftColor="orange.500"
-          borderLeftStyle="solid"
+    <Box bg={useColorModeValue('white', '#20202380')} borderRadius={6}>
+      <Flex
+        justifyContent="flex-end"
+        py="2"
+        pr="2"
+        borderLeftWidth="4px"
+        borderLeftColor="orange.500"
+        borderLeftStyle="solid"
+      >
+        <Button bg="tomato" onClick={onOpen} mr={1}>
+          添加
+        </Button>
+        <Button
+          colorScheme="cyan"
+          ml={1}
+          onClick={async () => {
+            const { downloadUrl } = await request({
+              method: 'POST',
+              url: '/api/user-blood-pressure/download',
+              data: {
+                userId: currentUser.id,
+              },
+            });
+            downloadFile(downloadUrl);
+          }}
         >
-          <Button bg="tomato" onClick={onOpen} mr={1}>
-            添加
-          </Button>
-          <Button
-            colorScheme="cyan"
-            ml={1}
-            onClick={async () => {
-              const { downloadUrl } = await request({
-                method: 'POST',
-                url: '/api/user-blood-pressure/download',
-                data: {
-                  userId: currentUser.id,
-                },
-              });
-              downloadFile(downloadUrl);
-            }}
-          >
-            导出
-          </Button>
-        </Flex>
-        <Divider borderColor="gray.300" />
-        <Box>
-          {isLoading && (
-            <Center my={8}>
-              <Spinner size="xl" />
-            </Center>
-          )}
-          {!isLoading && (
-            <Box minH="100px">
-              {data?.length > 0 ? (
-                <UserBloodPressureList
-                  userBloodPressures={data}
-                  onDeleteChange={() => {
-                    setPage(1);
-                    mutate();
-                  }}
-                />
-              ) : (
-                <Box h={5} my={8} fontSize={24} textAlign="center">
-                  没有血压记录
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-        {!(!isLoading && data?.length === 0) && (
-          <Pagination
-            pageSize={5}
-            page={page - 1}
-            count={count}
-            onPageChange={newPage => {
-              setPage(newPage + 1);
-            }}
-          />
+          导出
+        </Button>
+      </Flex>
+      <Divider borderColor="gray.300" />
+      <Box>
+        {isLoading && (
+          <Center my={8}>
+            <Spinner size="xl" />
+          </Center>
         )}
-        <AddUserBloodPressureModal
-          isOpen={isOpen}
-          onClose={() => {
-            mutate();
-            onClose();
+        {!isLoading && (
+          <Box minH="100px">
+            {data?.length > 0 ? (
+              <UserBloodPressureList
+                userBloodPressures={data}
+                onDeleteChange={() => {
+                  setPage(1);
+                  mutate();
+                }}
+              />
+            ) : (
+              <Box h={5} my={8} fontSize={24} textAlign="center">
+                没有血压记录
+              </Box>
+            )}
+          </Box>
+        )}
+      </Box>
+      {!(!isLoading && data?.length === 0) && (
+        <Pagination
+          pageSize={5}
+          page={page - 1}
+          count={count}
+          onPageChange={newPage => {
+            setPage(newPage + 1);
           }}
         />
-      </Box>
-    </>
+      )}
+      <AddUserBloodPressureModal
+        isOpen={isOpen}
+        onClose={() => {
+          mutate();
+          onClose();
+        }}
+      />
+    </Box>
   );
 };
