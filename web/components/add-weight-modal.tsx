@@ -17,11 +17,15 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/react';
-import { ErrorMessage, Field, Form, Formik, useFormik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import * as React from 'react';
 import { DatePickerInput } from './date-picker-input';
 import { TimePickerInput } from './time-picker-input';
+import { request } from '@/lib/request';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '@/store/user';
+import { toastInstance } from './toast';
 
 interface AddWeightModalProps {
   isOpen: boolean;
@@ -30,11 +34,13 @@ interface AddWeightModalProps {
 
 export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
   const { isOpen, onClose } = props;
+  const user = useAtomValue(userAtom);
+  const { id } = user;
 
   const initialValues = {
     weight: undefined as unknown as number,
-    logDate: undefined as unknown as Date,
-    logTime: undefined as unknown as Date,
+    logDate: [] as unknown as [string, string, string],
+    logTime: [] as string[],
   };
 
   const validateSchemas = Yup.object({
@@ -55,15 +61,57 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
         validateOnBlur={true}
         validateOnChange={true}
         validationSchema={validateSchemas}
-        onSubmit={values => {
-          console.log(values);
+        onSubmit={async values => {
+          try {
+            const weight = values.weight;
+            const logDate = (values.logDate as [string, string, string]).map(v =>
+              parseInt(v, 10)
+            );
+            const logTime = (values.logTime as [string, string]).map(v =>
+              parseInt(v, 10)
+            );
+            const logDateTime = new Date(
+              logDate[0],
+              logDate[1] - 1,
+              logDate[2],
+              logTime[0],
+              logTime[1]
+            );
+            const data = {
+              weight: typeof weight === 'string' ? parseInt(weight, 10) : weight,
+              logDateTime,
+              userId: id,
+            }
+            await request({
+              method: 'post',
+              url: 'api/weight-record',
+              data,
+            });
+            toastInstance({
+              title: '添加体重成功',
+              status: 'success',
+              isClosable: true,
+            });
+            onClose();
+            console.log(values, logDateTime);
+          } catch(err) {
+            toastInstance({
+              id: 'SERVICE_ERROR',
+              title: (err as any).message,
+              position: 'bottom',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
+          }
+          
         }}
       >
         {({ errors, touched, isValid, isSubmitting, values, handleChange }) => (
           <Form>
             <ModalContent>
               <ModalHeader>
-                <Heading>添加体重</Heading> <ModalCloseButton />
+                <Heading size="md">添加体重</Heading> <ModalCloseButton />
               </ModalHeader>
               <ModalBody>
                 <Field name="weight">
