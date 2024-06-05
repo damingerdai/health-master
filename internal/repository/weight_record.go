@@ -31,7 +31,7 @@ func (repos *WeightRecordRepository) Create(ctx context.Context, weightRecord *m
 
 func (repos *WeightRecordRepository) Find(ctx context.Context, id string) (*model.WeightRecord, error) {
 	var weightRecord model.WeightRecord
-	statement := "SELECT id, user_id, weight, record_date WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
+	statement := "SELECT id, user_id, weight, record_date FROM weight_records WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
 	row := repos.db.QueryRow(ctx, statement, id)
 	err := row.Scan(&weightRecord.Id, &weightRecord.UserId, &weightRecord.Weight, &weightRecord.RecordDate)
 	if err != nil {
@@ -45,7 +45,7 @@ func (repos *WeightRecordRepository) Find(ctx context.Context, id string) (*mode
 
 func (repos *WeightRecordRepository) ListByUserId(ctx context.Context, userId string) (*[]model.WeightRecord, error) {
 	weightRecords := make([]model.WeightRecord, 0)
-	statement := "SELECT id, user_id, weight, record_date WHERE user_id = $1 AND deleted_at IS NULL"
+	statement := "SELECT id, user_id, weight, record_date FROM weight_records WHERE user_id = $1 AND deleted_at IS NULL"
 	rows, err := repos.db.Query(ctx, statement, userId)
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -72,4 +72,52 @@ func (repos *WeightRecordRepository) ListByUserId(ctx context.Context, userId st
 		weightRecords = append(weightRecords, weightRecord)
 	}
 	return &weightRecords, nil
+}
+
+func (repos *WeightRecordRepository) PagingQueryByUserId(ctx context.Context, userId string, page, limit int) (*[]model.WeightRecord, error) {
+	weightRecords := make([]model.WeightRecord, 0)
+	statement := `SELECT id, user_id, weight, record_date 
+                FROM weight_records
+                WHERE user_id = $1 AND deleted_at IS NULL
+                ORDER BY record_date DESC
+                LIMIT $2 OFFSET $3`
+	rows, err := repos.db.Query(ctx, statement, userId, limit, limit*(page-1))
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var id, userId string
+		var weight float64
+		var recordDate time.Time
+		err := rows.Scan(&id, &userId, &weight, &recordDate)
+		if err != nil {
+			return nil, err
+		}
+		weightRecord := model.WeightRecord{
+			Id:         id,
+			UserId:     userId,
+			Weight:     weight,
+			RecordDate: recordDate,
+		}
+		weightRecords = append(weightRecords, weightRecord)
+	}
+
+	return &weightRecords, nil
+}
+
+func (repos *WeightRecordRepository) Count(ctx context.Context, userId string) (int64, error) {
+	var num int64
+	statement := "SELECT COUNT(id) FROM weight_records WHERE user_id = $1 AND deleted_at IS NULL"
+	row := repos.db.QueryRow(ctx, statement, userId)
+	err := row.Scan(&num)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
 }

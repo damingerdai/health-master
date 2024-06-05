@@ -13,7 +13,7 @@ type person struct {
 func TestGobRedisSerializer(t *testing.T) {
 	var serializer RedisSerializer[person] = GobRedisSerializer[person]{}
 
-	var p = person{Name: "arthur ming", Age: 18}
+	p := person{Name: "arthur ming", Age: 18}
 
 	data, err := serializer.Serialize(p)
 	if err != nil {
@@ -31,7 +31,7 @@ func TestGobRedisSerializer(t *testing.T) {
 	t.Log(p2.Name)
 	t.Log(p2.Age)
 
-	var p3 = p2
+	p3 := p2
 	t.Log(p3.Name)
 	t.Log(p3.Age)
 

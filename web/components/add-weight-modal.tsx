@@ -26,6 +26,7 @@ import { request } from '@/lib/request';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/user';
 import { toastInstance } from './toast';
+import { formatDateToGinFormat } from '../lib/date';
 
 interface AddWeightModalProps {
   isOpen: boolean;
@@ -64,8 +65,8 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
         onSubmit={async values => {
           try {
             const weight = values.weight;
-            const logDate = (values.logDate as [string, string, string]).map(v =>
-              parseInt(v, 10)
+            const logDate = (values.logDate as [string, string, string]).map(
+              v => parseInt(v, 10)
             );
             const logTime = (values.logTime as [string, string]).map(v =>
               parseInt(v, 10)
@@ -78,10 +79,12 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
               logTime[1]
             );
             const data = {
-              weight: typeof weight === 'string' ? parseInt(weight, 10) : weight,
-              logDateTime,
+              weight:
+                typeof weight === 'string' ? parseInt(weight, 10) : weight,
+              logDateTime: formatDateToGinFormat(logDateTime),
+              recordDate: logDateTime,
               userId: id,
-            }
+            };
             await request({
               method: 'post',
               url: 'api/weight-record',
@@ -94,7 +97,7 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
             });
             onClose();
             console.log(values, logDateTime);
-          } catch(err) {
+          } catch (err) {
             toastInstance({
               id: 'SERVICE_ERROR',
               title: (err as any).message,
@@ -104,7 +107,6 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
               isClosable: true,
             });
           }
-          
         }}
       >
         {({ errors, touched, isValid, isSubmitting, values, handleChange }) => (
