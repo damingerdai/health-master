@@ -20,7 +20,7 @@ interface SidebarContentProps extends BoxProps {
 
 export const SidebarContent: React.FC<SidebarContentProps> = ({
   hasTitle,
-  onClose,
+  onClose: _onClosde,
   ...rest
 }) => (
   <Box

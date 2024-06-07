@@ -30,7 +30,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isOpen, onClose, onOpen, onToggle } = useDisclosure({
+  const { isOpen, onClose, onToggle } = useDisclosure({
     defaultIsOpen: true,
   });
   const bg = useColorModeValue('#f0f2f5', '#20202380');

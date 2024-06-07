@@ -100,6 +100,7 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
           } catch (err) {
             toastInstance({
               id: 'SERVICE_ERROR',
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               title: (err as any).message,
               position: 'bottom',
               status: 'error',
@@ -109,7 +110,7 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
           }
         }}
       >
-        {({ errors, touched, isValid, isSubmitting, values, handleChange }) => (
+        {({ errors, touched, isValid, isSubmitting, values }) => (
           <Form>
             <ModalContent>
               <ModalHeader>

@@ -9,9 +9,6 @@ import {
   Spinner,
   useDisclosure,
   useColorModeValue,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
 } from '@chakra-ui/react';
 import useSWR from 'swr';
 import * as React from 'react';
