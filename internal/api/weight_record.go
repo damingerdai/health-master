@@ -7,6 +7,7 @@ import (
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func AddWeightRecord(c *gin.Context) {
@@ -34,6 +35,7 @@ func ListWeightRecords(c *gin.Context) {
 	weightRecordService := service.WeightRecordService
 	res, err := weightRecordService.PagingQueryByUserId(c, userId, limit, page)
 	if err != nil {
+		global.Logger.Error("fail to list a single user weight records", zap.Error(err))
 		resp.ToErrorResponse(errcode.ServerError)
 		return
 	}
