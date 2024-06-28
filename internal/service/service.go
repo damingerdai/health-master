@@ -30,6 +30,6 @@ func New(db db.Connection) *srv {
 		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository),
 		TokenService:             NewTokenService(userRepository),
 		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
-		WeightRecordService:      NewWeightRecordService(weigthRecordRepository),
+		WeightRecordService:      NewWeightRecordService(weigthRecordRepository, userRepository),
 	}
 }

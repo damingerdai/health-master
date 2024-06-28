@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -11,10 +12,11 @@ import (
 
 type WeightRecordService struct {
 	weightRecordRepository *repository.WeightRecordRepository
+	userRepository         *repository.UserRepository
 }
 
-func NewWeightRecordService(weightRecordRepository *repository.WeightRecordRepository) *WeightRecordService {
-	return &WeightRecordService{weightRecordRepository: weightRecordRepository}
+func NewWeightRecordService(weightRecordRepository *repository.WeightRecordRepository, userRepository *repository.UserRepository) *WeightRecordService {
+	return &WeightRecordService{weightRecordRepository: weightRecordRepository, userRepository: userRepository}
 }
 
 func (wieghtRecordService *WeightRecordService) Create(ctx context.Context, weightRecord *model.WeightRecord) error {
@@ -27,7 +29,10 @@ func (wieghtRecordService *WeightRecordService) Create(ctx context.Context, weig
 	return nil
 }
 
-func (weightRecordService *WeightRecordService) PagingQueryByUserId(ctx context.Context, userId, limit, page string) (*model.ListResponse[model.WeightRecord], error) {
+func (weightRecordService *WeightRecordService) PagingQueryByUserId(ctx context.Context, userId, limit, page string) (*model.ListResponse[model.WeightRecordVO], error) {
+	if len(userId) == 0 {
+		return nil, errors.New("userId is required")
+	}
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("page %s should be integer", page))
@@ -35,6 +40,10 @@ func (weightRecordService *WeightRecordService) PagingQueryByUserId(ctx context.
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("limit %s should be integer", limit))
+	}
+	user, err := weightRecordService.userRepository.Find(ctx, userId)
+	if err != nil {
+		return nil, fmt.Errorf("fail to find user which user id %s", userId)
 	}
 	records, err := weightRecordService.weightRecordRepository.PagingQueryByUserId(ctx, userId, pageInt, limitInt)
 	if err != nil {
@@ -45,11 +54,19 @@ func (weightRecordService *WeightRecordService) PagingQueryByUserId(ctx context.
 		return nil, err
 	}
 
-	resp := model.ListResponse[model.WeightRecord]{}
+	resp := model.ListResponse[model.WeightRecordVO]{}
 	if records != nil {
-		resp.Data = *records
+		recordVOs := make([]model.WeightRecordVO, 0, len(*records))
+		for _, record := range *records {
+			recordVO := model.WeightRecordVO{
+				WeightRecord: record,
+				User:         user,
+			}
+			recordVOs = append(recordVOs, recordVO)
+		}
+		resp.Data = recordVOs
 	} else {
-		data := make([]model.WeightRecord, 0)
+		data := make([]model.WeightRecordVO, 0)
 		resp.Data = data
 	}
 	resp.Count = count

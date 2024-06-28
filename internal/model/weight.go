@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type WeightRecord struct {
 	Id         string     `json:"id,omitempty"`
@@ -10,6 +12,11 @@ type WeightRecord struct {
 	CreatedAt  *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt  *time.Time `json:"updatedAt,omitempty"`
 	DeletedAt  *time.Time `json:"deletedAt,omitempty"`
+}
+
+type WeightRecordVO struct {
+	User *User `json:"user"`
+	WeightRecord
 }
 
 type WeightGoal struct {

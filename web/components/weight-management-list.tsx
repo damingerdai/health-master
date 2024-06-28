@@ -8,6 +8,7 @@ import {
   Thead,
   Tr,
   Td,
+  Tooltip,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { TableHeader } from './table';
@@ -60,7 +61,14 @@ export const WeightManagementList: React.FC<
               return (
                 <Tr key={record.id}>
                   <Td>{record.id}</Td>
-                  <Td>{record.userId}</Td>
+                  <Td>
+                    <Tooltip
+                      aria-label="user name"
+                      label={`${record.user.firstName} ${record.user.lastName}`}
+                    >
+                      {record.user.username}
+                    </Tooltip>
+                  </Td>
                   <Td>{record.weight}</Td>
                   <Td>{foramtDate(record.recordDate)} </Td>
                 </Tr>
