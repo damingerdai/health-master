@@ -31,10 +31,11 @@ import { formatDateToGinFormat } from '../lib/date';
 interface AddWeightModalProps {
   isOpen: boolean;
   onClose: () => void;
+  addWeightModalCallback?: () => void;
 }
 
 export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, addWeightModalCallback } = props;
   const user = useAtomValue(userAtom);
   const { id } = user;
 
@@ -95,8 +96,10 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
               status: 'success',
               isClosable: true,
             });
+            if (addWeightModalCallback) {
+              addWeightModalCallback();
+            }
             onClose();
-            console.log(values, logDateTime);
           } catch (err) {
             toastInstance({
               id: 'SERVICE_ERROR',

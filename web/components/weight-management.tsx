@@ -19,7 +19,7 @@ export const WeightManagement: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentUser = useAtomValue(userAtom);
   const [page, _setPage] = useState({ pageNo: 1, pageSize: 5 });
-  const { data, isLoading } = useSWR(
+  const { data, isLoading, mutate } = useSWR(
     { url: 'api/weight-records', args: page },
     () => fetchWeightRecord({ ...page, userId: currentUser.id })
   );
@@ -37,7 +37,11 @@ export const WeightManagement: React.FC = () => {
         <Button bg="tomato" onClick={onOpen}>
           添加
         </Button>
-        <AddWeightModal isOpen={isOpen} onClose={onClose} />
+        <AddWeightModal
+          isOpen={isOpen}
+          onClose={onClose}
+          addWeightModalCallback={mutate}
+        />
       </CardHeader>
       <CardBody>
         <WeightManagementList data={data?.data ?? []} isLoading={isLoading} />
