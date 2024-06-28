@@ -50,8 +50,9 @@ export const WeightManagementList: React.FC<
           <Thead>
             <Tr>
               <TableHeader>ID</TableHeader>
-              <TableHeader>User ID</TableHeader>
-              <TableHeader>Record Date</TableHeader>
+              <TableHeader>用户名</TableHeader>
+              <TableHeader>体重</TableHeader>
+              <TableHeader>记录时间</TableHeader>
             </Tr>
           </Thead>
           <Tbody>
@@ -60,6 +61,7 @@ export const WeightManagementList: React.FC<
                 <Tr key={record.id}>
                   <Td>{record.id}</Td>
                   <Td>{record.userId}</Td>
+                  <Td>{record.weight}</Td>
                   <Td>{foramtDate(record.recordDate)} </Td>
                 </Tr>
               );
