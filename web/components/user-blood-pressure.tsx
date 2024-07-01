@@ -20,7 +20,7 @@ import { userAtom } from '@/store/user';
 import { downloadFile } from '@/lib/download-file';
 import { AddUserBloodPressureModal } from './add-user-blood-pressure';
 import { UserBloodPressureList } from './user-blood-pressure-list';
-import { Pagination } from './pagination';
+import { Paginator } from './paginator';
 
 export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -113,13 +113,10 @@ export const UserBloodPressureForm: React.FC = () => {
         )}
       </Box>
       {!(!isLoading && data?.length === 0) && (
-        <Pagination
-          pageSize={5}
-          page={page - 1}
-          count={count}
-          onPageChange={newPage => {
-            setPage(newPage + 1);
-          }}
+        <Paginator
+          page={page}
+          total={Math.ceil(count / 5)}
+          pageChange={p => setPage(p)}
         />
       )}
       <AddUserBloodPressureModal
