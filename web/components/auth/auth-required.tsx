@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Spinner } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { getToken } from '@/lib/token';
 import { request } from '@/lib/request';
 import { userAtom } from '@/store/user';
 import { useSetAtom } from 'jotai';
+import { GlobalLoading } from '../loading';
 
 export const AuthRequired: React.FC<React.PropsWithChildren> = ({
   children,
@@ -47,7 +48,7 @@ export const AuthRequired: React.FC<React.PropsWithChildren> = ({
   if (loading) {
     return (
       <Box p={4}>
-        <Spinner />
+        <GlobalLoading />
       </Box>
     );
   }
