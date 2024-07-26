@@ -16,7 +16,6 @@ import {
   InputRightElement,
   Link,
   Stack,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Form, Formik } from 'formik';
@@ -58,9 +57,9 @@ export default function Login() {
 
   return (
     <Flex
-      bg={useColorModeValue('#f0f2f5', '#20202380')}
-      h="100%"
-      minH="calc(100vh - 64px)"
+      // bg={useColorModeValue('#f0f2f5', '#20202380')}
+      flexDirection="column"
+      w="100%"
       justify="center"
       p={4}
     >

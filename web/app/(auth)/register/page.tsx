@@ -17,7 +17,6 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -69,7 +68,7 @@ export default function Register() {
         },
       });
       router.push('/login');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toastInstance({
         title: '注册报错',
@@ -85,12 +84,7 @@ export default function Register() {
   };
 
   return (
-    <Flex
-      bg={useColorModeValue('#f0f2f5', '#20202380')}
-      h="100%"
-      justify="center"
-      p={4}
-    >
+    <Flex h="100%" justify="center" p={4}>
       <Flex mx="auto" maxW="lg">
         <Box w="100%" p={4}>
           <Flex

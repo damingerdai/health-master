@@ -1,8 +1,6 @@
 'use client';
 
-import { Header } from '@/components/header';
-import { ToggleThemeButton } from '@/components/toggle-theme-button';
-import { Text, HStack, Spacer, Box, useColorModeValue } from '@chakra-ui/react';
+import { Box, useColorModeValue } from '@chakra-ui/react';
 
 export default function RootLayout({
   children,
@@ -12,17 +10,18 @@ export default function RootLayout({
   const bg = useColorModeValue('#f0f2f5', '#20202380');
 
   return (
-    <>
-      <Header zIndex="999" bgColor="Background" position="sticky" top={0}>
-        <Text fontWeight="700">Health Master</Text>
-        <Spacer />
-        <HStack spacing={{ base: '1', md: '2' }}>
-          <ToggleThemeButton />
-        </HStack>
-      </Header>
-      <Box bg={bg} as="main" h="100%" minH="calc(100vh - 64px)">
-        {children}
-      </Box>
-    </>
+    <Box
+      as="main"
+      bg={bg}
+      pos="relative"
+      display="flex"
+      justifyContent="center"
+      minH="100vh"
+      backgroundImage={`
+          radial-gradient(at 97% 21%, hsla(125deg, 98%, 72%, 0.3) 0, transparent 50%),radial-gradient(at 52% 99%, hsla(354deg, 98%, 61%, 0.3) 0, transparent 50%),radial-gradient(at 10% 29%, hsla(256deg, 96%, 67%, 0.3) 0, transparent 50%),radial-gradient(at 97% 96%, hsla(38deg, 60%, 74%, 0.3) 0, transparent 50%),radial-gradient(at 33% 50%, hsla(222deg, 67%, 73%, 0.3) 0, transparent 50%),radial-gradient(at 79% 53%, hsla(343deg, 68%, 79%, 0.3) 0, transparent 50%)
+      `}
+    >
+      {children}
+    </Box>
   );
 }
