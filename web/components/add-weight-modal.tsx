@@ -80,8 +80,7 @@ export const AddWeightModal: React.FC<AddWeightModalProps> = props => {
               logTime[1]
             );
             const data = {
-              weight:
-                typeof weight === 'string' ? parseInt(weight, 10) : weight,
+              weight: typeof weight === 'string' ? parseFloat(weight) : weight,
               logDateTime: formatDateToGinFormat(logDateTime),
               recordDate: logDateTime,
               userId: id,

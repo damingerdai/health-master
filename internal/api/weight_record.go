@@ -20,6 +20,7 @@ func AddWeightRecord(c *gin.Context) {
 	srv := service.New(global.DBEngine)
 	err := srv.WeightRecordService.Create(c, &weightRecord)
 	if err != nil {
+		global.Logger.Info("fail to create weight record", zap.String("UserId", weightRecord.UserId), zap.Float64("Weight", weightRecord.Weight), zap.Time("RecordDate", weightRecord.RecordDate), zap.Error(err))
 		resp.ToErrorResponse(errcode.ServerError)
 		return
 	}
@@ -48,6 +49,7 @@ func DeleteWeightRecord(c *gin.Context) {
 	id := c.Params.ByName("id")
 	err := service.WeightRecordService.DeleteWeightRecord(c, id)
 	if err != nil {
+		global.Logger.Info("fail to delete weight record", zap.String("WeightRecordId", id), zap.Error(err))
 		resp.ToErrorResponseWithError(errcode.DeleteDeleteWeightRecordError, err)
 		return
 	}
