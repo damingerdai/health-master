@@ -41,3 +41,15 @@ func ListWeightRecords(c *gin.Context) {
 	}
 	resp.ToResponse(res)
 }
+
+func DeleteWeightRecord(c *gin.Context) {
+	resp := response.NewResponse(c)
+	service := service.New(global.DBEngine)
+	id := c.Params.ByName("id")
+	err := service.WeightRecordService.DeleteWeightRecord(c, id)
+	if err != nil {
+		resp.ToErrorResponseWithError(errcode.DeleteDeleteWeightRecordError, err)
+		return
+	}
+	resp.ToResponse(gin.H{"success": true})
+}

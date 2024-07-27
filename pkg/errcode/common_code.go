@@ -19,4 +19,6 @@ var (
 	DeleteUserBloodPressureError = NewError(30000003, "删除用户血压记录失败")
 
 	ListRoleError = NewError(40000001, "获取角色失败")
+
+	DeleteDeleteWeightRecordError = NewError(50000003, "删除用户体重记录失败")
 )

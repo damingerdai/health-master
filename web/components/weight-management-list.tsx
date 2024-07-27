@@ -9,21 +9,26 @@ import {
   Tr,
   Td,
   Tooltip,
+  HStack,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { TableHeader } from './table';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
+import { DeleteWeightRecrodAction } from './delete-weight-record-action';
+import { request } from '@/lib/request';
+import { toastInstance } from './toast';
 
 interface WeightManagementListProps {
   data: IWeightRecord[];
   isLoading: boolean;
+  refresh?: () => void;
 }
 
 export const WeightManagementList: React.FC<
   WeightManagementListProps
 > = props => {
-  const { data, isLoading } = props;
+  const { data, isLoading, refresh } = props;
 
   const foramtDate = (date: string | Date) => {
     if (!date) {
@@ -54,6 +59,7 @@ export const WeightManagementList: React.FC<
               <TableHeader>用户名</TableHeader>
               <TableHeader>体重</TableHeader>
               <TableHeader>记录时间</TableHeader>
+              <TableHeader>操作</TableHeader>
             </Tr>
           </Thead>
           <Tbody>
@@ -71,6 +77,40 @@ export const WeightManagementList: React.FC<
                   </Td>
                   <Td>{record.weight}</Td>
                   <Td>{foramtDate(record.recordDate)} </Td>
+                  <Td>
+                    <HStack>
+                      <DeleteWeightRecrodAction
+                        confirm={async () => {
+                          try {
+                            const res = await request<{ success: boolean }>({
+                              method: 'DELETE',
+                              url: `/api/weight-record/${record.id}`,
+                            });
+                            if (res.success) {
+                              toastInstance({
+                                title: '删除体重成功',
+                                status: 'success',
+                                isClosable: true,
+                              });
+                            }
+                            if (refresh) {
+                              refresh();
+                            }
+                          } catch (err) {
+                            toastInstance({
+                              id: 'SERVICE_ERROR',
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              title: (err as any).message,
+                              position: 'bottom',
+                              status: 'error',
+                              duration: 9000,
+                              isClosable: true,
+                            });
+                          }
+                        }}
+                      />
+                    </HStack>
+                  </Td>
                 </Tr>
               );
             })}

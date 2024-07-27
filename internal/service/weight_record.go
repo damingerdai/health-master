@@ -73,3 +73,14 @@ func (weightRecordService *WeightRecordService) PagingQueryByUserId(ctx context.
 
 	return &resp, nil
 }
+
+func (s *WeightRecordService) DeleteWeightRecord(ctx context.Context, id string) error {
+	if len(id) == 0 {
+		return errors.New("id is required")
+	}
+	err := s.weightRecordRepository.DeleteWeightRecord(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

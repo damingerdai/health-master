@@ -14,7 +14,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Link,
   Stack,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -23,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useSetAtom } from 'jotai';
+import { Link } from '@/components/link';
 
 export default function Login() {
   const router = useRouter();
@@ -56,13 +56,7 @@ export default function Login() {
   };
 
   return (
-    <Flex
-      // bg={useColorModeValue('#f0f2f5', '#20202380')}
-      flexDirection="column"
-      w="100%"
-      justify="center"
-      p={4}
-    >
+    <Flex flexDirection="column" w="100%" justify="center" p={4}>
       <Flex mx="auto" maxW="lg">
         <Box w="100%" p={4}>
           <Flex
@@ -83,7 +77,14 @@ export default function Login() {
                 validationSchema={validationSchemas}
                 onSubmit={handleSubmit}
               >
-                {({ values, errors, touched, handleChange, isSubmitting }) => (
+                {({
+                  values,
+                  errors,
+                  isValid,
+                  touched,
+                  handleChange,
+                  isSubmitting,
+                }) => (
                   <Form>
                     <Stack spacing={4}>
                       <FormControl
@@ -137,7 +138,7 @@ export default function Login() {
                           colorScheme="teal"
                           loadingText="登录中"
                           isLoading={isSubmitting}
-                          disabled={isSubmitting}
+                          isDisabled={!isValid}
                         >
                           登录
                         </Button>

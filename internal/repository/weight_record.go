@@ -121,3 +121,12 @@ func (repos *WeightRecordRepository) Count(ctx context.Context, userId string) (
 	}
 	return num, nil
 }
+
+func (repos *WeightRecordRepository) DeleteWeightRecord(ctx context.Context, id string) error {
+	statement := "UPDATE weight_records SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1"
+	_, err := repos.db.Exec(ctx, statement, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

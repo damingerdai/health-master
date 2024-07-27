@@ -34,7 +34,7 @@ export const WeightManagement: React.FC = () => {
         borderLeftStyle="solid"
         borderBottom="1px solid #E3E8F0"
       >
-        <Button bg="tomato" onClick={onOpen}>
+        <Button  bg="tomato" onClick={onOpen}>
           添加
         </Button>
         <AddWeightModal
@@ -44,7 +44,7 @@ export const WeightManagement: React.FC = () => {
         />
       </CardHeader>
       <CardBody>
-        <WeightManagementList data={data?.data ?? []} isLoading={isLoading} />
+        <WeightManagementList data={data?.data ?? []} isLoading={isLoading} refresh={mutate} />
       </CardBody>
     </Card>
   );

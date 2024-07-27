@@ -24,7 +24,7 @@ export const DeleteUserBloodPressureModal: React.FC<
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent mt={{ base: '50%', sm: '40%' }}>
+      <ModalContent mt={{ base: '50%', sm: '10%' }}>
         <ModalHeader>确定删除？</ModalHeader>
         <ModalCloseButton />
         <ModalBody>一旦删除将无法撤销！！！</ModalBody>
