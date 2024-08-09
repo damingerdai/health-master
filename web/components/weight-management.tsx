@@ -18,7 +18,7 @@ import { WeightManagementList } from './weight-management-list';
 export const WeightManagement: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentUser = useAtomValue(userAtom);
-  const [page, _setPage] = useState({ pageNo: 1, pageSize: 5 });
+  const [page, setPage] = useState({ pageNo: 1, pageSize: 5 });
   const { data, isLoading, mutate } = useSWR(
     { url: 'api/weight-records', args: page },
     () => fetchWeightRecord({ ...page, userId: currentUser.id })
@@ -34,7 +34,7 @@ export const WeightManagement: React.FC = () => {
         borderLeftStyle="solid"
         borderBottom="1px solid #E3E8F0"
       >
-        <Button  bg="tomato" onClick={onOpen}>
+        <Button bg="tomato" onClick={onOpen}>
           添加
         </Button>
         <AddWeightModal
@@ -44,7 +44,15 @@ export const WeightManagement: React.FC = () => {
         />
       </CardHeader>
       <CardBody>
-        <WeightManagementList data={data?.data ?? []} isLoading={isLoading} refresh={mutate} />
+        <WeightManagementList
+          data={data?.data ?? []}
+          total={data?.count ?? 0}
+          page={page.pageNo}
+          pageSize={page.pageSize}
+          pageChange={p => setPage({ ...page, pageNo: p })}
+          isLoading={isLoading}
+          refresh={mutate}
+        />
       </CardBody>
     </Card>
   );

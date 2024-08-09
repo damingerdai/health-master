@@ -1,4 +1,15 @@
-import { Box, Button, Flex, Text, Icon, NumberInput } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  Icon,
+  NumberInput,
+  NumberInputStepper,
+  NumberDecrementStepper,
+  NumberInputField,
+  NumberIncrementStepper,
+} from '@chakra-ui/react';
 import { isNaN } from 'lodash';
 import * as React from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
@@ -39,7 +50,7 @@ export const Paginator: React.FC<PaginatorProps> = props => {
         >
           上一页
         </Button>
-        <Box pr={1} pl=".4rem">
+        <Box pr={1} pl=".4rem" minW='76px' maxW='88px'>
           <NumberInput
             bg="white"
             step={1}
@@ -52,7 +63,13 @@ export const Paginator: React.FC<PaginatorProps> = props => {
               }
               doPageChange(vn, pageChange);
             }}
-          ></NumberInput>
+          >
+            <NumberInputField readOnly disabled />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </Box>
         <Button
           colorScheme="gray"
@@ -65,7 +82,7 @@ export const Paginator: React.FC<PaginatorProps> = props => {
           下一页
         </Button>
         {total > 0 && (
-          <Box lineHeight={10} pr=".4rem">
+          <Box lineHeight={10} pr=".4rem" fontWeight='semibold'>
             <Text as="span" px={1}>{`总计 ${total} 页`}</Text>
           </Box>
         )}

@@ -14,6 +14,7 @@ export const Header: React.FC<FlexProps> = props => (
     borderBottomWidth="1px"
     borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
     justifyContent={{ base: 'space-between', md: 'flex-end' }}
+    zIndex={1}
     {...props}
   />
 );
