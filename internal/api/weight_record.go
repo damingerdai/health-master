@@ -17,7 +17,7 @@ func AddWeightRecord(c *gin.Context) {
 		resp.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
-	srv := service.New(global.DBEngine)
+	srv := service.New(global.DBEngine, global.Logger)
 	err := srv.WeightRecordService.Create(c, &weightRecord)
 	if err != nil {
 		global.Logger.Info("fail to create weight record", zap.String("UserId", weightRecord.UserId), zap.Float64("Weight", weightRecord.Weight), zap.Time("RecordDate", weightRecord.RecordDate), zap.Error(err))
@@ -29,7 +29,7 @@ func AddWeightRecord(c *gin.Context) {
 
 func ListWeightRecords(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine)
+	service := service.New(global.DBEngine, global.Logger)
 	userId := c.Query("userId")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
@@ -45,7 +45,7 @@ func ListWeightRecords(c *gin.Context) {
 
 func DeleteWeightRecord(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine)
+	service := service.New(global.DBEngine, global.Logger)
 	id := c.Params.ByName("id")
 	err := service.WeightRecordService.DeleteWeightRecord(c, id)
 	if err != nil {

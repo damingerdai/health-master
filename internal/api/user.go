@@ -1,6 +1,8 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
@@ -34,12 +36,16 @@ func CreateUser(c *gin.Context) {
 	}
 	db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
 		var err error
-		service := service.New(conn)
+		service := service.New(conn, global.Logger)
 		userService := service.UserService
 		fullUser, err := userService.Create(c, &user)
 		if err != nil {
 			global.Logger.Error(err.Error())
-			res.ToErrorResponse(errcode.CreateUserError)
+			if errCodeError := new(errcode.Error); errors.As(err, &errCodeError) {
+				res.ToErrorResponse(errCodeError)
+			} else {
+				res.ToErrorResponse(errcode.CreateUserError)
+			}
 			return err
 		}
 		fullUser.Password = ""
@@ -47,7 +53,6 @@ func CreateUser(c *gin.Context) {
 
 		return nil
 	})
-
 }
 
 // get user godoc
@@ -64,9 +69,9 @@ func CreateUser(c *gin.Context) {
 //	@Failure		500	{object}	errcode.Error	"internal server error"
 //	@Router			/api/v1/user/{id} [get]
 func GetUser(c *gin.Context) {
-	var res = response.NewResponse(c)
-	var id = c.Param("id")
-	services := service.New(global.DBEngine)
+	res := response.NewResponse(c)
+	id := c.Param("id")
+	services := service.New(global.DBEngine, global.Logger)
 	userService := services.UserService
 
 	user, err := userService.Find(c, id)
@@ -76,7 +81,6 @@ func GetUser(c *gin.Context) {
 	}
 	user.Password = ""
 	res.ToResponse(user)
-
 }
 
 // get currentuser godoc
@@ -93,8 +97,8 @@ func GetUser(c *gin.Context) {
 // @Failure		500	{object}	errcode.Error	"internal server error"
 // @Router			/api/v1/user/ [get]
 func GetCurrentUser(c *gin.Context) {
-	var response = response.NewResponse(c)
-	var services = service.New(global.DBEngine)
+	response := response.NewResponse(c)
+	services := service.New(global.DBEngine, global.Logger)
 	userId := c.GetString("UserId")
 	if userId == "" {
 		var token string

@@ -36,7 +36,7 @@ func CreateUserBloodPressure(c *gin.Context) {
 	}
 
 	err := db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
-		service := service.New(conn)
+		service := service.New(conn, global.Logger)
 		user, err := service.UserService.Find(c, userBloodPressure.UserId)
 		if err != nil {
 			return err
@@ -75,7 +75,7 @@ func CreateUserBloodPressure(c *gin.Context) {
 //	@Router			/api/v1/user_blood_pressures [post]
 func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine)
+	service := service.New(global.DBEngine, global.Logger)
 	userId := c.GetString("UserId")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
@@ -86,7 +86,6 @@ func ListBloodPressures(c *gin.Context) {
 	} else {
 		resp.ToResponse(ubps)
 	}
-
 }
 
 // delete a user blood pressure record godoc
@@ -104,7 +103,7 @@ func ListBloodPressures(c *gin.Context) {
 //	@Router			/api/v1/user_blood_pressure/{id} [post]
 func DeleteBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine)
+	service := service.New(global.DBEngine, global.Logger)
 	id := c.Params.ByName("id")
 	err := service.UserBloodPressureService.Delete(c, id)
 	if err != nil {
@@ -116,7 +115,7 @@ func DeleteBloodPressure(c *gin.Context) {
 
 func DowonloadBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine)
+	service := service.New(global.DBEngine, global.Logger)
 	id := c.Params.ByName("id")
 	f, err := service.UserBloodPressureService.CreateExcelizeFile(c, id)
 	if err != nil {

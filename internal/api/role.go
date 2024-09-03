@@ -22,7 +22,7 @@ import (
 //	@Router			/api/v1/roles [get])
 func ListRoles(c *gin.Context) {
 	res := response.NewResponse(c)
-	srv := service.New(global.DBEngine)
+	srv := service.New(global.DBEngine, global.Logger)
 	roleService := srv.RoleService
 
 	roles, err := roleService.List(c)

@@ -39,7 +39,7 @@ func JWT() gin.HandlerFunc {
 		if token == "" {
 			ecode = errcode.NotFoundAuthorization
 		} else {
-			srv := service.New(global.DBEngine)
+			srv := service.New(global.DBEngine, global.Logger)
 			tokenService := srv.TokenService
 			claims, err := tokenService.ParseToken(token)
 			if err != nil {

@@ -3,10 +3,12 @@ package service
 import (
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/repository"
+	"go.uber.org/zap"
 )
 
 type srv struct {
-	db db.Connection
+	db     db.Connection
+	logger *zap.Logger
 
 	RoleService              *RoleService
 	UserService              *UserService
@@ -15,7 +17,7 @@ type srv struct {
 	WeightRecordService      *WeightRecordService
 }
 
-func New(db db.Connection) *srv {
+func New(db db.Connection, logger *zap.Logger) *srv {
 	repo := repository.New(db)
 	roleRepository := repo.RoleRepository
 	userRepository := repo.UserRepository
@@ -27,7 +29,7 @@ func New(db db.Connection) *srv {
 		db: db,
 
 		RoleService:              NewRoleService(roleRepository),
-		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository),
+		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository, logger),
 		TokenService:             NewTokenService(userRepository),
 		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
 		WeightRecordService:      NewWeightRecordService(weigthRecordRepository, userRepository),
