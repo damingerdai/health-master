@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/damingerdai/health-master/internal/logger"
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -87,6 +88,8 @@ func New(server *http.Server, runMode string) (Server, error) {
 	}
 	defer log.Sync()
 	log.Debug("health master is in run mode:", zap.String("runMode", runMode))
+
+	gin.SetMode(runMode)
 	if runMode == "release" {
 		return NewProdServer(server), nil
 	} else if runMode == "debug" {

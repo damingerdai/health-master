@@ -15,7 +15,6 @@ import (
 	"github.com/damingerdai/health-master/internal/routers"
 	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 
@@ -23,7 +22,7 @@ import (
 )
 
 func init() {
-	var err = godotenv.Load()
+	err := godotenv.Load()
 	if err != nil {
 		log.Println("fail to setup server: " + err.Error())
 	}
@@ -58,7 +57,6 @@ func init() {
 // @name						Authorization
 // @description				Type "Bearer" followed by a space and JWT token.
 func main() {
-	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", global.ServerSetting.HttpPort),
