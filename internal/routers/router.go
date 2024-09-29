@@ -52,6 +52,8 @@ func NewRouter() *gin.Engine {
 		apiV1.DELETE("/weight-record/:id", api.DeleteWeightRecord)
 		apiV1.GET("/weight-records", api.ListWeightRecords)
 
+		apiV1.POST("/height", api.CreateUserHeight)
+
 	}
 
 	return r

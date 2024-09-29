@@ -15,6 +15,7 @@ type srv struct {
 	TokenService             *TokenService
 	UserBloodPressureService *UserBloodPressureService
 	WeightRecordService      *WeightRecordService
+	UserHeightService        *UserHeightService
 }
 
 func New(db db.Connection, logger *zap.Logger) *srv {
@@ -24,6 +25,7 @@ func New(db db.Connection, logger *zap.Logger) *srv {
 	userRoleRepository := repo.UserRoleRepository
 	userBloodPressureRepository := repo.UserBloodPressureRepository
 	weigthRecordRepository := repo.WeightRecordRepository
+	userHeightRepository := repo.UserHeightRepository
 
 	return &srv{
 		db: db,
@@ -33,5 +35,6 @@ func New(db db.Connection, logger *zap.Logger) *srv {
 		TokenService:             NewTokenService(userRepository),
 		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
 		WeightRecordService:      NewWeightRecordService(weigthRecordRepository, userRepository),
+		UserHeightService:        NewUserHeightService(userRepository, userHeightRepository),
 	}
 }
