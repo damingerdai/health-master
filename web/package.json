@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "dev:host": "next dev -H 0.0.0.0",
     "dev:turbo": "next dev --turbo",
     "build": "next build",
@@ -27,9 +27,9 @@
     "gsap": "^3.12.5",
     "jotai": "^2.0.2",
     "lodash": "^4.17.21",
-    "next": "^14.2.10",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "next": "15.0.3",
+    "react": "19.0.0-rc-66855b96-20241106",
+    "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-icons": "^4.4.0",
     "swr": "^2.1.5",
     "yup": "^1.0.0"
@@ -37,12 +37,12 @@
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.1.1",
     "@types/node": "20.10.5",
-    "@types/react": "18.2.21",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/yup": "^0.29.11",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "eslint": "8.54.0",
-    "eslint-config-next": "^14.2.4",
+    "eslint-config-next": "15.0.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -51,5 +51,9 @@
     "sass": "^1.55.0",
     "typescript": "5.2.2",
     "vercel": "^31.0.0"
+  },
+  "resolutions": {
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   }
 }
