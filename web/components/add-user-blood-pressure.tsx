@@ -1,15 +1,4 @@
 import { request } from '@/lib/request';
-import {
-  Button,
-  Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
@@ -17,8 +6,22 @@ import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/user';
 import { DatePickerInput } from './date-picker-input';
 import { TimePickerInput } from './time-picker-input';
-import { toastInstance } from './toast';
 import { UserBloodPressureNumberInput } from './user-blood-pressure-number-input';
+import { Button } from '@chakra-ui/button';
+import { toaster } from '@chakra-ui/toaster';
+import {
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogBody,
+} from '@chakra-ui/dialog';
+
+interface OpenChangeDetails {
+  open: boolean;
+}
 
 interface AddUserBloodPressureValue {
   userId?: string;
@@ -29,13 +32,13 @@ interface AddUserBloodPressureValue {
   logTime: Date;
 }
 
-interface AddUserBloodPressureModalProps {
+interface AddUserBloodPressureDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const AddUserBloodPressureModal: React.FC<
-  AddUserBloodPressureModalProps
+export const AddUserBloodPressureDialog: React.FC<
+  AddUserBloodPressureDialogProps
 > = props => {
   const { isOpen, onClose } = props;
   const user = useAtomValue(userAtom);
@@ -87,9 +90,9 @@ export const AddUserBloodPressureModal: React.FC<
 
       onClose();
       setSubmitting(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      toastInstance({
+      toaster.create({
         id: 'SERVICE_ERROR',
         title: err.message,
         position: 'bottom',
@@ -102,8 +105,14 @@ export const AddUserBloodPressureModal: React.FC<
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={(details: OpenChangeDetails) => {
+        if (details.open) {
+          onClose();
+        }
+      }}
+    >
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchemas}
@@ -111,51 +120,49 @@ export const AddUserBloodPressureModal: React.FC<
       >
         {({ isValid, isSubmitting }) => (
           <Form>
-            <ModalContent>
-              <ModalHeader>
-                <Flex justifyContent="center" alignContent="center">
-                  添加血压记录
-                </Flex>
-                <ModalCloseButton />
-              </ModalHeader>
-              <ModalBody>
+            <DialogContent>
+              <DialogCloseTrigger />
+              <DialogHeader>
+                <DialogTitle>添加血压记录</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
                 <UserBloodPressureNumberInput
-                  display="舒张压（mmHg）"
+                  label="舒张压（mmHg）"
                   name="diastolicBloodPressure"
                   min={0}
                 />
                 <UserBloodPressureNumberInput
-                  display="收缩压（mmHg）"
+                  label="收缩压（mmHg）"
                   name="systolicBloodPressure"
                   min={0}
                 />
                 <UserBloodPressureNumberInput
-                  display="脉搏"
+                  label="脉搏"
                   name="pulse"
                   min={0}
                 />
                 <DatePickerInput display="记录日期" name="logDate" />
                 <TimePickerInput display="记录时间" name="logTime" />
-              </ModalBody>
-              <ModalFooter justifyContent="center">
+              </DialogBody>
+              <DialogFooter justifyContent="center">
                 <Button
                   w="85px"
                   type="submit"
                   colorScheme="teal"
                   mr="1rem"
                   disabled={!isValid}
-                  isLoading={isSubmitting}
+                  loading={isSubmitting}
                 >
                   提交
                 </Button>
                 <Button variant="outline" colorScheme="teal" onClick={onClose}>
                   取消
                 </Button>
-              </ModalFooter>
-            </ModalContent>
+              </DialogFooter>
+            </DialogContent>
           </Form>
         )}
       </Formik>
-    </Modal>
+    </DialogRoot>
   );
 };

@@ -2,16 +2,8 @@
 
 import * as React from 'react';
 import { useState } from 'react';
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/react';
+import { Button } from '@chakra-ui/button';
+import { DialogRoot } from '@chakra-ui/dialog';
 import { isAsyncFunction } from '@/lib/fn';
 
 interface ConfirmProps {
@@ -43,10 +35,10 @@ export const Confirm: React.FC<ConfirmProps> = props => {
       isAsyncFunction(confirm)
         ? confirm
         : () => {
-          confirm();
+            confirm();
 
-          return Promise.reject();
-        }
+            return Promise.resolve();
+          }
     ) as () => Promise<void>;
 
     await handler();

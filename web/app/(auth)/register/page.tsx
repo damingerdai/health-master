@@ -1,25 +1,22 @@
 'use client';
 
-import { PasswordInput } from '@/components/password-input';
-import { toastInstance } from '@/components/toast';
 import { request } from '@/lib/request';
 import {
   Box,
-  Button,
   Flex,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
+  HStack,
   Heading,
   Input,
   Link,
-  Radio,
-  RadioGroup,
   Stack,
 } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
+import { PasswordInput } from '@/components/password-input';
+import { Button } from '@/components/ui/button';
+import { Field } from '@/components/ui/field';
+import { Radio, RadioGroup } from '@/components/ui/radio';
+import { toaster } from '@/components/ui/toaster';
 import * as Yup from 'yup';
 
 export default function Register() {
@@ -70,7 +67,7 @@ export default function Register() {
       router.push('/login');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toastInstance({
+      toaster.create({
         title: '注册报错',
         description: error?.response?.data || error?.message || '注册报错',
         position: 'bottom',
@@ -125,11 +122,13 @@ export default function Register() {
                   setFieldValue,
                 }) => (
                   <Form>
-                    <Stack spacing={4}>
-                      <FormControl
-                        isInvalid={!!errors.username && touched.username}
+                    <Stack width="300px">
+                      <Field
+                        label="用户名"
+                        invalid={!!errors.username && touched.username}
+                        errorText={errors.username}
+                        heplerText="请输入你的用户名"
                       >
-                        <FormLabel htmlFor="username">用户名</FormLabel>
                         <Input
                           type="text"
                           id="username"
@@ -138,16 +137,13 @@ export default function Register() {
                           onChange={handleChange}
                           value={values.username}
                         />
-                        {!!errors.username && touched.username ? (
-                          <FormErrorMessage>{errors.username}</FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请输入你的用户名</FormHelperText>
-                        )}
-                      </FormControl>
-                      <FormControl
-                        isInvalid={!!errors.firstName && touched.firstName}
+                      </Field>
+                      <Field
+                        label="姓"
+                        invalid={!!errors.firstName && touched.firstName}
+                        errorText={errors.firstName}
+                        heplerText="请输入你的姓"
                       >
-                        <FormLabel htmlFor="firstName">姓</FormLabel>
                         <Input
                           type="text"
                           id="firstName"
@@ -156,18 +152,13 @@ export default function Register() {
                           onChange={handleChange}
                           value={values.firstName}
                         />
-                        {!!errors.firstName && touched.firstName ? (
-                          <FormErrorMessage>
-                            {errors.firstName}
-                          </FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请输入你的姓</FormHelperText>
-                        )}
-                      </FormControl>
-                      <FormControl
-                        isInvalid={!!errors.lastName && touched.lastName}
+                      </Field>
+                      <Field
+                        label="名"
+                        invalid={!!errors.lastName && touched.lastName}
+                        errorText={errors.lastName}
+                        heplerText="请输入你的名"
                       >
-                        <FormLabel htmlFor="lastName">名</FormLabel>
                         <Input
                           type="text"
                           id="lastName"
@@ -176,79 +167,66 @@ export default function Register() {
                           onChange={handleChange}
                           value={values.lastName}
                         />
-                        {!!errors.lastName && touched.lastName ? (
-                          <FormErrorMessage>{errors.lastName}</FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请输入你的名</FormHelperText>
-                        )}
-                      </FormControl>
-                      <FormControl
-                        isInvalid={!!errors.gender && touched.gender}
+                      </Field>
+                      <Field
+                        label="性别"
+                        invalid={!!errors.gender && touched.gender}
+                        errorText={errors.gender}
+                        heplerText="请选择性别"
                       >
-                        <FormLabel htmlFor="gender">性别</FormLabel>
                         <RadioGroup
                           id="gender"
                           name="gender"
-                          onChange={v => setFieldValue('gender', v)}
+                          onValueChange={v => {
+                            setFieldValue('gender', v.value);
+                          }}
                           value={values.gender}
                         >
-                          <Stack direction="row">
+                          <HStack gap="6">
                             <Radio value="M">男</Radio>
                             <Radio value="F">女</Radio>
-                          </Stack>
+                          </HStack>
                         </RadioGroup>
-                        {!!errors.gender && touched.gender ? (
-                          <FormErrorMessage>{errors.gender}</FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请选择你的性别</FormHelperText>
-                        )}
-                      </FormControl>
-                      <FormControl
-                        isInvalid={!!errors.password && touched.password}
+                      </Field>
+                      <Field
+                        label="密码"
+                        width="full"
+                        invalid={!!errors.password && touched.password}
+                        errorText={errors.password}
+                        heplerText="请输入密码"
                       >
-                        <FormLabel htmlFor="password">密码</FormLabel>
                         <PasswordInput
                           id="password"
                           name="password"
+                          width="full"
                           onChange={handleChange}
                           placeholder="请输入密码"
                           value={values.password}
                         />
-                        {!!errors.password && touched.password ? (
-                          <FormErrorMessage>{errors.password}</FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请输入密码</FormHelperText>
-                        )}
-                      </FormControl>
-                      <FormControl
-                        isInvalid={
+                      </Field>
+                      <Field
+                        label="确认密码"
+                        invalid={
                           !!errors.confirmPassword && touched.confirmPassword
                         }
+                        errorText={errors.confirmPassword}
+                        heplerText="请再次输入密码"
                       >
-                        <FormLabel htmlFor="confirmPassword">
-                          确认密码
-                        </FormLabel>
                         <PasswordInput
                           id="confirmPassword"
                           name="confirmPassword"
+                          width="full"
                           onChange={handleChange}
                           placeholder="请再次输入密码"
                           value={values.confirmPassword}
                         />
-                        {!!errors.confirmPassword && touched.confirmPassword ? (
-                          <FormErrorMessage>
-                            {errors.confirmPassword}
-                          </FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请再次输入密码</FormHelperText>
-                        )}
-                      </FormControl>
-                      <Stack spacing={10} pt={2}>
+                      </Field>
+                      <Stack gap={10} pt={2}>
                         <Button
                           type="submit"
-                          colorScheme="teal"
+                          colorPalette="teal"
                           loadingText="注册中"
-                          isLoading={isSubmitting}
+                          loading={isSubmitting}
                           disabled={isSubmitting}
                         >
                           注册

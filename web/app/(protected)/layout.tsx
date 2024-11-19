@@ -4,25 +4,19 @@ import { Header } from '@/components/header';
 import { SidebarContent } from '@/components/sidebar/context';
 import { ToggleThemeButton } from '@/components/toggle-theme-button';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import {
-  Text,
-  HStack,
-  Spacer,
-  Box,
-  useColorModeValue,
-  IconButton,
-  useDisclosure,
-  Drawer,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerBody,
-  DrawerOverlay,
-  Flex,
-  useMediaQuery,
-} from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { Text, HStack, Spacer, Box, IconButton, Flex } from '@chakra-ui/react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { UserMenu } from '@/components/user-menu';
+import { useColorModeValue } from '@/components/ui/color-mode';
+import {
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerCloseTrigger,
+  DrawerContent,
+  DrawerRoot,
+} from '@/components/ui/drawer';
+import { useDisclosure, useMediaQuery } from '@reactuses/core';
 import { AuthRequired } from '@/components/auth';
 
 export default function RootLayout({
@@ -30,14 +24,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isOpen, onClose, onToggle } = useDisclosure({
-    defaultIsOpen: true,
+  const { isOpen, onClose, onOpen } = useDisclosure({
+    defaultOpen: true,
   });
   const bg = useColorModeValue('#f0f2f5', '#20202380');
   const [drawerMode, setDrawerMode] = useState<'side' | 'over' | 'push'>(
     'side'
   );
-  const [isMobile] = useMediaQuery('(max-width: 720px)');
+  const isMobile = useMediaQuery('(max-width: 720px)');
+  const onToggle = useCallback(() => {
+    if (isOpen) {
+      onClose();
+    } else {
+      onOpen();
+    }
+  }, [isOpen, onOpen, onClose]);
 
   useEffect(() => {
     if (isMobile) {
@@ -56,37 +57,39 @@ export default function RootLayout({
         </motion.aside>
       )}
       {drawerMode === 'over' && (
-        <Drawer
+        <DrawerRoot
           isOpen={isOpen}
-          placement="left"
+          placement="start"
           onClose={onClose}
           autoFocus={false}
           returnFocusOnClose={false}
           onOverlayClick={onClose}
           size="xs"
         >
-          <DrawerOverlay />
+          <DrawerBackdrop />
           <DrawerContent width="240px !important">
-            <DrawerCloseButton />
+            <DrawerCloseTrigger />
             <DrawerBody px={0}>
               <SidebarContent onClose={onClose} hasTitle />
             </DrawerBody>
           </DrawerContent>
-        </Drawer>
+        </DrawerRoot>
       )}
       <Box w="100%">
-        <Header bgColor="Background" position="sticky" top={0}>
+        <Header bgColor="background" position="sticky" top={0}>
           <IconButton
             aria-label="hamburger menu"
-            bg="transparent"
-            icon={<HamburgerIcon />}
+            variant="ghost"
+            // bg="transparent"
             onClick={onToggle}
-          />
+          >
+            <HamburgerIcon />
+          </IconButton>
           <Box px={1}>
             <Text fontWeight="700">Health Master</Text>
           </Box>
           <Spacer />
-          <HStack spacing={{ base: '1', md: '2' }}>
+          <HStack gap={{ base: '1', md: '2' }}>
             <ToggleThemeButton />
             <UserMenu />
           </HStack>

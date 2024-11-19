@@ -1,14 +1,14 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/react';
 import * as React from 'react';
+import { Button } from '@chakra-ui/button';
+import { DialogRoot } from '@chakra-ui/react';
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@chakra-ui/dialog';
 
 interface DeleteUserBloodPressureModalProps {
   isOpen: boolean;
@@ -22,21 +22,31 @@ export const DeleteUserBloodPressureModal: React.FC<
   const { isOpen, onClose, confirm } = props;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent mt={{ base: '50%', sm: '10%' }}>
-        <ModalHeader>确定删除？</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>一旦删除将无法撤销！！！</ModalBody>
-        <ModalFooter>
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={details => {
+        if (details.open) {
+          onClose();
+        }
+      }}
+    >
+      <DialogContent mt={{ base: '50%', sm: '10%' }}>
+        <DialogCloseTrigger />
+        <DialogHeader>
+          <DialogTitle>确认删除？</DialogTitle>
+        </DialogHeader>
+        <DialogBody>
+          <p>一旦删除将无法撤销！！！</p>
+        </DialogBody>
+        <DialogFooter>
           <Button colorScheme="gray" mr={3} onClick={onClose}>
             取消
           </Button>
           <Button variant="ghost" color="red" onClick={confirm}>
             确定
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };

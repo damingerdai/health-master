@@ -5,16 +5,16 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
-  Drawer,
+  DrawerRoot,
   DrawerBody,
   DrawerContent,
   DrawerHeader,
-  DrawerOverlay,
   Flex,
   Spacer,
 } from '@chakra-ui/react';
 import { times } from 'lodash';
 import { PickerColum } from './picker-colum';
+import { DrawerBackdrop } from '@chakra-ui/drawer';
 
 interface PickerProps {
   confirmText?: React.ReactNode;
@@ -61,8 +61,8 @@ export const Picker: React.FC<PickerProps> = props => {
   };
 
   return (
-    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-      <DrawerOverlay />
+    <DrawerRoot placement="bottom" onClose={onClose} isOpen={isOpen}>
+      <DrawerBackdrop />
       <DrawerContent>
         <DrawerHeader borderBottomWidth="1px">
           <Flex>
@@ -92,7 +92,7 @@ export const Picker: React.FC<PickerProps> = props => {
             justifyContent="center"
             h="216px"
             cursor="grab"
-            __css={{
+            css={{
               WebkitMaskBoxImage:
                 'linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent)',
             }}
@@ -133,6 +133,6 @@ export const Picker: React.FC<PickerProps> = props => {
           </Box>
         </DrawerBody>
       </DrawerContent>
-    </Drawer>
+    </DrawerRoot>
   );
 };

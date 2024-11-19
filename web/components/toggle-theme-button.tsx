@@ -1,11 +1,13 @@
 'use client';
 
-import { Box, Button, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { IoSunny, IoMoon } from 'react-icons/io5';
 import gsap from 'gsap';
-import { useSystemColorMode } from '../hooks/useSystemColorMode';
+import { Button } from '@/components/ui/button';
+import { useColorMode, useColorModeValue } from '@/components/ui/color-mode';
+import { useSystemColorMode } from '@/hooks/useSystemColorMode';
 
 declare global {
   interface Document {
@@ -57,9 +59,11 @@ export const ToggleThemeButton: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    setColorMode(systemColorMode);
-  }, [systemColorMode]);
+  // useEffect(() => {
+  //   if (!colorMode) {
+  //     setColorMode(systemColorMode);
+  //   }
+  // }, [colorMode, systemColorMode]);
 
   return (
     <Box

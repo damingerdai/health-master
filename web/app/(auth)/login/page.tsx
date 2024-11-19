@@ -2,27 +2,16 @@
 
 import { userAtom } from '@/store/user';
 import { login } from '@/lib/request';
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Stack,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, Input, Stack, Link } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useSetAtom } from 'jotai';
-import { Link } from '@/components/link';
+import { Button } from '@/components/ui/button';
+import { Field } from '@/components/ui/field';
+import { InputGroup } from '@/components/ui/input-group';
 
 export default function Login() {
   const router = useRouter();
@@ -86,11 +75,13 @@ export default function Login() {
                   isSubmitting,
                 }) => (
                   <Form>
-                    <Stack spacing={4}>
-                      <FormControl
-                        isInvalid={!!errors.username && touched.username}
+                    <Stack>
+                      <Field
+                        label="用户名"
+                        invalid={!!errors.username && touched.username}
+                        errorText={errors.username}
+                        helperText="请输入用户名"
                       >
-                        <FormLabel htmlFor="username">用户名</FormLabel>
                         <Input
                           type="text"
                           id="username"
@@ -99,17 +90,24 @@ export default function Login() {
                           onChange={handleChange}
                           value={values.username}
                         />
-                        {!!errors.username && touched.username ? (
-                          <FormErrorMessage>{errors.username}</FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请输入你的用户名</FormHelperText>
-                        )}
-                      </FormControl>
-                      <FormControl
-                        isInvalid={!!errors.password && touched.password}
+                      </Field>
+                      <Field
+                        label="密码"
+                        invalid={!!errors.password && touched.password}
+                        errorText={errors.password}
+                        helperText="请输入密码"
                       >
-                        <FormLabel htmlFor="password">密码</FormLabel>
-                        <InputGroup>
+                        <InputGroup
+                          flex="1"
+                          endElement={
+                            <Button
+                              variant="ghost"
+                              onClick={() => setShowPassword(p => !p)}
+                            >
+                              {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                            </Button>
+                          }
+                        >
                           <Input
                             type={showPassword ? 'text' : 'password'}
                             id="password"
@@ -117,28 +115,16 @@ export default function Login() {
                             placeholder="密码"
                             onChange={handleChange}
                           />
-                          <InputRightElement h="full">
-                            <Button
-                              variant="ghost"
-                              onClick={() => setShowPassword(p => !p)}
-                            >
-                              {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                            </Button>
-                          </InputRightElement>
                         </InputGroup>
-                        {!!errors.password && touched.password ? (
-                          <FormErrorMessage>{errors.password}</FormErrorMessage>
-                        ) : (
-                          <FormHelperText>请输入你的密码</FormHelperText>
-                        )}
-                      </FormControl>
-                      <Stack spacing={10} pt={2}>
+                      </Field>
+                      <Stack pt={2}>
                         <Button
                           type="submit"
+                          colorPalette="teal"
                           colorScheme="teal"
                           loadingText="登录中"
-                          isLoading={isSubmitting}
-                          isDisabled={!isValid}
+                          loading={isSubmitting}
+                          disabled={!isValid}
                         >
                           登录
                         </Button>

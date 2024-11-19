@@ -4,7 +4,7 @@ import { SidebarContent } from './context';
 import { Header } from './header';
 
 export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <Box>
@@ -15,7 +15,7 @@ export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
       />
       <Drawer
         autoFocus={false}
-        isOpen={isOpen}
+        isOpen={open}
         placement="left"
         onClose={onClose}
         returnFocusOnClose={false}
