@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import { ToastContainer } from '@/components/toast';
-import { Providers } from './providers';
+import { Provider } from '@/components/ui/provider';
 import { fonts } from './fonts';
 
 export const metadata: Metadata = {
@@ -14,10 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh">
+    <html lang="zh" suppressHydrationWarning>
       <body className={fonts.inter.className}>
-        <Providers>{children}</Providers>
-        <ToastContainer />
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

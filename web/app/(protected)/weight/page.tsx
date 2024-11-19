@@ -1,19 +1,13 @@
 import { WeightManagement } from '@/components/weight-management';
-import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-} from '@chakra-ui/react';
+import { BreadcrumbRoot } from '@chakra-ui/breadcrumb';
+import { Box, BreadcrumbCurrentLink } from '@chakra-ui/react';
 
 export default function Page() {
   return (
     <Box p={4}>
-      <Breadcrumb mb="2">
-        <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href="/">体重管理</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
+      <BreadcrumbRoot mb="2">
+        <BreadcrumbCurrentLink>体重管理</BreadcrumbCurrentLink>
+      </BreadcrumbRoot>
       <WeightManagement />
     </Box>
   );

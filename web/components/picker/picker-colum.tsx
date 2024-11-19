@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unused-prop-types,react/destructuring-assignment,react/no-array-index-key */
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
+import { useColorModeValue } from '@/components/ui/color-mode';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 

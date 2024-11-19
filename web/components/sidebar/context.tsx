@@ -1,16 +1,10 @@
-import {
-  Box,
-  BoxProps,
-  Flex,
-  Spacer,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Spacer, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiHome } from 'react-icons/fi';
 import { GiBodyHeight } from 'react-icons/gi';
 import { MdBloodtype } from 'react-icons/md';
 import { CiSettings } from 'react-icons/ci';
+import { useColorModeValue } from '@/components/ui/color-mode';
 import { NavItem } from './item';
 
 interface SidebarContentProps extends BoxProps {
@@ -28,18 +22,23 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
     display="flex"
     flexDir="column"
     bg={useColorModeValue('white', 'black')}
-    transition="3s ease"
+    // transition="3s ease"
     borderRightColor={useColorModeValue('gray.200', 'gray.700')}
     // w={{ base: '240px', md: 'full' }}
     h="100%"
-    __css={{
+    css={{
       textWrap: 'nowrap',
     }}
     {...rest}
   >
     {hasTitle && (
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+        <Text
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+          color={useColorModeValue('black', 'white')}
+        >
           H & M
         </Text>
       </Flex>

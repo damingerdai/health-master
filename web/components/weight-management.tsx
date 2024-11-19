@@ -1,13 +1,8 @@
 'use client';
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Button, Card } from '@chakra-ui/react';
 import * as React from 'react';
 import { useState } from 'react';
+import { useDisclosure } from '@reactuses/core';
 import { AddWeightModal } from './add-weight-modal';
 import useSWR from 'swr';
 import { fetchWeightRecord } from '@/lib/featcher';
@@ -25,8 +20,8 @@ export const WeightManagement: React.FC = () => {
   );
 
   return (
-    <Card w="full">
-      <CardHeader
+    <Card.Root w="full">
+      <Card.Header
         display="flex"
         justifyContent="flex-end"
         borderLeftWidth="4px"
@@ -37,13 +32,13 @@ export const WeightManagement: React.FC = () => {
         <Button bg="tomato" onClick={onOpen}>
           添加
         </Button>
-        <AddWeightModal
-          isOpen={isOpen}
-          onClose={onClose}
-          addWeightModalCallback={mutate}
-        />
-      </CardHeader>
-      <CardBody>
+        {/* <AddWeightModal */}
+        {/*   isOpen={isOpen} */}
+        {/*   onClose={onClose} */}
+        {/*   addWeightModalCallback={mutate} */}
+        {/* /> */}
+      </Card.Header>
+      <Card.Body>
         <WeightManagementList
           data={data?.data ?? []}
           total={data?.count ?? 0}
@@ -53,7 +48,7 @@ export const WeightManagement: React.FC = () => {
           isLoading={isLoading}
           refresh={mutate}
         />
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };

@@ -1,25 +1,17 @@
-import {
-  Button,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Thead,
-  Tr,
-  useDisclosure,
-} from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import * as React from 'react';
 import { useState } from 'react';
-import { TableHeader } from '@/components/table';
+import { Button } from '@chakra-ui/button';
+import { Table } from '@chakra-ui/react';
 import {
   UserBloodPressure,
   UserBloodPressures,
 } from '@/type/user-blood-pressure';
 import { request } from '@/lib/request';
 import { DeleteUserBloodPressureModal } from './delete-user-blood-pressure';
-import { toastInstance } from './toast';
+import { useDisclosure } from '@reactuses/core';
+import { toaster } from '@chakra-ui/toaster';
 
 interface UserBloodPressureListProps {
   userBloodPressures: UserBloodPressures;
@@ -45,14 +37,14 @@ export const UserBloodPressureList: React.FC<
         method: 'DELETE',
         url: `/api/user-blood-pressure/${ubp.id}`,
       });
-      toastInstance({
+      toaster.create({
         title: '删除成功',
         status: 'success',
         isClosable: true,
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (ex: any) {
-      toastInstance({
+      toaster.create({
         title: '删除失败',
         description: ex.message,
         status: 'error',
@@ -64,52 +56,50 @@ export const UserBloodPressureList: React.FC<
 
   return (
     <>
-      <TableContainer
+      <Table.Root
         className="table-responsive"
         whiteSpace="normal"
-        __css={{ textWrap: 'nowrap' }}
+        css={{ textWrap: 'nowrap' }}
       >
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <TableHeader>姓名</TableHeader>
-              <TableHeader>舒张压</TableHeader>
-              <TableHeader>收缩压</TableHeader>
-              <TableHeader>脉搏</TableHeader>
-              <TableHeader>记录时间</TableHeader>
-              <TableHeader>操作</TableHeader>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {userBloodPressures.map(ubp => (
-              <Tr key={ubp.id}>
-                <Td>{`${ubp.user?.firstName} ${ubp.user?.lastName}`}</Td>
-                <Td>{`${ubp.diastolicBloodPressure} mmHg`}</Td>
-                <Td>{`${ubp.systolicBloodPressure} mmHg`}</Td>
-                <Td>{`${ubp.pulse} 次/分`}</Td>
-                <Td>
-                  {ubp.logDatetime
-                    ? format(new Date(ubp.logDatetime), 'PPPp', {
+        <Table.Header>
+          <Table.Row>
+            <Header.ColumnHeader>姓名</Header.ColumnHeader>
+            <Header.ColumnHeader>舒张压</Header.ColumnHeader>
+            <Header.ColumnHeader>收缩压</Header.ColumnHeader>
+            <Header.ColumnHeader>脉搏</Header.ColumnHeader>
+            <Header.ColumnHeader>记录时间</Header.ColumnHeader>
+            <Header.ColumnHeader>操作</Header.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {userBloodPressures.map(ubp => (
+            <Table.Row key={ubp.id}>
+              <Table.Cell>{`${ubp.user?.firstName} ${ubp.user?.lastName}`}</Table.Cell>
+              <Table.Cell>{`${ubp.diastolicBloodPressure} mmHg`}</Table.Cell>
+              <Table.Cell>{`${ubp.systolicBloodPressure} mmHg`}</Table.Cell>
+              <Table.Cell>{`${ubp.pulse} 次/分`}</Table.Cell>
+              <Table.Cell>
+                {ubp.logDatetime
+                  ? format(new Date(ubp.logDatetime), 'PPPp', {
                       locale: zhCN,
                     })
-                    : '未知'}
-                </Td>
-                <Td>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => {
-                      setSelecetedUserBloodPressure(ubp);
-                      onOpen();
-                    }}
-                  >
-                    删除
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+                  : '未知'}
+              </Table.Cell>
+              <Table.Cell>
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    setSelecetedUserBloodPressure(ubp);
+                    onOpen();
+                  }}
+                >
+                  删除
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
       <DeleteUserBloodPressureModal
         isOpen={isOpen}
         onClose={onDoClose}
