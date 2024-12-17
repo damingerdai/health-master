@@ -40,7 +40,8 @@ fclient.interceptors.response.use(
     return { ...response };
   },
   err => {
-    const { code, message, response } = err;
+    console.error('interceptors', err);
+    const { code, message, response } = err.response?.data ?? {};
     if (
       (code === 'ECONNABORTED' || message === 'Network Error') &&
       !toaster.isActive('NETWORK_ERROR')
@@ -115,13 +116,16 @@ export const login = async (
     return data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
+    console.error('error', err);
     toaster.create({
       title: '登录报错',
       description: err?.response?.data?.message || err?.message || '登录报错',
       position: 'bottom',
-      status: 'error',
+      type: 'error',
       duration: 5000,
-      isClosable: true,
+      action: {
+        label: 'x',
+      },
     });
     throw err;
   }
