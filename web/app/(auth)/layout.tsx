@@ -2,7 +2,7 @@
 
 import { Box } from '@chakra-ui/react';
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 
 export default function RootLayout({
@@ -11,14 +11,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { theme } = useTheme();
+  const [bg, setBg] = useState('');
 
-  const bg = useMemo(() => {
+  useEffect(() => {
     if (theme === 'light') {
-      return '#f0f2f5';
+      setBg('#f0f2f5');
     } else if (theme === 'dark') {
-      return '#20202380';
+      setBg('#202380');
     }
-  }, [theme]);
+  }, []);
 
   return (
     <Box
