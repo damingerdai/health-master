@@ -1,3 +1,4 @@
+'use client';
 import { Box, BoxProps, Flex, Spacer, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiHome } from 'react-icons/fi';
@@ -19,6 +20,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
 }) => (
   <Box
     as="nav"
+    suppressHydrationWarning
     display="flex"
     flexDir="column"
     bg={useColorModeValue('white', 'black')}
@@ -33,12 +35,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = ({
   >
     {hasTitle && (
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text
-          fontSize="2xl"
-          fontFamily="monospace"
-          fontWeight="bold"
-          color={useColorModeValue('black', 'white')}
-        >
+        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           H & M
         </Text>
       </Flex>

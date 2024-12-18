@@ -7,6 +7,7 @@ import * as React from 'react';
 export const Header: React.FC<FlexProps> = props => (
   <Flex
     as="nav"
+    suppressHydrationWarning
     px={4}
     height="16"
     alignItems="center"

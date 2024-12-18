@@ -27,10 +27,11 @@ export default function RootLayout({
   const { isOpen, onClose, onOpen } = useDisclosure({
     defaultOpen: true,
   });
-  const bg = useColorModeValue('#f0f2f5', '#20202380');
+  // const bg = useColorModeValue('#f0f2f5', '#20202380');
   const [drawerMode, setDrawerMode] = useState<'side' | 'over' | 'push'>(
     'side'
   );
+  const bg = '#f0f2f5';
   const isMobile = useMediaQuery('(max-width: 720px)');
   const onToggle = useCallback(() => {
     if (isOpen) {
@@ -94,7 +95,7 @@ export default function RootLayout({
             <UserMenu />
           </HStack>
         </Header>
-        <Flex bg={bg} as="main" h="calc(100vh - 64px)">
+        <Flex id="glbalLayout" bg={bg} as="main" h="calc(100vh - 64px)">
           <Box w="100%">
             <AuthRequired>{children}</AuthRequired>
           </Box>

@@ -4,20 +4,20 @@ Server:
   ReadTimeout: 60s
   WriteTimeout: 60s
 Database:
-  Host: 127.0.0.1
+  Host: 192.168.31.220
   Port: 5432
   User: postgres
   Password: 123456
-  DB: postgres
+  DB: hm
   SSL: false
 JWT:
   Secret: damingerdai
   Issuer: health-master
   Expire: 7200s
 Redis:
-  Host: 127.0.0.1
+  Host: 192.168.31.220
   Port: 6379
   Password:
   DB: 0
 Logger:
-  Level: info
+  Level: debug

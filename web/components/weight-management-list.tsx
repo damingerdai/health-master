@@ -1,22 +1,15 @@
 import { IWeightRecord } from '@/lib/weight-record';
-import {
-  Center,
-  Spinner,
-  Table,
-  HStack,
-  Box,
-  PaginationRootProvider,
-} from '@chakra-ui/react';
+import { Center, Spinner, Table, HStack, Box } from '@chakra-ui/react';
 import * as React from 'react';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { DeleteWeightRecrodAction } from './delete-weight-record-action';
 import { request } from '@/lib/request';
 import { toaster } from '@chakra-ui/toaster';
-import { Paginator } from './paginator';
 import { Tooltip } from '@chakra-ui/tooltip';
 import {
   PaginationItems,
+  PaginationPrevTrigger,
   PaginationNextTrigger,
   PaginationRoot,
 } from '@chakra-ui/pagination';
@@ -71,11 +64,11 @@ export const WeightManagementList: React.FC<
           <Table.Root variant="outline">
             <Table.Header>
               <Table.Row>
-                <Table.Header>ID</Table.Header>
-                <Table.Header>用户名</Table.Header>
-                <Table.Header>体重</Table.Header>
-                <Table.Header>记录时间</Table.Header>
-                <Table.Header>操作</Table.Header>
+                <Table.ColumnHeader>ID</Table.ColumnHeader>
+                <Table.ColumnHeader>用户名</Table.ColumnHeader>
+                <Table.ColumnHeader>体重</Table.ColumnHeader>
+                <Table.ColumnHeader>记录时间</Table.ColumnHeader>
+                <Table.ColumnHeader>操作</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -139,11 +132,9 @@ export const WeightManagementList: React.FC<
         page={page}
         pageChange={pageChange}
       >
-        <HStack>
-          <PaginationRootProvider />
-          <PaginationItems />
-          <PaginationNextTrigger />
-        </HStack>
+        <PaginationPrevTrigger />
+        <PaginationItems />
+        <PaginationNextTrigger />
       </PaginationRoot>
     </Box>
   );
