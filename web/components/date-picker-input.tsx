@@ -1,19 +1,13 @@
-import { CalendarIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputProps,
-  InputRightElement,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Input, InputProps } from '@chakra-ui/react';
 import { useField } from 'formik';
 import * as React from 'react';
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useDisclosure } from '@reactuses/core';
+import { Button } from '@/components/ui/button';
 import { Picker } from './picker';
+import { Field } from '@chakra-ui/field';
+import { InputGroup } from '@chakra-ui/input-group';
+import { CalendarIcon } from '@/components/icons';
 
 const generateNumberArray = (begin: number, end: number) => {
   const array = [] as string[];
@@ -25,16 +19,16 @@ const generateNumberArray = (begin: number, end: number) => {
 };
 
 interface IDatePickerInputProps extends InputProps {
-  display: string;
+  label: string;
   name: string;
   valueChange?: (val: string[]) => void;
 }
 
 export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
-  const { name, display, valueChange, ...rest } = props;
-  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
+  const { name, label, valueChange, ...rest } = props;
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [field, meta, helpers] = useField(name);
-  const currentDate = new Date();
+  const currentDate = useMemo(() => new Date(), []);
   const [years] = useState<string[]>(
     generateNumberArray(1975, currentDate.getFullYear())
   );
@@ -52,6 +46,14 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
     () => `${value[0]}-${value[1]}-${value[2]}`,
     [value]
   );
+
+  const onToggle = useCallback(() => {
+    if (isOpen) {
+      onClose();
+    } else {
+      onOpen();
+    }
+  }, [isOpen, onOpen, onClose]);
 
   useEffect(() => {
     const newYear = value[0];
@@ -79,18 +81,22 @@ export const DatePickerInput: React.FC<IDatePickerInputProps> = props => {
 
   return (
     <>
-      <FormControl isInvalid={!!meta.error && meta.touched} mt={1}>
-        <FormLabel>{display}</FormLabel>
-        <InputGroup size="md">
-          <Input readOnly name={field.name} value={displayValue} {...rest} />
-          <InputRightElement width="4.5rem">
+      <Field
+        invalid={!!meta.error && meta.touched}
+        label={label}
+        errorText={meta.error}
+      >
+        <InputGroup
+          flex="1"
+          endElement={
             <Button h="1.75rem" size="sm" onClick={onToggle}>
               <CalendarIcon />
             </Button>
-          </InputRightElement>
+          }
+        >
+          <Input readOnly name={field.name} value={displayValue} {...rest} />
         </InputGroup>
-        {meta.error && <FormErrorMessage>{meta.error}</FormErrorMessage>}
-      </FormControl>
+      </Field>
       <Picker
         isOpen={isOpen}
         onOpen={onOpen}

@@ -1,8 +1,8 @@
 import { AccessToken } from '@/type/token';
 import { User } from '@/type/user';
 import axios, { AxiosRequestConfig } from 'axios';
-import { toastInstance } from '../components/toast';
 import { getToken } from './token';
+import { toaster } from '@chakra-ui/toaster';
 
 const fclient = axios.create({
   withCredentials: true,
@@ -25,9 +25,9 @@ fclient.interceptors.response.use(
     const { status } = response;
     if (
       (status < 200 || (status >= 300 && status !== -302)) &&
-      !toastInstance.isActive('SERVICE_ERROR')
+      !toaster.isActive('SERVICE_ERROR')
     ) {
-      toastInstance({
+      toaster.create({
         id: 'SERVICE_ERROR',
         title: '系统内部异常 - 请稍微再试',
         position: 'bottom',
@@ -40,12 +40,13 @@ fclient.interceptors.response.use(
     return { ...response };
   },
   err => {
-    const { code, message, response } = err;
+    console.error('interceptors', err);
+    const { code, message, response } = err.response?.data ?? {};
     if (
       (code === 'ECONNABORTED' || message === 'Network Error') &&
-      !toastInstance.isActive('NETWORK_ERROR')
+      !toaster.isActive('NETWORK_ERROR')
     ) {
-      toastInstance({
+      toaster.create({
         id: 'NETWORK_ERROR',
         title: '网络超时 - 刷新页面以恢复',
         position: 'bottom',
@@ -74,7 +75,7 @@ export async function request<T = any>(
     const data = await fclient<T>(options);
 
     return data.data as T;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (typeof window !== 'undefined') {
       if (err?.response?.status === 401) {
@@ -113,16 +114,18 @@ export const login = async (
     });
 
     return data;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    toastInstance.closeAll();
-    toastInstance({
+    console.error('error', err);
+    toaster.create({
       title: '登录报错',
       description: err?.response?.data?.message || err?.message || '登录报错',
       position: 'bottom',
-      status: 'error',
+      type: 'error',
       duration: 5000,
-      isClosable: true,
+      action: {
+        label: 'x',
+      },
     });
     throw err;
   }

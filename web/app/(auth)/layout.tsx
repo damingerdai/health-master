@@ -1,13 +1,25 @@
 'use client';
 
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const bg = useColorModeValue('#f0f2f5', '#20202380');
+  const { theme } = useTheme();
+  const [bg, setBg] = useState('');
+
+  useEffect(() => {
+    if (theme === 'light') {
+      setBg('#f0f2f5');
+    } else if (theme === 'dark') {
+      setBg('#202380');
+    }
+  }, []);
 
   return (
     <Box

@@ -1,33 +1,32 @@
+import { Field } from '@chakra-ui/field';
 import {
-  NumberInput,
+  NumberInputRoot,
   NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   NumberInputProps,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-} from '@chakra-ui/react';
+} from '@chakra-ui/number-input';
 import { useField } from 'formik';
 import * as React from 'react';
 
 interface UserBloodPressureNumberInputProps extends NumberInputProps {
-  display: string;
+  label: string;
   name: string;
 }
 
 export const UserBloodPressureNumberInput: React.FC<
   UserBloodPressureNumberInputProps
 > = props => {
-  const { name, display, ...rest } = props;
+  const { name, label, ...rest } = props;
 
   const [field, meta, helpers] = useField(name);
 
   return (
-    <FormControl isInvalid={!!meta.error && meta.touched} mt={1}>
-      <FormLabel>{display}</FormLabel>
-      <NumberInput
+    <Field
+      label={label}
+      invalid={!!meta.error && meta.touched}
+      errorText={meta.error}
+      mt={1}
+    >
+      <NumberInputRoot
         name={field.name}
         onChange={e => {
           helpers.setValue(typeof e === 'string' ? parseInt(e, 10) : e);
@@ -35,12 +34,7 @@ export const UserBloodPressureNumberInput: React.FC<
         {...rest}
       >
         <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-      {meta.error && <FormErrorMessage>{meta.error}</FormErrorMessage>}
-    </FormControl>
+      </NumberInputRoot>
+    </Field>
   );
 };

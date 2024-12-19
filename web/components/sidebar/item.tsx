@@ -1,7 +1,7 @@
-import { Flex, FlexProps, Icon, useColorModeValue } from '@chakra-ui/react';
-import { Link } from '@chakra-ui/next-js';
+import { Box, Flex, FlexProps, Icon, Link } from '@chakra-ui/react';
 import * as React from 'react';
 import { IconType } from 'react-icons/lib';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 
 interface NavItemProps extends FlexProps {
   icon?: IconType;
@@ -40,12 +40,9 @@ export const NavItem: React.FC<React.PropsWithChildren<NavItemProps>> = ({
         {...rest}
       >
         {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{ color: hoverColor }}
-            as={icon}
-          />
+          <Icon mr="4" fontSize="16" _groupHover={{ color: hoverColor }}>
+            {React.createElement(icon)}
+          </Icon>
         )}
         {children}
       </Flex>

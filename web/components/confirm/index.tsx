@@ -2,17 +2,18 @@
 
 import * as React from 'react';
 import { useState } from 'react';
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/react';
+import { Button } from '@chakra-ui/button';
+import { DialogBackdrop, DialogBody, DialogRoot } from '@chakra-ui/dialog';
 import { isAsyncFunction } from '@/lib/fn';
+import {
+  DialogActionTrigger,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@chakra-ui/react';
 
 interface ConfirmProps {
   isOpen: boolean;
@@ -43,10 +44,10 @@ export const Confirm: React.FC<ConfirmProps> = props => {
       isAsyncFunction(confirm)
         ? confirm
         : () => {
-          confirm();
+            confirm();
 
-          return Promise.reject();
-        }
+            return Promise.resolve();
+          }
     ) as () => Promise<void>;
 
     await handler();
@@ -55,26 +56,31 @@ export const Confirm: React.FC<ConfirmProps> = props => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent mt={{ base: '50%', sm: '10%' }}>
-        <ModalHeader>{title ?? '确认'}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>{description ?? '请确认'}</ModalBody>
-        <ModalFooter>
-          <Button colorScheme="gray" mr={3} onClick={onClose}>
-            {cancelText ?? '取消'}
-          </Button>
-          <Button
-            colorScheme="ghost"
-            color="red"
-            isLoading={confirmLoading}
-            onClick={doConfirm}
-          >
-            {confirmText ?? '确定'}
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <DialogRoot isOpen={isOpen} onClose={onClose}>
+      <DialogBackdrop />
+      <DialogTrigger />
+      <DialogContent>
+        <DialogCloseTrigger />
+        <DialogHeader>
+          <DialogTitle>{title ?? '确认'}</DialogTitle>
+        </DialogHeader>
+        <DialogBody>{description ?? '确认'}</DialogBody>
+        <DialogFooter>
+          <DialogActionTrigger asChild>
+            <Button colorScheme="gray" mr={3} onClick={onClose}>
+              {cancelText ?? '取消'}
+            </Button>
+            <Button
+              colorScheme="ghost"
+              color="red"
+              loading={confirmLoading}
+              onClick={doConfirm}
+            >
+              {confirmText ?? '确定'}
+            </Button>
+          </DialogActionTrigger>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };

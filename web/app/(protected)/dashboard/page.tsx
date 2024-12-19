@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card, CardBody, CardHeader, Flex, Text } from '@chakra-ui/react';
+import { Box, Card, Flex, Text } from '@chakra-ui/react';
 import * as React from 'react';
 
 export default function Dashboard() {
@@ -38,12 +38,12 @@ export default function Dashboard() {
               xl: '25%',
             }}
           >
-            <Card>
-              <CardHeader>{card.title}</CardHeader>
-              <CardBody>
+            <Card.Root>
+              <Card.Header>{card.title}</Card.Header>
+              <Card.Body>
                 <Text>{card.name}</Text>
-              </CardBody>
-            </Card>
+              </Card.Body>
+            </Card.Root>
           </Box>
         ))}
       </Flex>

@@ -1,11 +1,12 @@
 'use client';
 
-import { Box, Button, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IoSunny, IoMoon } from 'react-icons/io5';
 import gsap from 'gsap';
-import { useSystemColorMode } from '../hooks/useSystemColorMode';
+import { Button } from '@/components/ui/button';
+import { useColorMode, useColorModeValue } from '@/components/ui/color-mode';
 
 declare global {
   interface Document {
@@ -16,9 +17,8 @@ declare global {
 const themes = ['light', 'dark'];
 
 export const ToggleThemeButton: React.FC = () => {
-  const systemColorMode = useSystemColorMode();
   const { colorMode, toggleColorMode, setColorMode } = useColorMode();
-  const bg = useColorModeValue('rgb(253 186 116 / 1)', 'rgba(82 82 91 / 1)');
+  const [bg, setBg] = useState<'rgb(253 186 116 / 1)' | 'rgba(82 82 91 / 1)'>();
 
   const viewTransitionAnimate = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -57,9 +57,19 @@ export const ToggleThemeButton: React.FC = () => {
     });
   };
 
+  // useEffect(() => {
+  //   if (!colorMode) {
+  //     setColorMode(systemColorMode);
+  //   }
+  // }, [colorMode, systemColorMode]);
+
   useEffect(() => {
-    setColorMode(systemColorMode);
-  }, [systemColorMode]);
+    if (colorMode === 'light') {
+      setBg('rgb(253 186 116 / 1)');
+    } else if (colorMode === 'dark') {
+      setBg('rgba(82 82 91 / 1)');
+    }
+  }, [colorMode]);
 
   return (
     <Box
@@ -77,6 +87,7 @@ export const ToggleThemeButton: React.FC = () => {
         return (
           <Button
             key={theme}
+            suppressHydrationWarning
             p="2px"
             m="0"
             h="2rem"

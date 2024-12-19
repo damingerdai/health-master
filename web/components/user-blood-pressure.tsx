@@ -4,11 +4,9 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Separator,
   Flex,
   Spinner,
-  useDisclosure,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import useSWR from 'swr';
 import * as React from 'react';
@@ -18,9 +16,17 @@ import { request } from '@/lib/request';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/user';
 import { downloadFile } from '@/lib/download-file';
-import { AddUserBloodPressureModal } from './add-user-blood-pressure';
+import { AddUserBloodPressureDialog } from './add-user-blood-pressure';
 import { UserBloodPressureList } from './user-blood-pressure-list';
-import { Paginator } from './paginator';
+import { useDisclosure } from '@reactuses/core';
+import { useColorModeValue } from '@chakra-ui/color-mode';
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPageText,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@/components/ui/pagination"
 
 export const UserBloodPressureForm: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -87,7 +93,7 @@ export const UserBloodPressureForm: React.FC = () => {
           导出
         </Button>
       </Flex>
-      <Divider borderColor="gray.300" />
+      <Separator borderColor="gray.300" />
       <Box>
         {isLoading && (
           <Center my={8}>
@@ -113,13 +119,14 @@ export const UserBloodPressureForm: React.FC = () => {
         )}
       </Box>
       {!(!isLoading && data?.length === 0) && (
-        <Paginator
-          page={page}
-          total={Math.ceil(count / 5)}
-          pageChange={p => setPage(p)}
-        />
+        <PaginationRoot page={page} count={count} onPageChange={({ page }) => setPage(page)}>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationPageText />
+          <PaginationNextTrigger />
+        </PaginationRoot>
       )}
-      <AddUserBloodPressureModal
+      <AddUserBloodPressureDialog
         isOpen={isOpen}
         onClose={() => {
           mutate();

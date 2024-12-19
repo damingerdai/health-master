@@ -10,7 +10,7 @@ export const DeleteWeightRecrodAction: React.FC<
   DeleteWeightRecrodActionProps
 > = props => {
   const { confirm } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <Box>
@@ -18,7 +18,7 @@ export const DeleteWeightRecrodAction: React.FC<
         删除
       </Button>
       <Confirm
-        isOpen={isOpen}
+        isOpen={open}
         onClose={onClose}
         confirm={confirm}
         title="确定删除？"
