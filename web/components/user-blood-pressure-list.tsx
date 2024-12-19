@@ -63,12 +63,12 @@ export const UserBloodPressureList: React.FC<
       >
         <Table.Header>
           <Table.Row>
-            <Header.ColumnHeader>姓名</Header.ColumnHeader>
-            <Header.ColumnHeader>舒张压</Header.ColumnHeader>
-            <Header.ColumnHeader>收缩压</Header.ColumnHeader>
-            <Header.ColumnHeader>脉搏</Header.ColumnHeader>
-            <Header.ColumnHeader>记录时间</Header.ColumnHeader>
-            <Header.ColumnHeader>操作</Header.ColumnHeader>
+            <Table.ColumnHeader>姓名</Table.ColumnHeader>
+            <Table.ColumnHeader>舒张压</Table.ColumnHeader>
+            <Table.ColumnHeader>收缩压</Table.ColumnHeader>
+            <Table.ColumnHeader>脉搏</Table.ColumnHeader>
+            <Table.ColumnHeader>记录时间</Table.ColumnHeader>
+            <Table.ColumnHeader>操作</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>

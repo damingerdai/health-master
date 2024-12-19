@@ -3,7 +3,6 @@ import { Button, Card } from '@chakra-ui/react';
 import * as React from 'react';
 import { useState } from 'react';
 import { useDisclosure } from '@reactuses/core';
-import { AddWeightModal } from './add-weight-modal';
 import useSWR from 'swr';
 import { fetchWeightRecord } from '@/lib/featcher';
 import { useAtomValue } from 'jotai';

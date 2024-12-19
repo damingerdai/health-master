@@ -14,7 +14,6 @@
     "prettify": "prettier --write --log-level silent \"**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^3.1.2",
     "@chakra-ui/theme-tools": "^2.1.1",
     "@emotion/react": "^11.13.3",

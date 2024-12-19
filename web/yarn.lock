@@ -152,11 +152,6 @@
   resolved "https://registry.npmjs.org/@chakra-ui/anatomy/-/anatomy-2.3.4.tgz"
   integrity sha512-fFIYN7L276gw0Q7/ikMMlZxP7mvnjRaWJ7f3Jsf9VtDOi6eAYIBRrhQe6+SZ0PGmoOkRaBc7gSE5oeIbgFFyrw==
 
-"@chakra-ui/icons@^2.1.1":
-  version "2.2.4"
-  resolved "https://registry.npmjs.org/@chakra-ui/icons/-/icons-2.2.4.tgz"
-  integrity sha512-l5QdBgwrAg3Sc2BRqtNkJpfuLw/pWRDwwT58J6c4PqQT6wzXxyNa8Q0PForu1ltB5qEiFb1kxr/F/HO1EwNa6g==
-
 "@chakra-ui/react@^3.1.2":
   version "3.1.2"
   resolved "https://registry.npmjs.org/@chakra-ui/react/-/react-3.1.2.tgz"

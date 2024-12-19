@@ -3,7 +3,6 @@
 import { userAtom } from '@/store/user';
 import { login } from '@/lib/request';
 import { Box, Flex, Heading, Input, Stack, Link } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
@@ -12,6 +11,7 @@ import { useSetAtom } from 'jotai';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { InputGroup } from '@/components/ui/input-group';
+import { ViewIcon, ViewOffIcon } from '@/components/icons';
 
 export default function Login() {
   const router = useRouter();

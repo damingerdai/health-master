@@ -1,4 +1,3 @@
-import { CalendarIcon } from '@chakra-ui/icons';
 import { Input, InputProps } from '@chakra-ui/react';
 import { useField } from 'formik';
 import * as React from 'react';
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Picker } from './picker';
 import { Field } from '@chakra-ui/field';
 import { InputGroup } from '@chakra-ui/input-group';
+import { CalendarIcon } from '@/components/icons';
 
 const generateNumberArray = (begin: number, end: number) => {
   const array = [] as string[];

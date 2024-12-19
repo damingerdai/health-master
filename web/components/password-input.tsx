@@ -1,8 +1,8 @@
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Button, Input, InputProps } from '@chakra-ui/react';
 import { InputGroup, InputGroupProps } from '@/components/ui/input-group';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { ViewIcon, ViewOffIcon } from '@/components/icons';
 
 interface PasswordInputProps extends InputProps {
   group?: InputGroupProps;

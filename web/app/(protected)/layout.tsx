@@ -3,12 +3,10 @@
 import { Header } from '@/components/header';
 import { SidebarContent } from '@/components/sidebar/context';
 import { ToggleThemeButton } from '@/components/toggle-theme-button';
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { Text, HStack, Spacer, Box, IconButton, Flex } from '@chakra-ui/react';
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { UserMenu } from '@/components/user-menu';
-import { useColorModeValue } from '@/components/ui/color-mode';
 import {
   DrawerBackdrop,
   DrawerBody,
@@ -18,6 +16,7 @@ import {
 } from '@/components/ui/drawer';
 import { useDisclosure, useMediaQuery } from '@reactuses/core';
 import { AuthRequired } from '@/components/auth';
+import { HamburgerIcon } from 'components/icons';
 
 export default function RootLayout({
   children,

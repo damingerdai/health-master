@@ -141,8 +141,8 @@ export const AddUserBloodPressureDialog: React.FC<
                   name="pulse"
                   min={0}
                 />
-                <DatePickerInput display="记录日期" name="logDate" />
-                <TimePickerInput display="记录时间" name="logTime" />
+                <DatePickerInput label="记录日期" name="logDate" />
+                <TimePickerInput label="记录时间" name="logTime" />
               </DialogBody>
               <DialogFooter justifyContent="center">
                 <Button
