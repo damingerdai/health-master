@@ -1,12 +1,7 @@
-import {
-  Flex,
-  FlexProps,
-  IconButton,
-  useColorModeValue,
-  HStack,
-} from '@chakra-ui/react';
+import { Flex, FlexProps, IconButton, HStack } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiMenu } from 'react-icons/fi';
+import { useColorModeValue } from '@/components/ui/color-mode';
 import { ToggleThemeButton } from '../toggle-theme-button';
 import { UserMenu } from '../user-menu';
 
@@ -33,13 +28,14 @@ export const Header: React.FC<HeaderProps> = props => {
     >
       <IconButton
         display={{ base: 'flex', md: 'none' }}
-        icon={<FiMenu />}
         onClick={onOpen}
         variant="outline"
         aria-label="open menu"
-      />
+      >
+        <FiMenu />
+      </IconButton>
 
-      <HStack spacing={{ base: '1', md: '2' }}>
+      <HStack gap={{ base: '1', md: '2' }}>
         <UserMenu />
         <ToggleThemeButton />
       </HStack>

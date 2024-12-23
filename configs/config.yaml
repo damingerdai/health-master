@@ -8,7 +8,7 @@ Database:
   Port: 5432
   User: postgres
   Password: 123456
-  DB: postgres
+  DB: hm
   SSL: false
 JWT:
   Secret: damingerdai
@@ -20,4 +20,4 @@ Redis:
   Password:
   DB: 0
 Logger:
-  Level: info
+  Level: debug

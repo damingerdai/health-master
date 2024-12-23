@@ -22,6 +22,9 @@
     "baseUrl": "./",
     "downlevelIteration": true,
     "paths": {
+      "@chakra-ui/*": [
+        "components/ui/*"
+      ],
       "@/components/*": [
         "components/*"
       ],

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { ToastContainer } from '@/components/toast';
-import { Providers } from './providers';
-import { fonts } from './fonts';
+import { Provider } from '@/components/ui/provider';
+import { Toaster } from '@chakra-ui/toaster';
+// import { fonts } from './fonts';
 
 export const metadata: Metadata = {
   title: 'Health Master Web',
@@ -14,10 +14,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh">
-      <body className={fonts.inter.className}>
-        <Providers>{children}</Providers>
-        <ToastContainer />
+    <html lang="zh" suppressHydrationWarning>
+      <head>
+        <link
+          href="https://fonts.loli.net/css2?family=Inter&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <Provider>
+          {children}
+          <Toaster />
+        </Provider>
       </body>
     </html>
   );

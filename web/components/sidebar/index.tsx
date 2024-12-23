@@ -1,10 +1,11 @@
-import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
+import { Box, DrawerContent, useDisclosure } from '@chakra-ui/react';
 import * as React from 'react';
 import { SidebarContent } from './context';
 import { Header } from './header';
+import { DrawerRoot } from '@chakra-ui/drawer';
 
 export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <Box>
@@ -13,10 +14,10 @@ export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
         display={{ base: 'none', md: 'block' }}
         hasTitle
       />
-      <Drawer
+      <DrawerRoot
         autoFocus={false}
-        isOpen={isOpen}
-        placement="left"
+        open={open}
+        placement="start"
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}
@@ -25,7 +26,7 @@ export const Siderbar: React.FC<React.PropsWithChildren> = ({ children }) => {
         <DrawerContent>
           <SidebarContent onClose={onClose} hasTitle />
         </DrawerContent>
-      </Drawer>
+      </DrawerRoot>
       <Header onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}

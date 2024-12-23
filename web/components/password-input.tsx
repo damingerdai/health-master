@@ -1,18 +1,15 @@
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  Input,
-  InputGroup,
-  InputProps,
-  InputRightElement,
-} from '@chakra-ui/react';
+import { Button, Input, InputProps } from '@chakra-ui/react';
+import { InputGroup, InputGroupProps } from '@/components/ui/input-group';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { ViewIcon, ViewOffIcon } from '@/components/icons';
 
-interface PasswordInputProps extends InputProps {}
+interface PasswordInputProps extends InputProps {
+  group?: InputGroupProps;
+}
 
 export const PasswordInput: React.FC<PasswordInputProps> = props => {
-  const { type = 'password', ...rest } = props;
+  const { type = 'password', group, ...rest } = props;
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
@@ -24,13 +21,17 @@ export const PasswordInput: React.FC<PasswordInputProps> = props => {
   }, [type]);
 
   return (
-    <InputGroup>
-      <Input type={showPassword ? 'text' : 'password'} {...rest} />
-      <InputRightElement h="full">
+    <InputGroup
+      flex={1}
+      w="full"
+      endElement={
         <Button variant="ghost" onClick={() => setShowPassword(p => !p)}>
           {showPassword ? <ViewIcon /> : <ViewOffIcon />}
         </Button>
-      </InputRightElement>
+      }
+      {...group}
+    >
+      <Input type={showPassword ? 'text' : 'password'} {...rest} />
     </InputGroup>
   );
 };

@@ -1,25 +1,18 @@
 import { IWeightRecord } from '@/lib/weight-record';
-import {
-  Center,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Thead,
-  Tr,
-  Td,
-  Tooltip,
-  HStack,
-  Box,
-} from '@chakra-ui/react';
+import { Center, Spinner, Table, HStack, Box } from '@chakra-ui/react';
 import * as React from 'react';
-import { TableHeader } from './table';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { DeleteWeightRecrodAction } from './delete-weight-record-action';
 import { request } from '@/lib/request';
-import { toastInstance } from './toast';
-import { Paginator } from './paginator';
+import { toaster } from '@chakra-ui/toaster';
+import { Tooltip } from '@chakra-ui/tooltip';
+import {
+  PaginationItems,
+  PaginationPrevTrigger,
+  PaginationNextTrigger,
+  PaginationRoot,
+} from '@chakra-ui/pagination';
 
 interface WeightManagementListProps {
   data: IWeightRecord[];
@@ -58,42 +51,41 @@ export const WeightManagementList: React.FC<
 
   return (
     <Box>
-      <TableContainer
+      <Box
         className="table-responsive"
         whiteSpace="normal"
-        __css={{ textWrap: 'normal' }}
+        css={{ textWrap: 'normal' }}
       >
         {isLoading ? (
           <Center my={8}>
             <Spinner size="xl"></Spinner>
           </Center>
         ) : (
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <TableHeader>ID</TableHeader>
-                <TableHeader>用户名</TableHeader>
-                <TableHeader>体重</TableHeader>
-                <TableHeader>记录时间</TableHeader>
-                <TableHeader>操作</TableHeader>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <Table.Root variant="outline">
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>ID</Table.ColumnHeader>
+                <Table.ColumnHeader>用户名</Table.ColumnHeader>
+                <Table.ColumnHeader>体重</Table.ColumnHeader>
+                <Table.ColumnHeader>记录时间</Table.ColumnHeader>
+                <Table.ColumnHeader>操作</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {data?.map(record => {
                 return (
-                  <Tr key={record.id}>
-                    <Td>{record.id}</Td>
-                    <Td>
+                  <Table.Row key={record.id}>
+                    <Table.Cell>{record.id}</Table.Cell>
+                    <Table.Cell>
                       <Tooltip
-                        aria-label="user name"
-                        label={`${record.user.firstName} ${record.user.lastName}`}
+                        content={`${record.user.firstName} ${record.user.lastName}`}
                       >
                         {record.user.username}
                       </Tooltip>
-                    </Td>
-                    <Td>{record.weight}</Td>
-                    <Td>{foramtDate(record.recordDate)} </Td>
-                    <Td>
+                    </Table.Cell>
+                    <Table.Cell>{record.weight}</Table.Cell>
+                    <Table.Cell>{foramtDate(record.recordDate)} </Table.Cell>
+                    <Table.Cell>
                       <HStack>
                         <DeleteWeightRecrodAction
                           confirm={async () => {
@@ -103,7 +95,7 @@ export const WeightManagementList: React.FC<
                                 url: `/api/weight-record/${record.id}`,
                               });
                               if (res.success) {
-                                toastInstance({
+                                toaster.create({
                                   title: '删除体重成功',
                                   status: 'success',
                                   isClosable: true,
@@ -113,7 +105,7 @@ export const WeightManagementList: React.FC<
                                 refresh();
                               }
                             } catch (err) {
-                              toastInstance({
+                              toaster.create({
                                 id: 'SERVICE_ERROR',
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 title: (err as any).message,
@@ -126,19 +118,24 @@ export const WeightManagementList: React.FC<
                           }}
                         />
                       </HStack>
-                    </Td>
-                  </Tr>
+                    </Table.Cell>
+                  </Table.Row>
                 );
               })}
-            </Tbody>
-          </Table>
+            </Table.Body>
+          </Table.Root>
         )}
-      </TableContainer>
-      <Paginator
+      </Box>
+      <PaginationRoot
+        count={total}
+        pageSize={pageSize}
         page={page}
-        total={Math.ceil(total / pageSize)}
         pageChange={pageChange}
-      />
+      >
+        <PaginationPrevTrigger />
+        <PaginationItems />
+        <PaginationNextTrigger />
+      </PaginationRoot>
     </Box>
   );
 };
