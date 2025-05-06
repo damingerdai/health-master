@@ -3931,9 +3931,9 @@ iterator.prototype@^1.1.3:
     set-function-name "^2.0.1"
 
 jotai@^2.0.2:
-  version "2.10.2"
-  resolved "https://registry.npmjs.org/jotai/-/jotai-2.10.2.tgz"
-  integrity sha512-DqsBTlRglIBviuJLfK6JxZzpd6vKfbuJ4IqRCz70RFEDeZf46Fcteb/FXxNr1UnoxR5oUy3oq7IE8BrEq0G5DQ==
+  version "2.12.4"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-2.12.4.tgz#f6b38e71ce5a2ddd6c5741ee5a6d3abb79e274f8"
+  integrity sha512-eFXLJol4oOLM8BS1+QV+XwaYQITG8n1tatBCFl4F5HE3zR5j2WIK8QpMt7VJIYmlogNUZfvB7wjwLoVk+umB9Q==
 
 js-cookie@^3.0.5:
   version "3.0.5"
