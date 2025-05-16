@@ -20,7 +20,7 @@ spec:
       #   - name: regcred
       containers:
         - name: health-master-api
-          image: health-master
+          image: health-master:08beeb8f938565ca5366368575d4d191ca50c6de
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
