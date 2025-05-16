@@ -1,4 +1,4 @@
-FROM golang:1.23.3-alpine3.20 AS build
+FROM golang:1.24.3-alpine3.20 AS build
 
 RUN apk update && \
     apk upgrade && \
@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 RUN go build -o server main.go
 
-FROM alpine:3.20
+FROM alpine:3.21
 
 RUN    apk update && \
     apk upgrade && \

@@ -1,4 +1,4 @@
-FROM golang:1.23.3-alpine3.20 AS build
+FROM golang:1.24.3-alpine3.21 AS build
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
     apk update && \
@@ -18,7 +18,7 @@ RUN go mod download
 COPY . .
 RUN go build -o server main.go
 
-FROM alpine:3.20
+FROM alpine:3.21
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
     apk update && \
