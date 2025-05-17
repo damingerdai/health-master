@@ -2,6 +2,6 @@ Host: 127.0.0.1
 Port: 5432
 Username: postgres
 Password: 123456
-Dbname: postgres
+Dbname: hm
 SSL: false
 MigratePath: file://./db/migrations
