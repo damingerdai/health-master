@@ -1,8 +1,8 @@
 version: "3"
 services:
   pg:
-    image: postgres:16.2-alpine3.19
-    container_name: 'health-master-pg'
+    image: postgres:17.5-alpine3.21
+    container_name: "health-master-pg"
     ports:
       - 5432:5432
     volumes:
@@ -11,22 +11,22 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: postgres
-      TZ: 'GMT+8'
-      PGTZ: 'GMT+8'
+      TZ: "GMT+8"
+      PGTZ: "GMT+8"
     networks:
       - daming-health-master-network
   pgbouncer:
-    image: edoburu/pgbouncer:1.21.0-p1
+    image: edoburu/pgbouncer:v1.24.1-p0
     container_name: pgbouncer
     environment:
       - DATABASE_URL=postgres://postgres:123456@pg:5432/postgres
-      - POOL_MODE=session 
+      - POOL_MODE=session
       - MAX_DB_CONNECTIONS=100
       - DEFAULT_POOL_SIZE=40
       - AUTH_TYPE=scram-sha-256
     # volumes:
-      # - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
-      # - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+    # - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+    # - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
     networks:
       - daming-health-master-network
     ports:
@@ -34,8 +34,8 @@ services:
     depends_on:
       - pg
   redis:
-    image: redis:7.2.5-alpine3.19
-    container_name: 'health-master-redis'
+    image: redis:8.0.1-alpine3.21
+    container_name: "health-master-redis"
     ports:
       - 6379:6379
     restart: unless-stopped
@@ -44,17 +44,17 @@ services:
     networks:
       - daming-health-master-network
   kuma:
-    image: louislam/uptime-kuma:1.23.13-alpine
+    image: louislam/uptime-kuma:1.23.16-alpine
     restart: unless-stopped
     ports:
-      - '3001:3001'
+      - "3001:3001"
     volumes:
       - daming-health-master-kuma-volume:/app/data
     container_name: uptime-kuma
     networks:
       - daming-health-master-network
   pgweb:
-    image: sosedoff/pgweb:0.14.2
+    image: sosedoff/pgweb:0.16.2
     container_name: pgweb
     ports:
       - 8081:8081
@@ -71,4 +71,3 @@ volumes:
 networks:
   daming-health-master-network:
     external: false
-  
