@@ -3,7 +3,6 @@ module github.com/damingerdai/health-master
 go 1.24.3
 
 require (
-	github.com/aws/aws-lambda-go v1.47.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang-migrate/migrate/v4 v4.16.2
@@ -13,7 +12,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/juju/ratelimit v1.0.2
 	github.com/mssola/user_agent v0.6.0
-	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
+	github.com/penglongli/gin-metrics v0.1.13
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/spf13/cobra v1.8.1
@@ -68,7 +67,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
-	github.com/penglongli/gin-metrics v0.1.13 // indirect
 	github.com/prometheus/client_golang v1.12.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
