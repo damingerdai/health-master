@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -134,71 +136,43 @@ export function RegistryForm({
                   <FormItem>
                     <FormLabel>Gender</FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        className="flex flex-col"
-                      >
-                        <FormItem className="flex items-center gap-3">
-                          <FormControl>
-                            <RadioGroupItem value="M" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Man</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center gap-3">
-                          <FormControl>
-                            <RadioGroupItem value="F" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Felman</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center gap-3">
-                          <FormControl>
-                            <RadioGroupItem value="U" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Unkown</FormLabel>
-                        </FormItem>
-                      </RadioGroup>
+                      <RadioGroup onChange={field.onChange()}></RadioGroup>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 );
               }}
             />
           </div>
           <div className="grid gap-3">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
+            <Label htmlFor="gender">Gender</Label>
+            <RadioGroup id="gender" defaultValue="U">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="M" id="gender-m" />
+                <Label htmlFor="gender-m">Man</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="F" id="gender-f" />
+                <Label htmlFor="gender-f">Felman</Label>
+              </div>
+              <div className="flex items-center spce-x-2">
+                <RadioGroupItem value="U" id="gender-u" />
+                <Label htmlFor="gender-u"> Unkown</Label>
+              </div>
+            </RadioGroup>
           </div>
           <div className="grid gap-3">
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+            </div>
+            <Input id="password" type="password" />
           </div>
+          <div className="grid gap-3">
+            <div className="flex items-center">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+            </div>
+            <Input id="confirmPassword" type="password" />
+          </div>
+
           <Button type="submit" className="w-full">
             Sign up
           </Button>
