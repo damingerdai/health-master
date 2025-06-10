@@ -14,6 +14,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { request } from "@/lib/request";
+import { toast } from "sonner";
 
 const schemas = z
   .object({
@@ -58,16 +60,32 @@ export function RegistryForm({
     confirmPassword: "",
   };
   const form = useForm({ resolver: zodResolver(schemas), defaultValues });
-  console.log(form.formState);
 
   return (
     <Form {...form}>
       <form
         className={cn("flex flex-col gap-6", className)}
         {...props}
-        onSubmit={form.handleSubmit((data: InputData) => {
-          console.log(data);
-          alert("hello world");
+        onSubmit={form.handleSubmit(async (data: InputData) => {
+          try {
+            await request({
+              method: "post",
+              url: "/api/user",
+              data: {
+                username: data.username,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                gender: data.gender,
+                password: data.password,
+              },
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (err: any) {
+            console.log(err);
+            toast.error("fail to register a new user", {
+              position: "top-right",
+            });
+          }
         })}
       >
         <div className="flex flex-col items-center gap-2 text-center">
