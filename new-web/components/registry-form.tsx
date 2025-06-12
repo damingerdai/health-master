@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { request } from "@/lib/request";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const schemas = z
   .object({
@@ -51,6 +52,7 @@ export function RegistryForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const router = useRouter();
   const defaultValues: InputData = {
     username: "",
     firstName: "",
@@ -79,10 +81,14 @@ export function RegistryForm({
                 password: data.password,
               },
             });
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (err: any) {
+            toast.success("create a new user successfully");
+            router.push("/sign-in");
+          } catch (err) {
             console.log(err);
-            toast.error("fail to register a new user", {
+            const message =
+              (err as Record<"code" | "message", string>).message ??
+              "fail to register a new user";
+            toast.error(message, {
               position: "top-right",
             });
           }

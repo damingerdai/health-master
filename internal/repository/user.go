@@ -4,9 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/jackc/pgx/v5"
+	"go.uber.org/zap"
 )
 
 type UserRepository struct {
@@ -58,6 +60,8 @@ func (userRepository *UserRepository) FindByUserName(ctx context.Context, userna
 		if err == pgx.ErrNoRows {
 			return nil, nil
 		}
+		global.Logger.Error("fail to find user", zap.String("username", username), zap.Error(err))
+		global.Logger.Sync()
 		return nil, err
 	}
 	user := model.User{

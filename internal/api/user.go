@@ -26,6 +26,7 @@ import (
 //	@Failure		500	{object}	errcode.Error	"internal server error"
 //	@Router			/api/v1/user [post]
 func CreateUser(c *gin.Context) {
+	global.Logger.Info("create a new user")
 	var err error
 	var user model.User
 	res := response.NewResponse(c)
@@ -35,12 +36,13 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
+		global.Logger.Info("do create a new user")
 		var err error
 		service := service.New(conn, global.Logger)
 		userService := service.UserService
 		fullUser, err := userService.Create(c, &user)
 		if err != nil {
-			global.Logger.Error(err.Error())
+			global.Logger.Error("fail to create a user: \t" + err.Error())
 			if errCodeError := new(errcode.Error); errors.As(err, &errCodeError) {
 				res.ToErrorResponse(errCodeError)
 			} else {

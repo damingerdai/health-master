@@ -45,6 +45,7 @@ func init() {
 	if err != nil {
 		panic("init setup logger err: " + err.Error())
 	}
+	global.Logger.Info("setyup logger")
 	log.Println("setup logger")
 }
 
@@ -64,7 +65,9 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	app, err := server.New(s, global.ServerSetting.RunMode)
+	global.Logger.Info("hello world")
+	defer global.Logger.Sync()
+	app, err := server.New(s, "release")
 	if err != nil {
 		global.Logger.Error(fmt.Sprintf("run server: %s", err.Error()))
 		os.Exit(-1)
@@ -134,10 +137,12 @@ func setupRedisClient() error {
 
 func setupLogger() error {
 	log, err := logger.NewLogger(global.LoggerSetting.Level)
+	// log, err := zap.NewProduction()
 	if err != nil {
 		return err
 	}
 	global.Logger = log
+	global.Logger.Info("hello world")
 
 	return nil
 }

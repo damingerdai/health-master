@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/errcode"
@@ -35,7 +36,8 @@ func NewUserService(
 func (userService *UserService) Create(ctx context.Context, user *model.User) (*model.FullUser, error) {
 	existUser, err := userService.userRepository.FindByUserName(ctx, user.Username)
 	if err != nil {
-		userService.logger.Error("fail to create user", zap.Error(err))
+		// userService.logger.Error("fail to create user", zap.Error(err))
+		global.Logger.Error("fail to create user", zap.Error(err))
 		return nil, errcode.CreateUserError
 	}
 	if existUser != nil && existUser.Id != "" {
@@ -58,6 +60,7 @@ func (userService *UserService) Create(ctx context.Context, user *model.User) (*
 	}
 	_, err = userService.userRoleRepository.Create(ctx, user.Id, role.Id)
 	if err != nil {
+		userService.logger.Error("fail to create user", zap.Error(err))
 		return nil, err
 	}
 	if err != nil {
