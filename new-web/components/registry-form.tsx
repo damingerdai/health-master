@@ -84,7 +84,6 @@ export function RegistryForm({
             toast.success("create a new user successfully");
             router.push("/sign-in");
           } catch (err) {
-            console.log(err);
             const message =
               (err as Record<"code" | "message", string>).message ??
               "fail to register a new user";
