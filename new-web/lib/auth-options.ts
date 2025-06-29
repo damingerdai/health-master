@@ -3,66 +3,83 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { httpClient } from "./http-client";
 import { isErrorResponse } from "@/types/response";
 
+// Extend the User and Session types to include accessToken
+declare module "next-auth" {
+    interface User {
+        accessToken?: string;
+    }
+    interface Session {
+        accessToken?: string;
+        user?: User;
+    }
+}
+
 export const authOptions: AuthOptions = {
-  pages: {
-    signIn: "/login",
-  },
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: {
-          label: "Username",
-          type: "text",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-        },
-      },
-      async authorize(credentials) {
-        console.log("authorize", credentials);
-        const { username, password } = credentials || {};
-        if (!username || !password) {
-          throw new Error("Username and password are required");
-        }
-        const res = (await httpClient.login(username, password));
-        if (isErrorResponse(res)) {
-             throw new Error(res.message || "Login failed");
-        }
-        console.log("authorize res", res);
-        if (res.data) {
-          return {
-            id: res.data.id,
-            name: res.data.username, 
-            // email: res.data.email,
-            accessToken: res.token.accessToken,
-          }
-        }
-        throw new Error("Login failed");
-        // const user = { id: 1, name: "User", email: "
-      },
-    }),
-  ],
-  callbacks: {
-    jwt(params) {
-      console.log("callback jwrt", params);
-      const { token, user } = params;
-      if (user) {
-        token.user = user;
-      }
-      return token;
+    pages: {
+        signIn: "/login",
     },
-    async session({ session, token, user }) {
-      // Send properties to the client, like an access_token from a provider.
-      session.user = user;
-      if (token) {
-        session.user = token;
-      }
-      console.log("session", session, token, user);
-      console.log("token", token);
-      console.log("user", user);
-      return session;
+    session: {
+        strategy: "jwt",
     },
-  },
+    providers: [
+        CredentialsProvider({
+            name: "Credentials",
+            credentials: {
+                username: {
+                    label: "Username",
+                    type: "text",
+                },
+                password: {
+                    label: "Password",
+                    type: "password",
+                },
+            },
+
+            async authorize(credentials) {
+                console.log("authorize", credentials);
+                const { username, password } = credentials || {};
+                if (!username || !password) {
+                    throw new Error("Username and password are required");
+                }
+                const res = (await httpClient.login(username, password));
+                if (isErrorResponse(res)) {
+                    throw new Error(res.message || "Login failed");
+                }
+                console.log("authorize res", res);
+                if (res.data) {
+                    return {
+                        id: res.data.id,
+                        name: res.data.username,
+                        // email: res.data.email,
+                        accessToken: res.token.accessToken,
+                    }
+                }
+                throw new Error("Login failed");
+                // const user = { id: 1, name: "User", email: "
+            },
+        }),
+    ],
+    callbacks: {
+        jwt(params) {
+            console.log("callback jwrt", params);
+            const { token, user } = params;
+            if (user) {
+                token.user = user;
+                token.accessToken = user.accessToken; // Assuming user has accessToken
+            }
+            return token;
+        },
+        async session({ session, token, user }) {
+            // Send properties to the client, like an access_token from a provider.
+            session.user = user;
+            // if (token) {
+            //     session.user = token;
+            // }
+            session.accessToken = token.accessToken as string | undefined;
+            console.log("session", session, token, user);
+            console.log("token", token);
+            console.log("user", user);
+            return session;
+        },
+    },
 };

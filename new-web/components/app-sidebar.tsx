@@ -13,7 +13,9 @@ import {
   IconHelp,
   IconInnerShadowTop,
   IconListDetails,
+  IconLoader3,
   IconReport,
+  IconScaleOutline,
   IconSearch,
   IconSettings,
   IconUsers,
@@ -151,6 +153,25 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const items = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: IconDashboard,
+    },
+    {
+      title: "Blood Pressure",
+      url: "/blood-pressure",
+      icon: IconLoader3,
+    },
+    {
+      title: "Weight",
+      url: "/weight",
+      icon: IconScaleOutline,
+    }
+  ]
+   
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -169,12 +190,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={items} />
+        {/* <NavDocuments items={data.documents} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {/* <NavUser user={data.user} /> */}
       </SidebarFooter>
     </Sidebar>
   )
