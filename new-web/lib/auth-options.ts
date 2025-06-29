@@ -16,7 +16,7 @@ declare module "next-auth" {
 
 export const authOptions: AuthOptions = {
     pages: {
-        signIn: "/login",
+        signIn: "/sign-in",
     },
     session: {
         strategy: "jwt",

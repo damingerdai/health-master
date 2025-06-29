@@ -66,7 +66,7 @@ export function LoginForm({
             //   },
             // });
             // localStorage.setItem("user", res);
-            router.push("/");
+            router.push("/dashboard");
           } catch (err) {
             const message = (err as Record<"message", string>).message ?? "";
             if (message) {
