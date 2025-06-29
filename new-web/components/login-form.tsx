@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { request } from "@/lib/request";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -43,15 +43,29 @@ export function LoginForm({
         {...props}
         onSubmit={form.handleSubmit(async (data: InputData) => {
           try {
-            const res = await request({
-              url: "api/login",
-              method: "POST",
-              headers: {
-                username: data.username,
-                password: data.password,
-              },
+            const { username, password } = data;
+            const res = await signIn("credentials", {
+              redirect: false,
+              username,
+              password,
             });
-            localStorage.setItem("user", res);
+            if (!res?.ok) {
+              toast("Login failed", {
+                description: res?.error,
+                position: "top-right",
+              });
+              return;
+            }
+            console.log("Login successful", res);
+            // const res = await request({
+            //   url: "api/login",
+            //   method: "POST",
+            //   headers: {
+            //     username: data.username,
+            //     password: data.password,
+            //   },
+            // });
+            // localStorage.setItem("user", res);
             router.push("/");
           } catch (err) {
             const message = (err as Record<"message", string>).message ?? "";
