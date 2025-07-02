@@ -19,7 +19,8 @@ export const authOptions: AuthOptions = {
         signIn: "/sign-in",
     },
     session: {
-        strategy: "jwt",
+        // strategy: "jwt",
+        maxAge: 60 * 60 //
     },
     providers: [
         CredentialsProvider({

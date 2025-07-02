@@ -56,16 +56,6 @@ export function LoginForm({
               });
               return;
             }
-            console.log("Login successful", res);
-            // const res = await request({
-            //   url: "api/login",
-            //   method: "POST",
-            //   headers: {
-            //     username: data.username,
-            //     password: data.password,
-            //   },
-            // });
-            // localStorage.setItem("user", res);
             router.push("/dashboard");
           } catch (err) {
             const message = (err as Record<"message", string>).message ?? "";
