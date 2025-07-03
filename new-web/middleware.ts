@@ -1,11 +1,8 @@
 export { default } from "next-auth/middleware";
 
-import { NextResponse, type NextRequest } from "next/server";
-import { parseAuthCookie } from "./lib/jwt";
-
-// export const config = {
-//   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
-// }
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sign-in|sign-up).*)']
+}
 
 // export async function middleware(request: NextRequest) {
 //     console.log("Middleware is running");
@@ -21,4 +18,4 @@ import { parseAuthCookie } from "./lib/jwt";
 //     return NextResponse.next();
 // }
 
-export const config = { matcher: ["/", "/dashboard"] };
+// export const config = { matcher: ["/", "/dashboard", "/blood-pressure-new"] };

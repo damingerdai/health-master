@@ -78,9 +78,17 @@ export const authOptions: AuthOptions = {
             // }
             session.accessToken = token.accessToken as string | undefined;
             console.log("session", session, token, user);
+            if (!session.user && token.user) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                session.user = token.user as any; // Ensure user is set in session
+            }
             console.log("token", token);
             console.log("user", user);
             return session;
+        },
+        async signIn({ user, account, profile, email, credentials }) {
+            console.log("signIn", { user, account, profile, email, credentials });
+            return true
         },
     },
 };
