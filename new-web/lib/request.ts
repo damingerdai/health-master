@@ -10,6 +10,7 @@ export async function request<T = any>(
   options: AxiosRequestConfig,
 ): Promise<T> {
   try {
+    console.log("Request options:", options);
     const data = await client<T>(options);
 
     return data.data as T;

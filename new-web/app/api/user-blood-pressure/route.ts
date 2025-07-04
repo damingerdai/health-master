@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         systolicBloodPressure: data.systolic,
         diastolicBloodPressure: data.diastolic,
         pulse: data.pulse,
-        logDatetime: data.date,
+        logDatetime: data.logDate,
       },
       headers: {
         Authorization: authorization,

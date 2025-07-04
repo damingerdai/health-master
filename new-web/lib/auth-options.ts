@@ -37,7 +37,7 @@ export const authOptions: AuthOptions = {
             },
 
             async authorize(credentials) {
-                console.log("authorize", credentials);
+                // console.log("authorize", credentials);
                 const { username, password } = credentials || {};
                 if (!username || !password) {
                     throw new Error("Username and password are required");
@@ -46,7 +46,7 @@ export const authOptions: AuthOptions = {
                 if (isErrorResponse(res)) {
                     throw new Error(res.message || "Login failed");
                 }
-                console.log("authorize res", res);
+                // console.log("authorize res", res);
                 if (res.data) {
                     return {
                         id: res.data.id,
@@ -62,7 +62,7 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
         jwt(params) {
-            console.log("callback jwrt", params);
+            // console.log("callback jwrt", params);
             const { token, user } = params;
             if (user) {
                 token.user = user;
@@ -77,17 +77,17 @@ export const authOptions: AuthOptions = {
             //     session.user = token;
             // }
             session.accessToken = token.accessToken as string | undefined;
-            console.log("session", session, token, user);
+            // console.log("session", session, token, user);
             if (!session.user && token.user) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 session.user = token.user as any; // Ensure user is set in session
             }
-            console.log("token", token);
-            console.log("user", user);
+            // console.log("token", token);
+            // console.log("user", user);
             return session;
         },
         async signIn({ user, account, profile, email, credentials }) {
-            console.log("signIn", { user, account, profile, email, credentials });
+            // console.log("signIn", { user, account, profile, email, credentials });
             return true
         },
     },

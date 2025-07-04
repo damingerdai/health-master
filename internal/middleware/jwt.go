@@ -11,6 +11,7 @@ import (
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"go.uber.org/zap"
 )
 
 func JWT() gin.HandlerFunc {
@@ -32,10 +33,9 @@ func JWT() gin.HandlerFunc {
 			token = s
 		} else {
 			token = c.GetHeader("Authorization")
-			if strings.HasPrefix(token, "Bearer ") {
-				token = token[7:]
-			}
+			token = strings.TrimPrefix(token, "Bearer ")
 		}
+		global.Logger.Debug("JWT middleware", zap.String("url", url), zap.String("token", token), zap.String("method", c.Request.Method), zap.String("remote_addr", c.Request.RemoteAddr))
 		if token == "" {
 			ecode = errcode.NotFoundAuthorization
 		} else {

@@ -20,7 +20,6 @@ import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import { request } from "@/lib/request";
 import { toast } from "sonner";
-import { ca } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 
 const schemas = z.object({
