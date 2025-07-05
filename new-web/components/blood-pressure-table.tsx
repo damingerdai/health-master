@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -49,8 +50,20 @@ export const BloodPressureTable: React.FC = () => {
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.user?.username}</TableCell>
-              <TableCell>{item.systolicBloodPressure}</TableCell>
-              <TableCell>{item.diastolicBloodPressure}</TableCell>
+              <TableCell
+                className={cn(
+                  item.systolicBloodPressure > 140 && "text-red-500",
+                )}
+              >
+                {item.systolicBloodPressure}
+              </TableCell>
+              <TableCell
+                className={cn(
+                  item.diastolicBloodPressure > 90 && "text-red-500",
+                )}
+              >
+                {item.diastolicBloodPressure}
+              </TableCell>
               <TableCell>
                 {item.logDatetime
                   ? formatDate(item.logDatetime, "yyyy-MM-mm hh:mm")
