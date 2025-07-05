@@ -1,10 +1,5 @@
 "use client";
-
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -13,41 +8,46 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { cn } from "@/lib/utils";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./ui/input";
+import { formatDate, format } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
-import { request } from "@/lib/request";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { request } from "@/lib/request";
 
 const schemas = z.object({
-  systolic: z.coerce.number().min(0, "Systolic is required"),
-  diastolic: z.coerce.number().min(0, "Diastolic is required"),
-  pulse: z.number().min(0, "Pulse is required"),
+  weight: z.coerce
+    .number()
+    .max(500, "Weight should be less than 500")
+    .min(0, "Weight is required"),
   logDate: z.date({
     required_error: "Log date is required",
   }),
   logTime: z.string().optional(),
 });
-
 type InputData = z.infer<typeof schemas>;
 
-export function CreateBloodPressureForm({
+export const CreateWieghtForm = ({
   className,
   ...props
-}: React.ComponentProps<"form">) {
-  const defaultValues: InputData = {
-    systolic: 120,
-    diastolic: 80,
-    pulse: 70,
-    logDate: new Date(),
-    logTime: format(new Date(), "HH:mm"), // Default to current time
-  };
-  const form = useForm({ resolver: zodResolver(schemas), defaultValues });
+}: React.ComponentProps<"form">) => {
   const router = useRouter();
-
+  const currentDate = new Date();
+  const defaultValues: InputData = {
+    weight: 80,
+    logDate: currentDate,
+    logTime: formatDate(currentDate, "HH:mm"),
+  };
+  const form = useForm({
+    resolver: zodResolver(schemas),
+    defaultValues,
+  });
   return (
     <Form {...form}>
       <form
@@ -61,87 +61,55 @@ export function CreateBloodPressureForm({
           const logDate = new Date(data.logDate);
           logDate.setHours(hours, minutes, 0, 0); // Set hours and minutes
           const value: Omit<InputData, "logTime"> = {
-            systolic: data.systolic,
-            diastolic: data.diastolic,
-            pulse: data.pulse,
+            weight: data.weight,
             logDate,
           };
           try {
             await request({
               method: "POST",
-              url: "/api/user-blood-pressure",
+              url: "/api/user-weight",
               data: value,
             });
-            toast.success("Blood pressure record created successfully");
-          } catch (error) {
-            console.error("Error creating blood pressure record:", error);
+            toast.success("Weight record created successfully");
+            router.push("/weight");
+          } catch (err) {
+            console.error("Error creating weight record:", err);
             toast.error(
-              typeof error === "object" && error !== null && "message" in error
-                ? (error as { message?: string }).message
-                : "Failed to create blood pressure record",
+              typeof err === "object" && err !== null && "message" in err
+                ? (err as { message?: string }).message
+                : "Failed to create weight record",
             );
           }
-          router.push("/blood-pressure"); // Redirect to dashboard after submission
         })}
       >
         <div className="grid gap-6">
           <div className="grid gap-3">
             <FormField
+              name="weight"
               control={form.control}
-              name="systolic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Systolic</FormLabel>
+                  <FormLabel>Weight</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            ></FormField>
+            />
           </div>
           <div className="grid gap-3">
             <FormField
-              control={form.control}
-              name="diastolic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Diastolic</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            ></FormField>
-          </div>
-          <div className="grid gap-3">
-            <FormField
-              control={form.control}
-              name="pulse"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pulse</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            ></FormField>
-          </div>
-          <div className="grid gap-3">
-            <FormField
-              control={form.control}
               name="logDate"
+              control={form.control}
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem>
                   <FormLabel>Log Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant="outline"
                           className={cn(
                             "pl-3 text-left font-normal",
                             !field.value && "text-muted-foreground",
@@ -162,19 +130,15 @@ export function CreateBloodPressureForm({
                         selected={field.value}
                         onSelect={field.onChange}
                         disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
+                          date > new Date() || date < new Date("1900-01-1")
                         }
                         captionLayout="dropdown"
                       />
                     </PopoverContent>
                   </Popover>
-                  {/* <FormDescription>
-                                        Your date of birth is used to calculate your age.
-                                    </FormDescription> */}
-                  <FormMessage />
                 </FormItem>
               )}
-            />
+            ></FormField>
           </div>
           <div className="grid gap-3">
             <FormField
@@ -190,12 +154,11 @@ export function CreateBloodPressureForm({
                       step="60"
                       className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                       {...field}
-                    />
+                    ></Input>
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
-            ></FormField>
+            />
           </div>
           <Button type="submit" className="w-full">
             Create
@@ -204,4 +167,4 @@ export function CreateBloodPressureForm({
       </form>
     </Form>
   );
-}
+};
