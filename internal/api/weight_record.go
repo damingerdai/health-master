@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/service"
@@ -14,12 +16,15 @@ func AddWeightRecord(c *gin.Context) {
 	var weightRecord model.WeightRecord
 	resp := response.NewResponse(c)
 	if err := c.ShouldBindJSON(&weightRecord); err != nil {
+		fmt.Print("fail to parse weight record: ", err)
+		global.Logger.Info("fail to prase weight record", zap.String("UserId", weightRecord.UserId), zap.Float64("Weight", weightRecord.Weight), zap.Time("RecordDate", weightRecord.RecordDate), zap.Error(err))
 		resp.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 	srv := service.New(global.DBEngine, global.Logger)
 	err := srv.WeightRecordService.Create(c, &weightRecord)
 	if err != nil {
+		fmt.Print("fail to create weight record: ", err)
 		global.Logger.Info("fail to create weight record", zap.String("UserId", weightRecord.UserId), zap.Float64("Weight", weightRecord.Weight), zap.Time("RecordDate", weightRecord.RecordDate), zap.Error(err))
 		resp.ToErrorResponse(errcode.ServerError)
 		return

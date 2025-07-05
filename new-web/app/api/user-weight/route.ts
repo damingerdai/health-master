@@ -10,12 +10,14 @@ export async function POST(req: NextRequest) {
     req.json(),
   ]);
   const authorization = session?.accessToken;
+  console.log("data", data);
   try {
     const resp = await httpClient.request({
       method: "POST",
       url: "/api/v1/weight-record",
       data: {
         ...data,
+        recordDate: data.logDate ?? new Date().toISOString(),
         userId: session?.user?.id,
       },
       headers: {
