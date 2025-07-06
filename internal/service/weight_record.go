@@ -35,11 +35,11 @@ func (weightRecordService *WeightRecordService) PagingQueryByUserId(ctx context.
 	}
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("page %s should be integer", page))
+		return nil, fmt.Errorf("%s", fmt.Sprintf("page %s should be integer", page))
 	}
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("limit %s should be integer", limit))
+		return nil, fmt.Errorf("%s", fmt.Sprintf("limit %s should be integer", limit))
 	}
 	user, err := weightRecordService.userRepository.Find(ctx, userId)
 	if err != nil {

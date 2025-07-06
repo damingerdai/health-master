@@ -18,7 +18,7 @@ func AddWeightRecord(c *gin.Context) {
 	if err := c.ShouldBindJSON(&weightRecord); err != nil {
 		fmt.Print("fail to parse weight record: ", err)
 		global.Logger.Info("fail to prase weight record", zap.String("UserId", weightRecord.UserId), zap.Float64("Weight", weightRecord.Weight), zap.Time("RecordDate", weightRecord.RecordDate), zap.Error(err))
-		resp.ToErrorResponse(errcode.InvalidParams)
+		resp.ToErrorResponse(errcode.InvalidParams.WithDetails(err.Error()))
 		return
 	}
 	srv := service.New(global.DBEngine, global.Logger)

@@ -62,3 +62,9 @@ func (e *Error) StatusCode() int {
 
 	return http.StatusInternalServerError
 }
+
+func (e *Error) WithDetails(details ...string) *Error {
+	newErr := *e
+	newErr.details = details
+	return &newErr
+}
