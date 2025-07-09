@@ -16,19 +16,24 @@ type UserService struct {
 	userRepository     *repository.UserRepository
 	roleRepository     *repository.RoleRepository
 	userRoleRepository *repository.UserRoleRepository
-	logger             *zap.Logger
+
+	tokenService *TokenService
+
+	logger *zap.Logger
 }
 
 func NewUserService(
 	userRepository *repository.UserRepository,
 	roleRepository *repository.RoleRepository,
 	userRoleRepository *repository.UserRoleRepository,
+	tokenService *TokenService,
 	logger *zap.Logger,
 ) *UserService {
 	return &UserService{
 		userRepository:     userRepository,
 		roleRepository:     roleRepository,
 		userRoleRepository: userRoleRepository,
+		tokenService:       tokenService,
 		logger:             logger,
 	}
 }
@@ -72,6 +77,34 @@ func (userService *UserService) Create(ctx context.Context, user *model.User) (*
 		Role: *role,
 	}
 	return fullUser, nil
+}
+
+func (userService *UserService) GetUserIdByAuthorization(ctx context.Context, authorization string) (string, error) {
+	if len(authorization) == 0 {
+		userService.logger.Error("authorization is empty")
+		return "", errcode.NotFoundAuthorization
+	}
+	// Assuming the tokenService can parse the authorization token and return the user ID
+	claims, err := userService.tokenService.ParseToken(authorization)
+	if err != nil {
+		userService.logger.Error("fail to parse token", zap.String("authorization", authorization), zap.Error(err))
+		if err == errcode.UnauthorizedTokenTimeout {
+			return "", errcode.UnauthorizedTokenTimeout
+		}
+		return "", errcode.UnauthorizedTokenError
+	}
+	if claims == nil {
+		userService.logger.Error("claims is nil for authorization", zap.String("authorization", authorization))
+		return "", errcode.UnauthorizedTokenTimeout
+	}
+	// Assuming claims.UserId is the user ID extracted from the token
+	userId := claims.UserId
+	global.Logger.Debug("get user ID from authorization", zap.String("authorization", authorization), zap.String("userId", userId))
+	if len(userId) == 0 {
+		userService.logger.Error("user ID is empty for authorization", zap.String("authorization", authorization))
+		return "", errcode.UnauthorizedAuthNotExist
+	}
+	return userId, nil
 }
 
 func (userService *UserService) Find(ctx context.Context, id string) (*model.User, error) {

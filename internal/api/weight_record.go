@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
@@ -35,9 +36,40 @@ func AddWeightRecord(c *gin.Context) {
 func ListWeightRecords(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine, global.Logger)
-	userId := c.Query("userId")
+	var userId = c.Query("userId")
+	if len(userId) == 0 {
+		var (
+			err   error
+			token string
+		)
+		if s, exist := c.GetQuery("accessToken"); exist {
+			token = s
+		} else {
+			token = c.GetHeader("Authorization")
+			token = strings.TrimPrefix(token, "Bearer ")
+		}
+		global.Logger.Debug("list a single user weight records", zap.String("Authorization", token))
+		if len(token) == 0 {
+			global.Logger.Error("fail to list a single user weight records", zap.Error(errcode.NotFoundAuthorization))
+			resp.ToErrorResponse(errcode.NotFoundAuthorization)
+			return
+		}
+		userId, err = service.UserService.GetUserIdByAuthorization(c, token)
+		if err != nil {
+			global.Logger.Error("fail to list a single user weight records", zap.Error(err))
+			resp.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+			return
+		}
+		if len(userId) == 0 {
+			global.Logger.Error("fail to list a single user weight records", zap.Error(errcode.UnauthorizedAuthNotExist))
+			resp.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+			return
+		}
+		global.Logger.Info("list a single user weight records", zap.String("UserId", userId))
+	}
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
+	global.Logger.Debug("list a single user weight records", zap.String("UserId", userId), zap.String("Page", page), zap.String("Limit", limit))
 	weightRecordService := service.WeightRecordService
 	res, err := weightRecordService.PagingQueryByUserId(c, userId, limit, page)
 	if err != nil {
