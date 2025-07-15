@@ -65,7 +65,6 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	global.Logger.Info("hello world")
 	defer global.Logger.Sync()
 	app, err := server.New(s, "release")
 	if err != nil {
@@ -142,7 +141,6 @@ func setupLogger() error {
 		return err
 	}
 	global.Logger = log
-	global.Logger.Info("hello world")
 
 	return nil
 }
