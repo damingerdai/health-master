@@ -94,7 +94,7 @@ export function RegistryForm({
         })}
       >
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold">Wellcome to Heath Master</h1>
+          <h1 className="text-2xl font-bold">Wellcome to Health Master</h1>
         </div>
         <div className="grid gap-6">
           <div className="grid gap-3">
