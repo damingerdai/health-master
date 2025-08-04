@@ -87,7 +87,7 @@ export const authOptions: AuthOptions = {
             return session;
         },
         async signIn({ user, account, profile, email, credentials }) {
-            // console.log("signIn", { user, account, profile, email, credentials });
+            console.log("signIn", { user, account, profile, email, credentials });
             return true
         },
     },

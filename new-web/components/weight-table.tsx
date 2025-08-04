@@ -17,8 +17,8 @@ import { isErrorResponse } from "@/types/response";
 import { format } from "date-fns";
 
 export const WeightTable: React.FC = () => {
-  const [page, setPage] = useState({ pageNo: 1, pageSize: 5 });
-  const { data, isLoading, mutate } = useSWR(
+  const [page] = useState({ pageNo: 1, pageSize: 5 });
+  const { data } = useSWR(
     { url: "api/weight-records", args: page },
     () => fetchWeightRecord({ ...page }),
   );
@@ -29,7 +29,7 @@ export const WeightTable: React.FC = () => {
     }
     return data.data ?? [];
   }, [data]);
-  console.log("data", data);
+
   return (
     <div className="border rounded- md">
       <Table>
