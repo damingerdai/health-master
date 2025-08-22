@@ -37,7 +37,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Install, Lint And Build
-        run: npm install -g yarn && cd web && yarn --frozen-lockfile && yarn lint && yarn build
+        run: npm install -g yarn && cd new-web && yarn --frozen-lockfile && yarn lint && yarn build
   end:
     runs-on: ${{ matrix.os }}
     needs: [front]
