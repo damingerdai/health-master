@@ -56,6 +56,15 @@ func initConfig() {
 }
 
 func getPostgresqlUrl() string {
+	databaseUrl := os.Getenv("DATABASE_URL")
+	if len(databaseUrl) == 0 {
+		return buildPostgresqlUrl()
+	}
+
+	return databaseUrl
+}
+
+func buildPostgresqlUrl() string {
 	var username string
 	var password string
 	var host string
@@ -73,6 +82,15 @@ func getPostgresqlUrl() string {
 }
 
 func getMigratePath() string {
+	migratePath := os.Getenv("MIGRATE_PATH")
+	if len(migratePath) == 0 {
+		return buildMigratePath()
+	}
+
+	return migratePath
+}
+
+func buildMigratePath() string {
 	var migratePath string
 	viper.UnmarshalKey("MigratePath", &migratePath)
 

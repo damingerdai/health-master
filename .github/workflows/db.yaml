@@ -35,5 +35,6 @@ jobs:
       - name: Run migrations
         env:
           DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+          MIGRATE_PATH: "file://./db/migrations"
         run: |
           ./migrate up
