@@ -11,6 +11,7 @@ var (
 	UnauthorizedTokenTimeout  = NewError(10000006, "鉴权失败，Token 超时")
 	UnauthorizedTokenGenerate = NewError(10000007, "鉴权失败，Token 生成失败")
 	TooManyRequests           = NewError(10000009, "请求过多")
+	NotImplemented            = NewError(10000010, "功能未实现")
 
 	CreateUserError             = NewError(20000001, "创建用户失败")
 	CreateUplicateUserNameError = NewError(20000002, "用户名已经存在")
@@ -21,5 +22,16 @@ var (
 
 	ListRoleError = NewError(40000001, "获取角色失败")
 
+	CreateWeightRecordError       = NewError(50000001, "创建用户体重记录失败")
+	ListWeightRecordError         = NewError(50000002, "获取用户体重记录失败")
 	DeleteDeleteWeightRecordError = NewError(50000003, "删除用户体重记录失败")
+
+	CreateUserHeightError   = NewError(60000001, "创建用户身高记录失败")
+	ListUserHeightError     = NewError(60000002, "获取用户身高记录失败")
+	DeleteUserHeightError   = NewError(60000003, "删除用户身高记录失败")
+	GetUserTemperatureError = NewError(60000004, "获取用户体温记录失败")
+
+	CreateUserTemperatureError = NewError(70000001, "创建用户体温记录失败")
+	ListUserTemperatureError   = NewError(70000002, "获取用户体温记录失败")
+	DeleteUserTemperatureError = NewError(70000003, "删除用户体温记录失败")
 )
