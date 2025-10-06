@@ -20,7 +20,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { stat } from "fs";
 
 // const data = {
 //   user: {
