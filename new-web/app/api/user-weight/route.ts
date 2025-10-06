@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
     req.json(),
   ]);
   const authorization = session?.accessToken;
-  console.log("data", data);
   try {
     const resp = await httpClient.request({
       method: "POST",
