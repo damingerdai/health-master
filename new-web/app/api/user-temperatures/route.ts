@@ -8,8 +8,6 @@ export async function GET(_req: NextRequest) {
     const session = await getServerSession(authOptions);
     const authorization = session?.accessToken;
 
-    console.log("api/v1/user-temperatures", authorization);
-
     return httpClient
         .request({
             headers: {

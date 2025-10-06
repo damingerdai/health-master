@@ -41,8 +41,8 @@ export const BloodPressureTable: React.FC = () => {
             <TableHead>Id</TableHead>
             <TableHead>User</TableHead>
             <TableHead>Systolic Blood Pressure</TableHead>
-            <TableCell>Diastolic Blood Pressure</TableCell>
-            <TableCell>Log Date</TableCell>
+            <TableHead>Diastolic Blood Pressure</TableHead>
+            <TableHead>Log Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
