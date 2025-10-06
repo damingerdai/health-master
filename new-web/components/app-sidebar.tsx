@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSession } from "next-auth/react"
 import {
   IconDashboard,
   IconInnerShadowTop,
@@ -18,6 +19,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { NavUser } from "./nav-user";
+import { stat } from "fs";
 
 // const data = {
 //   user: {
@@ -137,6 +140,7 @@ import {
 // }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session, status } = useSession()
   const items = [
     {
       title: "Dashboard",
@@ -177,7 +181,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
-      <SidebarFooter>{/* <NavUser user={data.user} /> */}</SidebarFooter>
+      {status === "loading" && (
+        <div className="p-4">
+          <IconLoader3 className="m-auto animate-spin" />
+        </div>
+      )}
+      {status === "authenticated" && session?.user && (
+        <SidebarFooter>
+          <NavUser user={{
+            name: session.user.name || "User",
+            email: session.user.email || "",
+            avatar: session.user.image || "/avatars/shadcn.jpg",
+          }} />
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }
