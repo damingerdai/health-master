@@ -59,6 +59,10 @@ func NewRouter() *gin.Engine {
 
 		apiV1.POST("/height", api.CreateUserHeight)
 
+		apiV1.POST("/user-temperature", api.CreateUsersTemperatures)
+		apiV1.GET("/user-temperature/:id", api.GetUsersTemperatures)
+		apiV1.GET("/user-temperatures", api.ListUsersTemperatures)
+
 	}
 
 	return r

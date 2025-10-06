@@ -7,6 +7,7 @@ import (
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/service"
+	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -52,7 +53,7 @@ func JWT() gin.HandlerFunc {
 			if claims == nil {
 				ecode = errcode.UnauthorizedTokenTimeout
 			} else {
-				c.Set("UserId", claims.UserId)
+				c.Set(contants.UserContext, claims.UserId)
 			}
 		}
 
