@@ -41,7 +41,6 @@ export class HttpClient {
           password,
         },
       });
-      console.log(tokenRes);
       if (isErrorResponse(tokenRes)) {
         throw tokenRes;
       }

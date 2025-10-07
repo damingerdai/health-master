@@ -7,6 +7,7 @@ import {
   IconInnerShadowTop,
   IconLoader3,
   IconScaleOutline,
+  IconTemperature,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -156,6 +157,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/weight",
       icon: IconScaleOutline,
     },
+    {
+      title: "Temperature",
+      url: "/temperature",
+      icon: IconTemperature,
+    }
   ];
 
   return (

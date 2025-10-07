@@ -1,8 +1,7 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { httpClient } from "@/lib/http-client";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-options";
-import { httpClient } from "@/lib/http-client";
 
 export async function POST(req: NextRequest) {
   const [session, data] = await Promise.all([
@@ -10,23 +9,25 @@ export async function POST(req: NextRequest) {
     req.json(),
   ]);
   const authorization = session?.accessToken;
+
   try {
     const resp = await httpClient.request({
       method: "POST",
-      url: "/api/v1/weight-record",
+      url: "/api/v1/user-temperature",
       data: {
-        ...data,
-        recordDate: data.logDate ?? new Date().toISOString(),
         userId: session?.user?.id,
+        temperature: data.temperature,
+        unit: data.unit,
+        notes: data.notes,
+        recordDate: data.recordDate,
       },
       headers: {
         Authorization: authorization,
       },
     });
-    return NextResponse.json(resp.data, { status: resp.status });
+
+    return NextResponse.json(resp.data);
   } catch (err) {
-    return NextResponse.json(err, {
-      status: (err as { status: number }).status ?? 500,
-    });
+    return NextResponse.json(err, { status: 500 });
   }
 }

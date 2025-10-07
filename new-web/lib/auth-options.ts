@@ -76,7 +76,14 @@ export const authOptions: AuthOptions = {
             // if (token) {
             //     session.user = token;
             // }
-            session.accessToken = token.accessToken as string | undefined;
+            const accessToken = token.accessToken as string | undefined;
+            if (accessToken) {
+                session.accessToken = accessToken;
+                if (session.user) {
+                    session.user.accessToken = accessToken;
+                }
+
+            }
             // console.log("session", session, token, user);
             if (!session.user && token.user) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
