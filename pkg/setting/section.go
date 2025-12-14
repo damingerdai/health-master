@@ -17,6 +17,7 @@ type ServerSettingS struct {
 }
 
 type DatabaseSettingS struct {
+	URL      string
 	Host     string
 	Port     string
 	User     string
@@ -89,6 +90,9 @@ func (s *Setting) BindEnvs(iface any, parts ...string) {
 }
 
 func (s *DatabaseSettingS) DBConnString() string {
+	if s.URL != "" {
+		return s.URL
+	}
 	return fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Shanghai",
 		s.Host,

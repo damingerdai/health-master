@@ -4,6 +4,7 @@ Server:
   ReadTimeout: 60s
   WriteTimeout: 60s
 Database:
+  URL: postgres://postgres:123456@127.0.0.1:5432/hm?sslmode=disable
   Host: 127.0.0.1
   Port: 5432
   User: postgres
