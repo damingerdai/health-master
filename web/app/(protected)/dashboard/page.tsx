@@ -1,52 +1,21 @@
-'use client';
+import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { DataTable } from "@/components/data-table";
+import { SectionCards } from "@/components/section-cards";
 
-import { Box, Card, Flex, Text } from '@chakra-ui/react';
-import * as React from 'react';
+import data from "./data.json";
 
-export default function Dashboard() {
-  const cards = [
-    {
-      title: '体重管理',
-      name: '体重',
-    },
-    {
-      title: '血压管理',
-      name: '血压',
-    },
-    {
-      title: '心率管理',
-      name: '心率',
-    },
-    {
-      title: '习惯打卡',
-      name: '打卡',
-    },
-  ];
-
+export default function Page() {
   return (
-    <Box pb={8}>
-      <Flex flexWrap="wrap">
-        {cards.map(card => (
-          <Box
-            key={card.name}
-            p={2}
-            width={{
-              base: '100%',
-              sm: '50%',
-              md: '50%',
-              lg: '33%',
-              xl: '25%',
-            }}
-          >
-            <Card.Root>
-              <Card.Header>{card.title}</Card.Header>
-              <Card.Body>
-                <Text>{card.name}</Text>
-              </Card.Body>
-            </Card.Root>
-          </Box>
-        ))}
-      </Flex>
-    </Box>
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <SectionCards />
+          <div className="px-4 lg:px-6">
+            <ChartAreaInteractive />
+          </div>
+          <DataTable data={data} />
+        </div>
+      </div>
+    </div>
   );
 }

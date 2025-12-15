@@ -1,14 +1,20 @@
-import { WeightManagement } from '@/components/weight-management';
-import { BreadcrumbRoot } from '@chakra-ui/breadcrumb';
-import { Box, BreadcrumbCurrentLink } from '@chakra-ui/react';
+import { Button } from "@/components/ui/button";
+import { WeightTable } from "@/components/weight-table";
+import Link from "next/link";
 
 export default function Page() {
   return (
-    <Box p={4}>
-      <BreadcrumbRoot mb="2">
-        <BreadcrumbCurrentLink>体重管理</BreadcrumbCurrentLink>
-      </BreadcrumbRoot>
-      <WeightManagement />
-    </Box>
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col">
+        <div className="flex flex-col gap-4 p-4 md:gap-6 md:py-6">
+          <div className="flex w-full justify-end">
+            <Button>
+              <Link href="/weight-new">New weight record</Link>
+            </Button>
+          </div>
+          <WeightTable />
+        </div>
+      </div>
+    </div>
   );
 }

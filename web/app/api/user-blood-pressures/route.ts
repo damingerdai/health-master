@@ -1,11 +1,16 @@
+import { authOptions } from '@/lib/auth-options';
 import { httpClient } from '@/lib/http-client';
+import { getServerSession } from "next-auth/next";
 import { NextRequest, NextResponse } from 'next/server';
 
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const authorization = session?.accessToken;
+
   return httpClient
     .request({
       headers: {
-        Authorization: req.headers.get('Authorization'),
+        Authorization: 'Bearer ' + authorization,
       },
       method: 'GET',
       url: `/api/v1/user-blood-pressures${req.nextUrl.search}`,
