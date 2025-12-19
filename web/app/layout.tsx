@@ -1,11 +1,23 @@
-import type { Metadata } from 'next';
-import { Provider } from '@/components/ui/provider';
-import { Toaster } from '@chakra-ui/toaster';
-// import { fonts } from './fonts';
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
+import { Provider } from "./provider";
+
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'Health Master Web',
-  description: 'health master web',
+  title: "Health Master",
+  description: "A Next.js application for health management",
 };
 
 export default function RootLayout({
@@ -14,18 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.loli.net/css2?family=Inter&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Provider>
           {children}
-          <Toaster />
         </Provider>
+    
+        <Toaster />
       </body>
     </html>
   );

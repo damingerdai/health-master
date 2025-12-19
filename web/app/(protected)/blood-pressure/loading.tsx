@@ -1,5 +1,5 @@
-import { GlobalLoading } from '@/components/loading';
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Loading() {
-  return <GlobalLoading />;
+  return <Spinner />;
 }

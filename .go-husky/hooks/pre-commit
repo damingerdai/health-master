@@ -3,5 +3,5 @@
 set -e
 
 echo '+web lint --check'
-yarn --cwd=web lint:ts
-yarn --cwd=web prettify
+cd web && npm run lint:ts
+cd web && npm run prettify

@@ -1,1 +1,1 @@
-export * from './fetchWeightRecords';
+export * from './fetch-weight';
