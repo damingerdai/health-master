@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { type Icon } from "@tabler/icons-react";
+import { type Icon } from '@tabler/icons-react';
 
 import {
   SidebarGroup,
@@ -8,12 +8,12 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useRouter } from "next/navigation";
+  SidebarMenuItem
+} from '@/components/ui/sidebar';
+import { useRouter } from 'next/navigation';
 
 export function NavMain({
-  items,
+  items
 }: {
   items: {
     title: string;
@@ -27,7 +27,7 @@ export function NavMain({
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarGroupLabel>Home</SidebarGroupLabel>
         <SidebarMenu>
-          {items.map((item) => (
+          {items.map(item => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 tooltip={item.title}

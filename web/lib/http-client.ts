@@ -1,13 +1,13 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { DataResponse, isErrorResponse, TokenResponse } from "@/types/response";
-import { User } from "@/types/user";
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { DataResponse, isErrorResponse, TokenResponse } from '@/types/response';
+import { User } from '@/types/user';
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST,
   withCredentials: true,
   headers: {
-    "Content-Type": "application/json",
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 export class HttpClient {
@@ -30,27 +30,27 @@ export class HttpClient {
 
   public async login(
     username: string,
-    password: string,
+    password: string
   ): Promise<TokenResponse & DataResponse<User>> {
     try {
       const { data: tokenRes } = await this.axiosInstance<TokenResponse>({
-        method: "POST",
-        url: "/api/v1/token",
+        method: 'POST',
+        url: '/api/v1/token',
         headers: {
           username,
-          password,
-        },
+          password
+        }
       });
       if (isErrorResponse(tokenRes)) {
         throw tokenRes;
       }
       const { accessToken } = tokenRes.token;
       const { data: userRes } = await this.axiosInstance<DataResponse<User>>({
-        method: "GET",
-        url: "/api/v1/user",
+        method: 'GET',
+        url: '/api/v1/user',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+          Authorization: `Bearer ${accessToken}`
+        }
       });
       if (isErrorResponse(userRes)) {
         throw userRes;
@@ -59,11 +59,11 @@ export class HttpClient {
       return {
         code: 200,
         token: {
-          ...tokenRes.token,
+          ...tokenRes.token
         },
         data: {
-          ...userRes.data,
-        },
+          ...userRes.data
+        }
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

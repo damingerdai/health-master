@@ -1,12 +1,12 @@
-import { User } from "./user";
+import { User } from './user';
 
 export interface UserTemperature {
   id: string;
   userId: string;
-  temperature: number;  
-  recordDate: Date;  
+  temperature: number;
+  recordDate: Date;
   note?: string;
-  unit: "C" | "F"; // Celsius or Fahrenheit
+  unit: 'C' | 'F'; // Celsius or Fahrenheit
   user?: User;
   createdAt: Date; // ISO date string
   updatedAt: Date; // ISO date string
@@ -25,4 +25,3 @@ export interface UpdateUserTemperatureRequest {
   recordedAt?: string; // ISO date string
   note?: string;
 }
-

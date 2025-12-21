@@ -5,26 +5,26 @@ import { httpClient } from '@/lib/http-client';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_req: NextRequest) {
-    const session = await getServerSession(authOptions);
-    const authorization = session?.accessToken;
+  const session = await getServerSession(authOptions);
+  const authorization = session?.accessToken;
 
-    return httpClient
-        .request({
-            headers: {
-                Authorization: 'Bearer ' + authorization,
-            },
-            method: 'GET',
-            url: '/api/v1/user-temperatures',
-        })
-        .then(resp => {
-            if (resp.data && !resp?.data?.data) {
-                resp.data.data = [];
-            }
+  return httpClient
+    .request({
+      headers: {
+        Authorization: 'Bearer ' + authorization
+      },
+      method: 'GET',
+      url: '/api/v1/user-temperatures'
+    })
+    .then(resp => {
+      if (resp.data && !resp?.data?.data) {
+        resp.data.data = [];
+      }
 
-            return NextResponse.json(resp);
-        })
-        .catch(err => {
-            console.error("error", err);
-           return NextResponse.json(err, { status: 500 })
-        });
+      return NextResponse.json(resp);
+    })
+    .catch(err => {
+      console.error('error', err);
+      return NextResponse.json(err, { status: 500 });
+    });
 }

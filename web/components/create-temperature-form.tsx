@@ -1,54 +1,54 @@
-"use client";
+'use client';
 
-import { CalendarIcon } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { CalendarIcon } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Textarea } from "./ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Calendar } from "./ui/calendar";
-import { request } from "@/lib/request";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+  FormMessage
+} from './ui/form';
+import { Input } from './ui/input';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Textarea } from './ui/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { Calendar } from './ui/calendar';
+import { request } from '@/lib/request';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const schemas = z
   .object({
     temperature: z.coerce.number().min(30).max(113),
-    unit: z.enum(["C", "F"]),
+    unit: z.enum(['C', 'F']),
     note: z.string().max(500).optional(),
     logDate: z.date({
-      required_error: "Log date is required",
+      required_error: 'Log date is required'
     }),
-    logTime: z.string().optional(),
+    logTime: z.string().optional()
   })
   .refine(
-    (data) => {
-      if (data.unit === "C") {
+    data => {
+      if (data.unit === 'C') {
         return data.temperature >= 30 && data.temperature <= 45;
-      } else if (data.unit === "F") {
+      } else if (data.unit === 'F') {
         return data.temperature >= 86 && data.temperature <= 113;
       }
       return false;
     },
     {
       message:
-        "Temperature must be between 30-45°C or 86-113°F depending on the unit",
-      path: ["temperature"],
-    },
+        'Temperature must be between 30-45°C or 86-113°F depending on the unit',
+      path: ['temperature']
+    }
   );
 
 type CreateTemperatureData = z.infer<typeof schemas>;
@@ -56,13 +56,13 @@ type CreateTemperatureData = z.infer<typeof schemas>;
 export function CreateTemperatureForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: React.ComponentProps<'form'>) {
   const defaultValues: CreateTemperatureData = {
     temperature: 36.5,
-    unit: "C",
+    unit: 'C',
     logDate: new Date(),
-    logTime: format(new Date(), "HH:mm"),
-    note: "",
+    logTime: format(new Date(), 'HH:mm'),
+    note: ''
   };
   const form = useForm({ resolver: zodResolver(schemas), defaultValues });
   const router = useRouter();
@@ -74,33 +74,33 @@ export function CreateTemperatureForm({
         onSubmit={form.handleSubmit(async (data: CreateTemperatureData) => {
           // Handle form submission
           const { logDate, logTime } = data;
-          const [hours, minutes] = logTime?.split(":").map(Number) as [
+          const [hours, minutes] = logTime?.split(':').map(Number) as [
             number,
-            number,
+            number
           ];
           const recordDate = new Date(logDate);
           recordDate.setHours(hours, minutes, 0, 0);
-          const value: Omit<CreateTemperatureData, "logTime" | "logDate"> & {
+          const value: Omit<CreateTemperatureData, 'logTime' | 'logDate'> & {
             recordDate: Date;
           } = {
             temperature: data.temperature,
             unit: data.unit,
-            recordDate,
+            recordDate
           };
           try {
             await request({
-              method: "POST",
-              url: "/api/user-temperature",
-              data: value,
+              method: 'POST',
+              url: '/api/user-temperature',
+              data: value
             });
-            toast.success("Temperature record created successfully");
-            router.push("/temperature");
+            toast.success('Temperature record created successfully');
+            router.push('/temperature');
           } catch (err) {
             console.error(err);
             toast.error(
-              typeof err === "object" && err !== null && "message" in err
+              typeof err === 'object' && err !== null && 'message' in err
                 ? (err as { message?: string }).message
-                : "Failed to create temperature record",
+                : 'Failed to create temperature record'
             );
           }
         })}
@@ -190,12 +190,12 @@ export function CreateTemperatureForm({
                           <Button
                             variant="outline"
                             className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
                             )}
                           >
                             {field.value ? (
-                              format(field.value, "PPP")
+                              format(field.value, 'PPP')
                             ) : (
                               <span>Pick a date</span>
                             )}

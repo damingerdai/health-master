@@ -7,14 +7,14 @@ export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   const authorization = session?.accessToken;
   console.log('authorization', authorization);
-  console.log('req.nextUrl.search', req.nextUrl.search); 
+  console.log('req.nextUrl.search', req.nextUrl.search);
   try {
     const resp = await httpClient.request({
       method: 'GET',
       url: `/api/v1/weight-records${req.nextUrl.search}`,
       headers: {
-        Authorization: authorization,
-      },
+        Authorization: authorization
+      }
     });
 
     return NextResponse.json(resp.data);

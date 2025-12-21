@@ -1,8 +1,5 @@
-import { UserTemperatureRecords } from "@/components/user-temperature-records";
+import { UserTemperatureRecords } from '@/components/user-temperature-records';
 
 export default function Page() {
-
-    return (
-         <UserTemperatureRecords />
-    );
+  return <UserTemperatureRecords />;
 }

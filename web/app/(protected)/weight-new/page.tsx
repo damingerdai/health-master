@@ -1,4 +1,4 @@
-import { CreateWieghtForm } from "@/components/create-weight-form";
+import { CreateWieghtForm } from '@/components/create-weight-form';
 
 export default function Page() {
   return (

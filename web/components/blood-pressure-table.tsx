@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -10,11 +10,11 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "./ui/table";
-import { UserBloodPressures } from "@/types/user-blood-pressure";
-import { request } from "@/lib/request";
-import { formatDate } from "date-fns";
+  TableRow
+} from './ui/table';
+import { UserBloodPressures } from '@/types/user-blood-pressure';
+import { request } from '@/lib/request';
+import { formatDate } from 'date-fns';
 
 export const BloodPressureTable: React.FC = () => {
   const [bloodPressures, setBloodPressures] = useState<UserBloodPressures>([]);
@@ -23,7 +23,7 @@ export const BloodPressureTable: React.FC = () => {
       code: number;
       data: { data: UserBloodPressures };
     }>({
-      url: "/api/user-blood-pressures",
+      url: '/api/user-blood-pressures'
     });
     setBloodPressures(res.code === 200 ? res.data.data : []);
   };
@@ -46,28 +46,28 @@ export const BloodPressureTable: React.FC = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bloodPressures.map((item) => (
+          {bloodPressures.map(item => (
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.user?.username}</TableCell>
               <TableCell
                 className={cn(
-                  item.systolicBloodPressure > 140 && "text-red-500",
+                  item.systolicBloodPressure > 140 && 'text-red-500'
                 )}
               >
                 {item.systolicBloodPressure}
               </TableCell>
               <TableCell
                 className={cn(
-                  item.diastolicBloodPressure > 90 && "text-red-500",
+                  item.diastolicBloodPressure > 90 && 'text-red-500'
                 )}
               >
                 {item.diastolicBloodPressure}
               </TableCell>
               <TableCell>
                 {item.logDatetime
-                  ? formatDate(item.logDatetime, "yyyy-MM-mm hh:mm")
-                  : "unkdown date"}
+                  ? formatDate(item.logDatetime, 'yyyy-MM-mm hh:mm')
+                  : 'unkdown date'}
               </TableCell>
             </TableRow>
           ))}

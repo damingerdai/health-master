@@ -1,29 +1,29 @@
-import { httpClient } from "@/lib/http-client";
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth-options";
+import { httpClient } from '@/lib/http-client';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth-options';
 
 export async function POST(req: NextRequest) {
   const [session, data] = await Promise.all([
     getServerSession(authOptions),
-    req.json(),
+    req.json()
   ]);
   const authorization = session?.accessToken;
 
   try {
     const resp = await httpClient.request({
-      method: "POST",
-      url: "/api/v1/user-temperature",
+      method: 'POST',
+      url: '/api/v1/user-temperature',
       data: {
         userId: session?.user?.id,
         temperature: data.temperature,
         unit: data.unit,
         notes: data.notes,
-        recordDate: data.recordDate,
+        recordDate: data.recordDate
       },
       headers: {
-        Authorization: authorization,
-      },
+        Authorization: authorization
+      }
     });
 
     return NextResponse.json(resp.data);

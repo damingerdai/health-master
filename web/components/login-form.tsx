@@ -1,37 +1,37 @@
-"use client";
+'use client';
 
-import { z } from "zod";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Loader2Icon } from "lucide-react";
+  FormMessage
+} from './ui/form';
+import { signIn } from 'next-auth/react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { Loader2Icon } from 'lucide-react';
 
 const schemas = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required')
 });
 type InputData = z.infer<typeof schemas>;
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: React.ComponentProps<'form'>) {
   const defaultValues: InputData = {
-    username: "",
-    password: "",
+    username: '',
+    password: ''
   };
 
   const router = useRouter();
@@ -40,29 +40,29 @@ export function LoginForm({
   return (
     <Form {...form}>
       <form
-        className={cn("flex flex-col gap-6", className)}
+        className={cn('flex flex-col gap-6', className)}
         {...props}
         onSubmit={form.handleSubmit(async (data: InputData) => {
           try {
             const { username, password } = data;
-            const res = await signIn("credentials", {
+            const res = await signIn('credentials', {
               redirect: false,
               username,
-              password,
+              password
             });
             if (!res?.ok) {
-              toast("Login failed", {
+              toast('Login failed', {
                 description: res?.error,
-                position: "top-right",
+                position: 'top-right'
               });
               return;
             }
-            router.push("/dashboard");
+            router.push('/dashboard');
           } catch (err) {
-            const message = (err as Record<"message", string>).message ?? "";
+            const message = (err as Record<'message', string>).message ?? '';
             if (message) {
               toast.error(message, {
-                position: "top-right",
+                position: 'top-right'
               });
             }
           }
@@ -127,7 +127,7 @@ export function LoginForm({
           </Button>
         </div>
         <div className="text-center text-sm">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account?{' '}
           <a href="sign-up" className="underline underline-offset-4">
             Sign up
           </a>

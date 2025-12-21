@@ -1,6 +1,6 @@
 import { authOptions } from '@/lib/auth-options';
 import { httpClient } from '@/lib/http-client';
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from 'next-auth/next';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -10,10 +10,10 @@ export async function GET(req: NextRequest) {
   return httpClient
     .request({
       headers: {
-        Authorization: 'Bearer ' + authorization,
+        Authorization: 'Bearer ' + authorization
       },
       method: 'GET',
-      url: `/api/v1/user-blood-pressures${req.nextUrl.search}`,
+      url: `/api/v1/user-blood-pressures${req.nextUrl.search}`
     })
     .then(resp => {
       if (resp.data && !resp?.data?.data) {

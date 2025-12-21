@@ -1,9 +1,9 @@
-"use client";
-import { useState, useEffect, useTransition } from "react";
-import { request } from "@/lib/request";
-import { UserTemperatures } from "@/types/user-temperature";
-import { formatDate } from "date-fns";
-import { Spinner } from "./ui/spinner";
+'use client';
+import { useState, useEffect, useTransition } from 'react';
+import { request } from '@/lib/request';
+import { UserTemperatures } from '@/types/user-temperature';
+import { formatDate } from 'date-fns';
+import { Spinner } from './ui/spinner';
 import {
   Table,
   TableBody,
@@ -11,11 +11,11 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "./ui/table";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+  TableRow
+} from './ui/table';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export const UserTemperatureRecords = () => {
   const router = useRouter();
@@ -27,11 +27,11 @@ export const UserTemperatureRecords = () => {
         code: number;
         data: UserTemperatures;
       }>({
-        method: "GET",
-        url: "/api/user-temperatures",
+        method: 'GET',
+        url: '/api/user-temperatures'
       });
 
-      console.log("res", res);
+      console.log('res', res);
       if (res.data && res?.data) {
         return res.data;
       }
@@ -41,7 +41,7 @@ export const UserTemperatureRecords = () => {
         toast.error(apiError?.message);
       }
       if (apiError?.code < 20000000) {
-        router.push("/sign-in?callbackUrl=/temperature");
+        router.push('/sign-in?callbackUrl=/temperature');
       }
     }
 
@@ -80,23 +80,23 @@ export const UserTemperatureRecords = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {records.map((item) => (
+            {records.map(item => (
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
                 <TableCell>{item.user?.username}</TableCell>
                 <TableCell
                   className={cn({
-                    "text-red-500":
-                      (item.unit === "C" && item.temperature > 38.0) ||
-                      (item.unit === "F" && item.temperature > 100),
+                    'text-red-500':
+                      (item.unit === 'C' && item.temperature > 38.0) ||
+                      (item.unit === 'F' && item.temperature > 100)
                   })}
                 >
                   {item.temperature}°{item.unit}
                 </TableCell>
                 <TableCell>
                   {item.recordDate
-                    ? formatDate(item.recordDate, "yyyy-MM-mm hh:mm")
-                    : "unkdown date"}
+                    ? formatDate(item.recordDate, 'yyyy-MM-mm hh:mm')
+                    : 'unkdown date'}
                 </TableCell>
               </TableRow>
             ))}

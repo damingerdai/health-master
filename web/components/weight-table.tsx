@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   Table,
   TableBody,
@@ -8,19 +8,18 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "./ui/table";
-import { useState, useMemo } from "react";
-import useSWR from "swr";
-import { fetchWeightRecord } from "@/lib/featcher";
-import { isErrorResponse } from "@/types/response";
-import { format } from "date-fns";
+  TableRow
+} from './ui/table';
+import { useState, useMemo } from 'react';
+import useSWR from 'swr';
+import { fetchWeightRecord } from '@/lib/featcher';
+import { isErrorResponse } from '@/types/response';
+import { format } from 'date-fns';
 
 export const WeightTable: React.FC = () => {
   const [page] = useState({ pageNo: 1, pageSize: 5 });
-  const { data } = useSWR(
-    { url: "api/weight-records", args: page },
-    () => fetchWeightRecord({ ...page }),
+  const { data } = useSWR({ url: 'api/weight-records', args: page }, () =>
+    fetchWeightRecord({ ...page })
   );
   const weightRecords = useMemo(() => {
     if (!data) return [];
@@ -43,7 +42,7 @@ export const WeightTable: React.FC = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {weightRecords.map((item) => (
+          {weightRecords.map(item => (
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>
@@ -52,8 +51,8 @@ export const WeightTable: React.FC = () => {
               <TableCell>{item.weight}</TableCell>
               <TableCell>
                 {item.recordDate
-                  ? format(item.recordDate, "PPP")
-                  : "unkdown date"}
+                  ? format(item.recordDate, 'PPP')
+                  : 'unkdown date'}
               </TableCell>
             </TableRow>
           ))}

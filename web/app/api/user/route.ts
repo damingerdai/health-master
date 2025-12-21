@@ -1,16 +1,16 @@
-import { httpClient } from "@/lib/http-client";
-import { NextRequest, NextResponse } from "next/server";
+import { httpClient } from '@/lib/http-client';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     const resp = await httpClient.request({
       headers: {
-        Authorization: req.headers.get("Authorization"),
+        Authorization: req.headers.get('Authorization')
       } as Record<string, string>,
-      method: "POST",
-      url: "/api/v1/user",
-      data,
+      method: 'POST',
+      url: '/api/v1/user',
+      data
     });
 
     if (resp.code != 200) {

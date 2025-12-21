@@ -1,94 +1,94 @@
-"use client";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+'use client';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { request } from "@/lib/request";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { request } from '@/lib/request';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const schemas = z
   .object({
     username: z
       .string()
-      .min(1, "Username is required")
+      .min(1, 'Username is required')
       .regex(
         /^[A-Za-z0-9]+$/,
-        "Username must contain only letters and numbers",
+        'Username must contain only letters and numbers'
       ),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
     gender: z
       .string()
-      .regex(/^[MFU]$/, { message: "Gender must be M or F" })
+      .regex(/^[MFU]$/, { message: 'Gender must be M or F' })
       .optional(),
     password: z
       .string()
-      .min(1, "Password is required")
+      .min(1, 'Password is required')
       .regex(
         /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
-        "Password must contain both letters and numbers, and be 8-16 characters long",
+        'Password must contain both letters and numbers, and be 8-16 characters long'
       ),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    confirmPassword: z.string().min(1, 'Please confirm your password')
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword']
   });
 type InputData = z.infer<typeof schemas>;
 
 export function RegistryForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: React.ComponentProps<'form'>) {
   const router = useRouter();
   const defaultValues: InputData = {
-    username: "",
-    firstName: "",
-    lastName: "",
-    gender: "U",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    firstName: '',
+    lastName: '',
+    gender: 'U',
+    password: '',
+    confirmPassword: ''
   };
   const form = useForm({ resolver: zodResolver(schemas), defaultValues });
 
   return (
     <Form {...form}>
       <form
-        className={cn("flex flex-col gap-6", className)}
+        className={cn('flex flex-col gap-6', className)}
         {...props}
         onSubmit={form.handleSubmit(async (data: InputData) => {
           try {
             await request({
-              method: "post",
-              url: "/api/user",
+              method: 'post',
+              url: '/api/user',
               data: {
                 username: data.username,
                 firstName: data.firstName,
                 lastName: data.lastName,
                 gender: data.gender,
-                password: data.password,
-              },
+                password: data.password
+              }
             });
-            toast.success("create a new user successfully");
-            router.push("/sign-in");
+            toast.success('create a new user successfully');
+            router.push('/sign-in');
           } catch (err) {
             const message =
-              (err as Record<"code" | "message", string>).message ??
-              "fail to register a new user";
+              (err as Record<'code' | 'message', string>).message ??
+              'fail to register a new user';
             toast.error(message, {
-              position: "top-right",
+              position: 'top-right'
             });
           }
         })}
@@ -227,7 +227,7 @@ export function RegistryForm({
           </Button>
         </div>
         <div className="text-center text-sm">
-          Do you have an account?{" "}
+          Do you have an account?{' '}
           <a href="sign-in" className="underline underline-offset-4">
             Sign in
           </a>

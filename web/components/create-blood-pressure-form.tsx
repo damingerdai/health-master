@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Button } from "./ui/button";
-import { Calendar } from "./ui/calendar";
-import { request } from "@/lib/request";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+  FormMessage
+} from './ui/form';
+import { Input } from './ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { Button } from './ui/button';
+import { Calendar } from './ui/calendar';
+import { request } from '@/lib/request';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const schemas = z.object({
-  systolic: z.coerce.number().min(0, "Systolic is required"),
-  diastolic: z.coerce.number().min(0, "Diastolic is required"),
-  pulse: z.number().min(0, "Pulse is required"),
+  systolic: z.coerce.number().min(0, 'Systolic is required'),
+  diastolic: z.coerce.number().min(0, 'Diastolic is required'),
+  pulse: z.number().min(0, 'Pulse is required'),
   logDate: z.date({
-    required_error: "Log date is required",
+    required_error: 'Log date is required'
   }),
-  logTime: z.string().optional(),
+  logTime: z.string().optional()
 });
 
 type InputData = z.infer<typeof schemas>;
@@ -37,13 +37,13 @@ type InputData = z.infer<typeof schemas>;
 export function CreateBloodPressureForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: React.ComponentProps<'form'>) {
   const defaultValues: InputData = {
     systolic: 120,
     diastolic: 80,
     pulse: 70,
     logDate: new Date(),
-    logTime: format(new Date(), "HH:mm"), // Default to current time
+    logTime: format(new Date(), 'HH:mm') // Default to current time
   };
   const form = useForm({ resolver: zodResolver(schemas), defaultValues });
   const router = useRouter();
@@ -51,37 +51,37 @@ export function CreateBloodPressureForm({
   return (
     <Form {...form}>
       <form
-        className={cn("flex flex-col gap-6", className)}
+        className={cn('flex flex-col gap-6', className)}
         {...props}
         onSubmit={form.handleSubmit(async (data: InputData) => {
-          const logTime = data.logTime ?? format(new Date(), "HH:mm"); // Use provided time or default to current time
+          const logTime = data.logTime ?? format(new Date(), 'HH:mm'); // Use provided time or default to current time
           // Parse the logTime to set hours and minutes
           // Assuming logTime is in "HH:mm" format
-          const [hours, minutes] = logTime.split(":").map(Number);
+          const [hours, minutes] = logTime.split(':').map(Number);
           const logDate = new Date(data.logDate);
           logDate.setHours(hours, minutes, 0, 0); // Set hours and minutes
-          const value: Omit<InputData, "logTime"> = {
+          const value: Omit<InputData, 'logTime'> = {
             systolic: data.systolic,
             diastolic: data.diastolic,
             pulse: data.pulse,
-            logDate,
+            logDate
           };
           try {
             await request({
-              method: "POST",
-              url: "/api/user-blood-pressure",
-              data: value,
+              method: 'POST',
+              url: '/api/user-blood-pressure',
+              data: value
             });
-            toast.success("Blood pressure record created successfully");
+            toast.success('Blood pressure record created successfully');
           } catch (error) {
-            console.error("Error creating blood pressure record:", error);
+            console.error('Error creating blood pressure record:', error);
             toast.error(
-              typeof error === "object" && error !== null && "message" in error
+              typeof error === 'object' && error !== null && 'message' in error
                 ? (error as { message?: string }).message
-                : "Failed to create blood pressure record",
+                : 'Failed to create blood pressure record'
             );
           }
-          router.push("/blood-pressure"); // Redirect to dashboard after submission
+          router.push('/blood-pressure'); // Redirect to dashboard after submission
         })}
       >
         <div className="grid gap-6">
@@ -141,14 +141,14 @@ export function CreateBloodPressureForm({
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
+                            'pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, 'PPP')
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -161,8 +161,8 @@ export function CreateBloodPressureForm({
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
+                        disabled={date =>
+                          date > new Date() || date < new Date('1900-01-01')
                         }
                         captionLayout="dropdown"
                       />

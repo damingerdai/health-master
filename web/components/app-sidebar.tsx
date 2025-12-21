@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useSession } from "next-auth/react"
+import * as React from 'react';
+import { useSession } from 'next-auth/react';
 import {
   IconDashboard,
   IconInnerShadowTop,
   IconLoader3,
   IconScaleOutline,
-  IconTemperature,
-} from "@tabler/icons-react";
+  IconTemperature
+} from '@tabler/icons-react';
 
-import { NavMain } from "@/components/nav-main";
+import { NavMain } from '@/components/nav-main';
 import {
   Sidebar,
   SidebarContent,
@@ -18,9 +18,9 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { NavUser } from "./nav-user";
+  SidebarMenuItem
+} from '@/components/ui/sidebar';
+import { NavUser } from './nav-user';
 
 // const data = {
 //   user: {
@@ -140,27 +140,27 @@ import { NavUser } from "./nav-user";
 // }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
   const items = [
     {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: IconDashboard,
+      title: 'Dashboard',
+      url: '/dashboard',
+      icon: IconDashboard
     },
     {
-      title: "Blood Pressure",
-      url: "/blood-pressure",
-      icon: IconLoader3,
+      title: 'Blood Pressure',
+      url: '/blood-pressure',
+      icon: IconLoader3
     },
     {
-      title: "Weight",
-      url: "/weight",
-      icon: IconScaleOutline,
+      title: 'Weight',
+      url: '/weight',
+      icon: IconScaleOutline
     },
     {
-      title: "Temperature",
-      url: "/temperature",
-      icon: IconTemperature,
+      title: 'Temperature',
+      url: '/temperature',
+      icon: IconTemperature
     }
   ];
 
@@ -186,18 +186,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
-      {status === "loading" && (
+      {status === 'loading' && (
         <div className="p-4">
           <IconLoader3 className="m-auto animate-spin" />
         </div>
       )}
-      {status === "authenticated" && session?.user && (
+      {status === 'authenticated' && session?.user && (
         <SidebarFooter>
-          <NavUser user={{
-            name: session.user.name || "User",
-            email: session.user.email || "",
-            avatar: session.user.image || "/avatars/shadcn.jpg",
-          }} />
+          <NavUser
+            user={{
+              name: session.user.name || 'User',
+              email: session.user.email || '',
+              avatar: session.user.image || '/avatars/shadcn.jpg'
+            }}
+          />
         </SidebarFooter>
       )}
     </Sidebar>
