@@ -38,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
       - name: Install, Lint And Build
-        run: cd web && npm ci && npm run lint && npm run build
+        run: cd web && npm ci --force && npm run lint && npm run build
   end:
     runs-on: ${{ matrix.os }}
     needs: [front]
