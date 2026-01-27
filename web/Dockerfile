@@ -1,0 +1,59 @@
+FROM node:24.13-alpine3.23 AS base
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Stage 1: Install all dependencies
+FROM base AS deps
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+  if [ -f package-lock.json ]; then npm ci --omit=dev --force; \
+  elif [ -f yarn.lock ]; then yarn --frozen-lockfile --force; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && corepack prepare pnpm@latest --activate && pnpm i --frozen-lockfile --force; \
+  else npm install --omit=dev --force; \
+  fi
+
+# Stage 2: Build the application
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN \
+  if [ -f package-lock.json ]; then npm run build; \
+  elif [ -f yarn.lock ]; then yarn build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  else npm run build; \
+  fi
+
+# Stage 3: Install production dependencies only
+FROM base AS production-deps
+WORKDIR /app
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+  if [ -f package-lock.json ]; then npm ci --only=production; \
+  elif [ -f yarn.lock ]; then yarn install --production --frozen-lockfile; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --prod --frozen-lockfile; \
+  else npm install --production; \
+  fi
+
+# Stage 4: Final runner image
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./package.json
+COPY --from=production-deps /app/node_modules ./node_modules
+
+USER nextjs
+
+EXPOSE 3000
+ENV PORT=3000
+
+CMD ["npm", "start"]
