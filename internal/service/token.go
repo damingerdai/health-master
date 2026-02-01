@@ -12,6 +12,7 @@ import (
 	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/damingerdai/health-master/pkg/util/tokens"
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 type TokenService struct {
@@ -28,7 +29,9 @@ func (ts *TokenService) CreateToken(ctx context.Context, username string, passwo
 	if err != nil {
 		return nil, err
 	}
+	global.Logger.Info("founded user", zap.String("username", username), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
 	if user == nil || user.Id == "" || user.Password != util.GetMd5Hash(password) {
+		global.Logger.Error("username or password error", zap.String("username", username), zap.String("password", password), zap.String("hashedPassword", util.GetMd5Hash(password)))
 		return nil, errors.New("username or password error")
 	}
 	var userKey = fmt.Sprintf("token-user-%s", user.Id)

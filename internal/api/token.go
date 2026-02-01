@@ -12,6 +12,7 @@ import (
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"go.uber.org/zap"
 )
 
 // Create a token godoc
@@ -31,11 +32,13 @@ func CreateToken(c *gin.Context) {
 	response := response.NewResponse(c)
 	username := c.GetHeader("username")
 	if len(username) == 0 {
+		global.Logger.Error("username is empty")
 		response.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 	password := c.GetHeader("password")
 	if len(password) == 0 {
+		global.Logger.Error("password is empty")
 		response.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
@@ -44,6 +47,7 @@ func CreateToken(c *gin.Context) {
 
 	userToken, err := tokenService.CreateToken(c, username, password)
 	if err != nil {
+		global.Logger.Error("fail to create token", zap.Error(err))
 		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		return
 	}
@@ -109,9 +113,7 @@ func GetTmpToken(c *gin.Context) {
 	} else {
 		token = c.GetHeader("Authorization")
 	}
-	if strings.HasPrefix(token, "Bearer ") {
-		token = token[7:]
-	}
+	token = strings.TrimPrefix(token, "Bearer ")
 
 	srv := service.New(global.DBEngine, global.Logger)
 	tokenService := srv.TokenService
