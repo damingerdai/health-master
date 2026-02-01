@@ -33,10 +33,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
              {/* 占位：后续可以传入快捷统计组件 */}
           </section>
 
-          <div className="relative min-h-[400px] rounded-xl border bg-card text-card-foreground shadow-sm">
-            <div className="p-1 md:p-2">
-                 {children}
-              </div>
+         <div className="@container/main">
+             {children}
           </div>
         </div>
       </main>

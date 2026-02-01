@@ -1,7 +1,9 @@
 'use client';
 
-import { type Icon } from '@tabler/icons-react';
-
+import { type LucideIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -10,7 +12,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar';
-import { useRouter } from 'next/navigation';
 
 export function NavMain({
   items
@@ -18,26 +19,50 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: Icon;
+    icon?: LucideIcon;
   }[];
 }) {
-  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarGroupLabel>Home</SidebarGroupLabel>
+      <SidebarGroupLabel className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+        Platform
+      </SidebarGroupLabel>
+      <SidebarGroupContent className="mt-1">
         <SidebarMenu>
-          {items.map(item => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                tooltip={item.title}
-                onClick={() => router.push(item.url)}
-              >
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {items.map((item) => {
+            const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
+
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={item.title}
+                  isActive={isActive}
+                  className={cn(
+                    "relative transition-all duration-200 hover:bg-accent/50",
+                    isActive ? "font-medium text-primary bg-primary/5 shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <Link href={item.url} className="flex items-center gap-3">
+                    {item.icon && (
+                      <item.icon 
+                        className={cn(
+                          "h-4 w-4 shrink-0 transition-transform duration-200",
+                          isActive ? "scale-110 text-primary" : "group-hover:scale-110"
+                        )} 
+                      />
+                    )}
+                    <span className="truncate">{item.title}</span>
+                    {isActive && (
+                      <span className="absolute left-0 h-4 w-1 rounded-r-full bg-primary" />
+                    )}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
