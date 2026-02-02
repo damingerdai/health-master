@@ -2,7 +2,6 @@ import * as React from 'react';
 import { AppBreadcrumb } from '@/components/app-breadcrumb';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Spinner } from '@/components/ui/spinner';
 import { PlusIcon } from 'lucide-react';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
