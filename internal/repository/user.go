@@ -21,14 +21,14 @@ func NewUserRepository(db db.Connection) *UserRepository {
 
 func (userRepository *UserRepository) Create(ctx context.Context, user *model.User) error {
 	statement := `
-		INSERT INTO users (username, first_name, last_name, password, gender, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING id, created_at, updated_at
+		INSERT INTO users (username, first_name, last_name, email, password, gender, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING id, created_at, updated_at
 	`
 	var id string
 	var createdAt, updatedAt *time.Time
-	row := userRepository.db.QueryRow(ctx, statement, user.Username, user.FirstName, user.LastName, user.Password, user.Gender)
+	row := userRepository.db.QueryRow(ctx, statement, user.Username, user.FirstName, user.LastName, user.Email, user.Password, user.Gender)
 	err := row.Scan(&id, &createdAt, &updatedAt)
 	if err != nil {
-		return nil
+		return err
 	}
 	user.Id = id
 	user.CreatedAt = createdAt
@@ -39,9 +39,9 @@ func (userRepository *UserRepository) Create(ctx context.Context, user *model.Us
 
 func (userRepository *UserRepository) Find(ctx context.Context, id string) (*model.User, error) {
 	var user model.User
-	statement := "SELECT id, username, first_name, last_name, password, gender FROM users WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
+	statement := "SELECT id, username, first_name, last_name, email, password, gender FROM users WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
 	row := userRepository.db.QueryRow(ctx, statement, id)
-	err := row.Scan(&user.Id, &user.Username, &user.FirstName, &user.LastName, &user.Password, &user.Gender)
+	err := row.Scan(&user.Id, &user.Username, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Gender)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
@@ -52,10 +52,10 @@ func (userRepository *UserRepository) Find(ctx context.Context, id string) (*mod
 }
 
 func (userRepository *UserRepository) FindByUserName(ctx context.Context, username string) (*model.User, error) {
-	statement := "SELECT id, username, first_name, last_name, password, gender FROM users WHERE username = $1 AND deleted_at IS NULL LIMIT 1"
+	statement := "SELECT id, username, first_name, last_name, email, password, gender FROM users WHERE username = $1 AND deleted_at IS NULL LIMIT 1"
 	row := userRepository.db.QueryRow(ctx, statement, username)
-	var id, rusername, firstname, lastname, password, gender string
-	err := row.Scan(&id, &rusername, &firstname, &lastname, &password, &gender)
+	var id, rusername, firstname, lastname, email, password, gender string
+	err := row.Scan(&id, &rusername, &firstname, &lastname, &email, &password, &gender)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil

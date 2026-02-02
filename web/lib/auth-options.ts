@@ -2,10 +2,17 @@ import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { httpClient } from './http-client';
 import { isErrorResponse } from '@/types/response';
+import { getCurrentUser } from '@/components/actions/user';
 
 // Extend the User and Session types to include accessToken
 declare module 'next-auth' {
   interface User {
+    id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
+    gender?: string;
     accessToken?: string;
   }
   interface Session {
@@ -50,8 +57,11 @@ export const authOptions: AuthOptions = {
         if (res.data) {
           return {
             id: res.data.id,
-            name: res.data.username,
-            // email: res.data.email,
+            username: res.data.username,
+            firstName: res.data.firstName,
+            lastName: res.data.lastName,
+            email: res.data.email,
+            gender: res.data.gender,
             accessToken: res.token.accessToken
           };
         }
@@ -82,14 +92,24 @@ export const authOptions: AuthOptions = {
         if (session.user) {
           session.user.accessToken = accessToken;
         }
+        const dbUser = await getCurrentUser(accessToken || '');
+        console.log('dbUser', dbUser);
+         if (dbUser) {
+          session.user = dbUser;
+          return session;
+        }
       }
-      // console.log("session", session, token, user);
+       
+       
+      // // console.log("session", session, token, user);
       if (!session.user && token.user) {
+       
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         session.user = token.user as any; // Ensure user is set in session
       }
       // console.log("token", token);
       // console.log("user", user);
+      console.log("session callback", session);
       return session;
     },
     async signIn({ user, account, profile, email, credentials }) {
