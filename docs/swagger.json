@@ -8,6 +8,156 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/v1/password-resets": {
+            "post": {
+                "description": "send a password reset link to the user's email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "password-reset"
+                ],
+                "summary": "create a password reset request",
+                "parameters": [
+                    {
+                        "description": "email address",
+                        "name": "RequestResetInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RequestResetInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "password reset link sent",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/password-resets/{token}": {
+            "get": {
+                "description": "verify the validity of a password reset token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "password-reset"
+                ],
+                "summary": "verify password reset token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "password reset token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "masked email",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "invalid or expired token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "reset user password with a valid password reset token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "password-reset"
+                ],
+                "summary": "reset password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "password reset token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "new password and confirmation",
+                        "name": "ResetPasswordSubmitInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResetPasswordSubmitInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "password reset successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/roles": {
             "get": {
                 "security": [
@@ -470,6 +620,37 @@
         "errcode.Error": {
             "type": "object"
         },
+        "model.RequestResetInput": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResetPasswordSubmitInput": {
+            "type": "object",
+            "required": [
+                "confirm_password",
+                "email",
+                "password"
+            ],
+            "properties": {
+                "confirm_password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                }
+            }
+        },
         "model.Role": {
             "type": "object",
             "properties": {
@@ -498,6 +679,9 @@
                     "type": "string"
                 },
                 "deletedAt": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "firstName": {

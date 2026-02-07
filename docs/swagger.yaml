@@ -1,6 +1,27 @@
 definitions:
   errcode.Error:
     type: object
+  model.RequestResetInput:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  model.ResetPasswordSubmitInput:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - confirm_password
+    - email
+    - password
+    type: object
   model.Role:
     properties:
       description:
@@ -15,6 +36,8 @@ definitions:
       createdAt:
         type: string
       deletedAt:
+        type: string
+      email:
         type: string
       firstName:
         type: string
@@ -74,6 +97,108 @@ info:
   title: health master api
   version: "1.0"
 paths:
+  /api/v1/password-resets:
+    post:
+      consumes:
+      - application/json
+      description: send a password reset link to the user's email
+      parameters:
+      - description: email address
+        in: body
+        name: RequestResetInput
+        required: true
+        schema:
+          $ref: '#/definitions/model.RequestResetInput'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: password reset link sent
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request error
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: create a password reset request
+      tags:
+      - password-reset
+  /api/v1/password-resets/{token}:
+    get:
+      consumes:
+      - application/json
+      description: verify the validity of a password reset token
+      parameters:
+      - description: password reset token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: masked email
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid or expired token
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: verify password reset token
+      tags:
+      - password-reset
+    put:
+      consumes:
+      - application/json
+      description: reset user password with a valid password reset token
+      parameters:
+      - description: password reset token
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: new password and confirmation
+        in: body
+        name: ResetPasswordSubmitInput
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResetPasswordSubmitInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: password reset successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request error
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: reset password
+      tags:
+      - password-reset
   /api/v1/roles:
     get:
       consumes:
