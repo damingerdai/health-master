@@ -24,11 +24,12 @@ func New(db db.Connection, logger *zap.Logger) *srv {
 	roleRepository := repo.RoleRepository
 	userRepository := repo.UserRepository
 	userRoleRepository := repo.UserRoleRepository
+	tokenRecordRepository := repo.TokenRecordRepository
 	userBloodPressureRepository := repo.UserBloodPressureRepository
 	weigthRecordRepository := repo.WeightRecordRepository
 	userHeightRepository := repo.UserHeightRepository
 	userTemperatureRepository := repo.UserTemperatureRepository
-	tokenService := NewTokenService(userRepository)
+	tokenService := NewTokenService(userRepository, tokenRecordRepository)
 
 	return &srv{
 		db:     db,

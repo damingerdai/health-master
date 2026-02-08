@@ -2,20 +2,24 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
+	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/util"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
-	userRepository     *repository.UserRepository
-	roleRepository     *repository.RoleRepository
-	userRoleRepository *repository.UserRoleRepository
+	userRepository        *repository.UserRepository
+	roleRepository        *repository.RoleRepository
+	userRoleRepository    *repository.UserRoleRepository
+	tokenRecordRepository *repository.TokenRecordRepository
 
 	tokenService *TokenService
 
@@ -113,4 +117,33 @@ func (userService *UserService) Find(ctx context.Context, id string) (*model.Use
 
 func (userService *UserService) FindByUserName(ctx context.Context, username string) (*model.User, error) {
 	return userService.userRepository.FindByUserName(ctx, username)
+}
+
+func (userService *UserService) ResetPassword(ctx context.Context, email string, rawToken string, newPassword string) (user *model.User, err error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("password hashing failed: %w", err)
+	}
+
+	tokenRecord, err := userService.tokenRecordRepository.ConsumeToken(ctx, rawToken, contants.TokenCategoryPasswordReset)
+	if err != nil {
+		return nil, fmt.Errorf("invalid or expired token: %w", err)
+	}
+	user, err = userService.userRepository.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, fmt.Errorf("invalid or expired token")
+	}
+	if tokenRecord.UserID.String() != user.Id {
+		return nil, fmt.Errorf("invalid or expired token")
+	}
+	user.Password = string(hashedPassword)
+	err = userService.userRepository.UpdatePassword(ctx, user.Id, user.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update user password: %w", err)
+	}
+	user.Password = ""
+	return user, nil
 }

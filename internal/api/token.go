@@ -43,7 +43,8 @@ func CreateToken(c *gin.Context) {
 		return
 	}
 	userRepository := repository.NewUserRepository(global.DBEngine)
-	tokenService := service.NewTokenService(userRepository)
+	tokenRepository := repository.NewTokenRecordRepository(global.DBEngine)
+	tokenService := service.NewTokenService(userRepository, tokenRepository)
 
 	userToken, err := tokenService.CreateToken(c, username, password)
 	if err != nil {

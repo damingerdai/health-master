@@ -9,6 +9,7 @@ import (
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
+	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/damingerdai/health-master/pkg/util/tokens"
 	"github.com/redis/go-redis/v9"
@@ -17,10 +18,11 @@ import (
 
 type TokenService struct {
 	userRepository *repository.UserRepository
+	tokenRepo      *repository.TokenRecordRepository
 }
 
-func NewTokenService(userRepository *repository.UserRepository) *TokenService {
-	return &TokenService{userRepository}
+func NewTokenService(userRepository *repository.UserRepository, tokenRepo *repository.TokenRecordRepository) *TokenService {
+	return &TokenService{userRepository, tokenRepo}
 }
 
 func (ts *TokenService) CreateToken(ctx context.Context, username string, password string) (*model.UserToken, error) {
@@ -82,4 +84,49 @@ func (ts *TokenService) ParseToken(token string) (*model.Claims, error) {
 	}
 
 	return claims, err
+}
+
+func (ts *TokenService) CreatePasswordResetToken(ctx context.Context, email string) (string, error) {
+	user, err := ts.userRepository.FindByEmail(ctx, email)
+	if err != nil {
+		return "", err
+	}
+	if user == nil {
+		return "", errors.New("user not found")
+	}
+
+	rawToken, err := util.GenerateRandomString(32)
+	if err != nil {
+		return "", err
+	}
+	metadata := map[string]any{
+		"email":  email,
+		"source": "web_request",
+	}
+	err = ts.tokenRepo.CreatePasswordResetToken(ctx, user.Id, rawToken, metadata)
+	if err != nil {
+		return "", fmt.Errorf("failed to save token to db: %w", err)
+	}
+	return rawToken, nil
+}
+
+func (ts *TokenService) VerifyPasswordResetToken(ctx context.Context, rawToken string) (string, error) {
+	userID, email, err := ts.tokenRepo.GetUserByValidToken(ctx, rawToken, contants.TokenCategoryPasswordReset)
+	if err != nil {
+		return "", err
+	}
+	if userID == "" {
+		return "", errors.New("invalid or expired token")
+	}
+	user, err := ts.userRepository.FindByEmail(ctx, email)
+	if err != nil {
+		return "", err
+	}
+	if user == nil {
+		return "", errors.New("user not found")
+	}
+	if user.Id != userID {
+		return "", errors.New("token does not match user")
+	}
+	return user.Id, nil
 }

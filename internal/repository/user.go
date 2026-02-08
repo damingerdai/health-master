@@ -74,3 +74,40 @@ func (userRepository *UserRepository) FindByUserName(ctx context.Context, userna
 	}
 	return &user, nil
 }
+
+func (userRepository *UserRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
+	statement := "SELECT id, username, first_name, last_name, email, password, gender FROM users WHERE email = $1 AND deleted_at IS NULL LIMIT 1"
+	row := userRepository.db.QueryRow(ctx, statement, email)
+	var id, rusername, firstname, lastname, remail, password, gender string
+	err := row.Scan(&id, &rusername, &firstname, &lastname, &remail, &password, &gender)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+		global.Logger.Error("fail to find user by email", zap.String("email", email), zap.Error(err))
+		global.Logger.Sync()
+		return nil, err
+	}
+	user := model.User{
+		Id:        id,
+		Username:  rusername,
+		FirstName: firstname,
+		LastName:  lastname,
+		Email:     remail,
+		Password:  password,
+		Gender:    gender,
+	}
+	return &user, nil
+}
+
+func (userRepository *UserRepository) UpdatePassword(ctx context.Context, userID string, newPassword string) error {
+	statement := "UPDATE users SET password = $1, updated_at = NOW() WHERE id = $2 AND deleted_at IS NULL"
+	_, err := userRepository.db.Exec(ctx, statement, newPassword, userID)
+	return err
+}
+
+func (userRepository *UserRepository) Delete(ctx context.Context, id string) error {
+	statement := "UPDATE users SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL"
+	_, err := userRepository.db.Exec(ctx, statement, id)
+	return err
+}

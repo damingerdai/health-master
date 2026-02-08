@@ -65,5 +65,13 @@ func NewRouter() *gin.Engine {
 
 	}
 
+	resetPasswordApiV1 := r.Group("/api/v1")
+	resetPasswordApiV1.Use(middleware.RateLimiter(methodLimiters))
+	{
+		resetPasswordApiV1.POST("/password-resets", api.CreateResetPassword)
+		resetPasswordApiV1.GET("/password-resets/:token", api.VerifyResetToken)
+		resetPasswordApiV1.PUT("/password-resets/:token", api.ResetPassword)
+	}
+
 	return r
 }

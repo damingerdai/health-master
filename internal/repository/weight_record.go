@@ -13,7 +13,7 @@ type WeightRecordRepository struct {
 	db db.Connection
 }
 
-func NewWeigthRecordRepository(db db.Connection) *WeightRecordRepository {
+func NewWeightRecordRepository(db db.Connection) *WeightRecordRepository {
 	return &WeightRecordRepository{db: db}
 }
 
