@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "health-master.fullname" . }}-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "health-master.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    Server:
+      RunMode: {{ .Values.server.runMode }}
+      HttpPort: {{ .Values.server.httpPort }}
+      ReadTimeout: {{ .Values.server.readTimeout }}
+      WriteTimeout: {{ .Values.server.writeTimeout }}
+    Database:
+      Host: {{ .Values.database.host }}
+      Port: {{ .Values.database.port }}
+      User: {{ .Values.database.user }}
+      Password: {{ .Values.database.password | quote }}
+      DB: {{ .Values.database.db }}
+      SSL: {{ .Values.database.ssl }}
+    JWT:
+      Secret: {{ .Values.jwt.secret }}
+      Issuer: {{ .Values.jwt.issuer }}
+      Expire: {{ .Values.jwt.expire }}
+    Redis:
+      Host: {{ .Values.redis.host }}
+      Port: {{ .Values.redis.port }}
+      Password: {{ .Values.redis.password | quote }}
+      DB: {{ .Values.redis.db }}
+    Logger:
+      Level: {{ .Values.logger.level }}

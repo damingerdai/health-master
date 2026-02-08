@@ -1,0 +1,12 @@
+apiVersion: v2
+name: health-master
+description: A Helm chart for health-master application
+type: application
+version: 1.0.0
+appVersion: "1.0"
+keywords:
+  - health
+  - master
+  - api
+maintainers:
+  - name: damingerdai

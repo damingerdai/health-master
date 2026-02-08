@@ -1,0 +1,68 @@
+# Image configuration
+image:
+  repository: health-master
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Namespace configuration
+namespace: health-master-namespace
+
+# Replica configuration
+replicas: 1
+
+# Server configuration
+server:
+  runMode: release
+  httpPort: 8000
+  readTimeout: 60s
+  writeTimeout: 60s
+
+# Database configuration
+database:
+  host: postgres
+  port: 5432
+  user: postgres
+  password: "123456"
+  db: postgres
+  ssl: false
+
+# JWT configuration
+jwt:
+  secret: damingerdai
+  issuer: health-master
+  expire: 7200s
+
+# Redis configuration
+redis:
+  host: redis
+  port: 6379
+  password: "12345"
+  db: 0
+
+# Logger configuration
+logger:
+  level: info
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 1024m
+    memory: 2048Mi
+  requests:
+    cpu: 512m
+    memory: 1024Mi
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

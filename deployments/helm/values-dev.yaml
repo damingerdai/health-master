@@ -1,0 +1,70 @@
+# Development values for health-master Helm chart
+
+# Image configuration
+image:
+  repository: health-master
+  tag: latest           # Use latest or your dev image tag
+  pullPolicy: IfNotPresent
+
+# Namespace
+namespace: health-master-namespace
+
+# Single replica for development
+replicas: 1
+
+# Server configuration
+server:
+  runMode: debug
+  httpPort: 8000
+  readTimeout: 60s
+  writeTimeout: 60s
+
+# Database configuration
+database:
+  host: postgres
+  port: 5432
+  user: postgres
+  password: "123456"
+  db: postgres
+  ssl: false
+
+# JWT configuration
+jwt:
+  secret: damingerdai
+  issuer: health-master
+  expire: 7200s
+
+# Redis configuration
+redis:
+  host: redis
+  port: 6379
+  password: "12345"
+  db: 0
+
+# Logger configuration
+logger:
+  level: debug
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+# Development resource limits (lower)
+resources:
+  limits:
+    cpu: 1024m
+    memory: 2048Mi
+  requests:
+    cpu: 512m
+    memory: 1024Mi
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

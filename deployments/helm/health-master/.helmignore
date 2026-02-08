@@ -1,0 +1,10 @@
+# Ignore files when packaging charts
+.DS_Store
+*.swp
+*.swo
+*~
+.idea
+*.iml
+.vscode
+.env
+*.log
