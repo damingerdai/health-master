@@ -12,7 +12,6 @@ import (
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/util"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
@@ -30,15 +29,17 @@ func NewUserService(
 	userRepository *repository.UserRepository,
 	roleRepository *repository.RoleRepository,
 	userRoleRepository *repository.UserRoleRepository,
+	tokenRecordRepository *repository.TokenRecordRepository,
 	tokenService *TokenService,
 	logger *zap.Logger,
 ) *UserService {
 	return &UserService{
-		userRepository:     userRepository,
-		roleRepository:     roleRepository,
-		userRoleRepository: userRoleRepository,
-		tokenService:       tokenService,
-		logger:             logger,
+		userRepository:        userRepository,
+		roleRepository:        roleRepository,
+		userRoleRepository:    userRoleRepository,
+		tokenRecordRepository: tokenRecordRepository,
+		tokenService:          tokenService,
+		logger:                logger,
 	}
 }
 
@@ -120,10 +121,7 @@ func (userService *UserService) FindByUserName(ctx context.Context, username str
 }
 
 func (userService *UserService) ResetPassword(ctx context.Context, email string, rawToken string, newPassword string) (user *model.User, err error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, fmt.Errorf("password hashing failed: %w", err)
-	}
+	hashedPassword := util.GetMd5Hash(newPassword)
 
 	tokenRecord, err := userService.tokenRecordRepository.ConsumeToken(ctx, rawToken, contants.TokenCategoryPasswordReset)
 	if err != nil {
@@ -139,7 +137,7 @@ func (userService *UserService) ResetPassword(ctx context.Context, email string,
 	if tokenRecord.UserID.String() != user.Id {
 		return nil, fmt.Errorf("invalid or expired token")
 	}
-	user.Password = string(hashedPassword)
+	user.Password = hashedPassword
 	err = userService.userRepository.UpdatePassword(ctx, user.Id, user.Password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update user password: %w", err)

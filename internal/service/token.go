@@ -112,27 +112,23 @@ func (ts *TokenService) CreatePasswordResetToken(ctx context.Context, email stri
 
 func (ts *TokenService) VerifyPasswordResetToken(ctx context.Context, rawToken string) (string, error) {
 	tokenHash := ts.tokenRepo.HashToken(rawToken)
-	userID, email, maskEmail, err := ts.tokenRepo.GetUserByValidToken(ctx, tokenHash, contants.TokenCategoryPasswordReset)
+	userID, email, err := ts.tokenRepo.GetUserByValidToken(ctx, tokenHash, contants.TokenCategoryPasswordReset)
 	if err != nil {
-		global.Logger.Error("fail to get token info", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset))
+		global.Logger.Error("fail to get token", zap.String("rawToken", rawToken), zap.String("token_category", contants.TokenCategoryPasswordReset), zap.Error(err))
 		return "", err
 	}
 	if userID == "" {
-		global.Logger.Error("fail to get user info from token", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset))
+		global.Logger.Error("fail to get user info", zap.Error(err))
 		return "", errors.New("invalid or expired token")
 	}
-	user, err := ts.userRepository.FindByEmail(ctx, email)
+	user, err := ts.userRepository.Find(ctx, userID)
 	if err != nil {
-		global.Logger.Error("fail to get user info by email", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset), zap.String("email", maskEmail))
-		return "", err
+		global.Logger.Error("fail to get user info by userID", zap.Error(err))
+		return "", errors.New("invalid or expired token")
 	}
 	if user == nil {
-		global.Logger.Error("user not found", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset), zap.String("email", maskEmail))
+		global.Logger.Error("user not found", zap.Error(err))
 		return "", errors.New("invalid or expired token")
 	}
-	if user.Id != userID {
-		global.Logger.Error("token does not match user", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset), zap.String("email", maskEmail), zap.String("user email", util.MaskEmail(user.Email)))
-		return "", errors.New("invalid or expired token")
-	}
-	return maskEmail, nil
+	return email, nil
 }

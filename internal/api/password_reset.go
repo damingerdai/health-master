@@ -110,6 +110,7 @@ func ResetPassword(c *gin.Context) {
 
 	_, err := userService.ResetPassword(c.Request.Context(), input.Email, token, input.Password)
 	if err != nil {
+		global.Logger.Error("Failed to reset password", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset password"})
 		return
 	}

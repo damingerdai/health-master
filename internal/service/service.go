@@ -36,7 +36,7 @@ func New(db db.Connection, logger *zap.Logger) *srv {
 		logger: logger,
 
 		RoleService:              NewRoleService(roleRepository),
-		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository, tokenService, logger),
+		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository, tokenRecordRepository, tokenService, logger),
 		TokenService:             tokenService,
 		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
 		WeightRecordService:      NewWeightRecordService(weigthRecordRepository, userRepository),
