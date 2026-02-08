@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { GalleryVerticalEnd } from 'lucide-react';
 
 export default function Layout({
@@ -21,10 +22,13 @@ export default function Layout({
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="https://picsum.photos/200/300?random=2"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        <Image
+          src="https://picsum.photos/1000/1500?random=2" 
+          alt="Health Master Background"
+          fill  
+          priority  
+          className="object-cover dark:brightness-[0.2] dark:grayscale"
+          sizes="(max-width: 1024px) 0vw, 50vw"  
         />
       </div>
     </div>

@@ -1,7 +1,7 @@
 export { default as proxy } from 'next-auth/middleware';
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sign-in|sign-up).*)']
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sign-in|sign-up|forget-password|reset-password).*)']
 };
 
 //export async function middleware(request: NextRequest) {
