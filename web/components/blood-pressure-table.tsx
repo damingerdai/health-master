@@ -71,7 +71,7 @@ export const BloodPressureTable: React.FC = () => {
         <Table>
           <TableHeader className="bg-slate-50/50 dark:bg-zinc-800/40">
             <TableRow className="hover:bg-transparent border-b">
-              <TableHead className="w-[120px] py-5 pl-8 font-semibold uppercase tracking-wider text-[11px]">ID</TableHead>
+              <TableHead className="w-[120px] py-5 pl-8 font-semibold uppercase tracking-wider text-[11px]">Index</TableHead>
               <TableHead className="py-5">Health Status</TableHead>
               <TableHead className="py-5 text-center">Systolic</TableHead>
               <TableHead className="py-5 text-center">Diastolic</TableHead>
@@ -99,14 +99,14 @@ export const BloodPressureTable: React.FC = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              bloodPressures.map((item) => {
+              bloodPressures.map((item, index) => {
                 const status = getStatus(item.systolicBloodPressure, item.diastolicBloodPressure);
                 const isSysHigh = item.systolicBloodPressure >= 140;
                 const isDiaHigh = item.diastolicBloodPressure >= 90;
                 return (
                   <TableRow key={item.id} className="group transition-colors">
                     <TableCell className="py-6 pl-8 font-mono text-xs text-muted-foreground">
-                      {item.id}
+                      {index + 1}
                     </TableCell>
 
                     <TableCell className="py-6">
