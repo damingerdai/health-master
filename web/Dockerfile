@@ -6,10 +6,10 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-  if [ -f package-lock.json ]; then npm ci --omit=dev --force; \
+  if [ -f package-lock.json ]; then npm ci --force; \
   elif [ -f yarn.lock ]; then yarn --frozen-lockfile --force; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && corepack prepare pnpm@latest --activate && pnpm i --frozen-lockfile --force; \
-  else npm install --omit=dev --force; \
+  else npm install --force; \
   fi
 
 # Stage 2: Build the application
