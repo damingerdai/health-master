@@ -17,6 +17,7 @@ import {
 import { toast } from 'sonner';
 import { Loader2Icon, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 // Schema focusing on email validation
 const forgetPasswordSchema = z.object({
@@ -33,9 +34,11 @@ export function ForgetPasswordForm({
     email: ''
   };
 
-  const form = useForm({ 
-    resolver: zodResolver(forgetPasswordSchema), 
-    defaultValues 
+  const router = useRouter()
+
+  const form = useForm({
+    resolver: zodResolver(forgetPasswordSchema),
+    defaultValues
   });
 
   return (
@@ -47,13 +50,13 @@ export function ForgetPasswordForm({
           try {
             // Replace with your actual password reset logic/API call
             // e.g., await api.auth.requestPasswordReset(data.email);
-            
-            await new Promise((resolve) => setTimeout(resolve, 1500)); // Mock delay
 
+            await new Promise((resolve) => setTimeout(resolve, 1500)); // Mock delay 
             toast.success('Check your email', {
               description: 'We have sent a password reset link to your email address.',
               position: 'top-right'
             });
+            router.push(`/forget-password/success?email=${encodeURIComponent(data.email)}`);
           } catch (err) {
             const message = (err as Record<'message', string>).message ?? 'Something went wrong';
             toast.error(message, {
@@ -78,10 +81,10 @@ export function ForgetPasswordForm({
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="m@example.com" 
-                      type="email" 
-                      {...field} 
+                    <Input
+                      placeholder="m@example.com"
+                      type="email"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -103,8 +106,8 @@ export function ForgetPasswordForm({
         </div>
 
         <div className="text-center text-sm">
-          <Link 
-            href="/login" 
+          <Link
+            href="/login"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
           >
             <ArrowLeft className="h-4 w-4" />
