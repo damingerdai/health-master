@@ -25,28 +25,27 @@ func (tokenRecordRepo *TokenRecordRepository) HashToken(rawToken string) string 
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func (tokenRecordRepo *TokenRecordRepository) GetUserByValidToken(ctx context.Context, tokenHash string, category string) (userID string, email string, maskEmail string, err error) {
+func (tokenRecordRepo *TokenRecordRepository) GetUserByValidToken(ctx context.Context, tokenHash string, category string) (userID string, email string, err error) {
 	query := `
 		SELECT 
 			u.id, 
-			u.email,
 			CASE 
 				WHEN POSITION('@' IN u.email) > 3 THEN 
 					OVERLAY(u.email PLACING '***' FROM 3 FOR POSITION('@' IN u.email) - 3)
 				ELSE 
 					OVERLAY(u.email PLACING '***' FROM 2 FOR POSITION('@' IN u.email) - 2)
-			END AS maskEmail
+			END AS email
 		FROM tokens t
 		JOIN users u ON t.user_id = u.id
 		WHERE t.token_hash = $1 AND t.category = $2
 		AND t.is_revoked = FALSE AND t.expires_at > NOW() AND t.used_count < t.max_uses
 	`
-	err = tokenRecordRepo.db.QueryRow(ctx, query, tokenHash, category).Scan(&userID, &email, &maskEmail)
+	err = tokenRecordRepo.db.QueryRow(ctx, query, tokenHash, category).Scan(&userID, &email)
 	if err != nil {
-		return userID, email, maskEmail, err
+		return userID, email, err
 	}
 	// email = util.MaskEmail(email)
-	return userID, email, maskEmail, nil
+	return userID, email, nil
 }
 
 func (r *TokenRecordRepository) CreatePasswordResetToken(ctx context.Context, userID string, rawToken string, metadata map[string]any) error {
