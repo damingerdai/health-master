@@ -120,3 +120,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+[data-sonner-toast] [data-description] {
+  color: hsl(var(--foreground)) !important;
+  opacity: 0.9 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+}
+
+/* [data-sonner-toast][data-type="success"] [data-description] {
+  color: hsl(var(--muted-foreground)) !important;
+} */
