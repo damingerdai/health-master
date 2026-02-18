@@ -8,7 +8,6 @@ import (
 
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -26,28 +25,28 @@ func (tokenRecordRepo *TokenRecordRepository) HashToken(rawToken string) string 
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func (tokenRecordRepo *TokenRecordRepository) GetUserByValidToken(ctx context.Context, tokenHash string, category string) (userID string, email string, err error) {
+func (tokenRecordRepo *TokenRecordRepository) GetUserByValidToken(ctx context.Context, tokenHash string, category string) (userID string, email string, maskEmail string, err error) {
 	query := `
 		SELECT 
 			u.id, 
+			u.email,
 			CASE 
 				WHEN POSITION('@' IN u.email) > 3 THEN 
 					OVERLAY(u.email PLACING '***' FROM 3 FOR POSITION('@' IN u.email) - 3)
 				ELSE 
 					OVERLAY(u.email PLACING '***' FROM 2 FOR POSITION('@' IN u.email) - 2)
-			END AS email
+			END AS maskEmail
 		FROM tokens t
 		JOIN users u ON t.user_id = u.id
 		WHERE t.token_hash = $1 AND t.category = $2
 		AND t.is_revoked = FALSE AND t.expires_at > NOW() AND t.used_count < t.max_uses
 	`
-	err = tokenRecordRepo.db.QueryRow(ctx, query, tokenHash, category).Scan(&userID, &email)
+	err = tokenRecordRepo.db.QueryRow(ctx, query, tokenHash, category).Scan(&userID, &email, &maskEmail)
 	if err != nil {
-		return userID, email, err
+		return userID, email, maskEmail, err
 	}
-
-	email = util.MaskEmail(email)
-	return userID, email, nil
+	// email = util.MaskEmail(email)
+	return userID, email, maskEmail, nil
 }
 
 func (r *TokenRecordRepository) CreatePasswordResetToken(ctx context.Context, userID string, rawToken string, metadata map[string]any) error {

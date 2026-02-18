@@ -111,22 +111,28 @@ func (ts *TokenService) CreatePasswordResetToken(ctx context.Context, email stri
 }
 
 func (ts *TokenService) VerifyPasswordResetToken(ctx context.Context, rawToken string) (string, error) {
-	userID, email, err := ts.tokenRepo.GetUserByValidToken(ctx, rawToken, contants.TokenCategoryPasswordReset)
+	tokenHash := ts.tokenRepo.HashToken(rawToken)
+	userID, email, maskEmail, err := ts.tokenRepo.GetUserByValidToken(ctx, tokenHash, contants.TokenCategoryPasswordReset)
 	if err != nil {
+		global.Logger.Error("fail to get token info", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset))
 		return "", err
 	}
 	if userID == "" {
+		global.Logger.Error("fail to get user info from token", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset))
 		return "", errors.New("invalid or expired token")
 	}
 	user, err := ts.userRepository.FindByEmail(ctx, email)
 	if err != nil {
+		global.Logger.Error("fail to get user info by email", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset), zap.String("email", maskEmail))
 		return "", err
 	}
 	if user == nil {
-		return "", errors.New("user not found")
+		global.Logger.Error("user not found", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset), zap.String("email", maskEmail))
+		return "", errors.New("invalid or expired token")
 	}
 	if user.Id != userID {
-		return "", errors.New("token does not match user")
+		global.Logger.Error("token does not match user", zap.Error(err), zap.String("rawToken", rawToken), zap.String("TokenCategory", contants.TokenCategoryPasswordReset), zap.String("email", maskEmail), zap.String("user email", util.MaskEmail(user.Email)))
+		return "", errors.New("invalid or expired token")
 	}
-	return user.Id, nil
+	return maskEmail, nil
 }
