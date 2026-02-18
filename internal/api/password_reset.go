@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/damingerdai/health-master/global"
@@ -40,6 +41,16 @@ func CreateResetPassword(c *gin.Context) {
 	// Here you would typically send the reset link via email to the user.
 	// For this example, we'll just log the token.
 	global.Logger.Info("Password reset link (token):", zap.String("token", resetPasswordToken))
+	go func(email, token string) {
+		resetLink := fmt.Sprintf("https://health-master.damingerdai.com/reset?token=%s", token)
+		currentEnv := "staging"
+		err := global.Mailer.SendResetPassword(email, currentEnv, resetLink)
+		if err != nil {
+			global.Logger.Error("fail to send reset password email", zap.Error(err), zap.String("email", email), zap.String("tolen", resetPasswordToken))
+			return
+		}
+		global.Logger.Info("send reset password email", zap.String("email", email), zap.String("tolen", resetPasswordToken))
+	}(input.Email, resetPasswordToken)
 	c.JSON(http.StatusAccepted, gin.H{
 		"message": "If the email exists, a password reset link has been sent.",
 	})
@@ -102,5 +113,6 @@ func ResetPassword(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset password"})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Password reset successfully"})
 }

@@ -54,7 +54,6 @@ func (m *Mailer) SendResetPassword(toEmail, env, link string) error {
 	subject := "Subject: Reset your Health Master password\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	message := []byte(subject + mime + body.String())
-
 	auth := smtp.PlainAuth("", m.from, m.password, m.host)
 	addr := fmt.Sprintf("%s:%s", m.host, m.port)
 

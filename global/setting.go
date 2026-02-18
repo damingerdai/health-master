@@ -12,4 +12,6 @@ var (
 	RedisSetting *setting.RedisSettingS
 
 	LoggerSetting *setting.LoggerSettingS
+
+	SmtpSetting *setting.SmtpSettingS
 )

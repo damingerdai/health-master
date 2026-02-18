@@ -44,12 +44,20 @@ type LoggerSettingS struct {
 	Level string
 }
 
+type SmtpSettingS struct {
+	Host     string
+	Port     string
+	Address  string
+	Password string
+}
+
 type Settings struct {
 	Server   ServerSettingS
 	Database DatabaseSettingS
 	JWT      JwtSettingS
 	Redis    RedisSettingS
 	Logger   LoggerSettingS
+	Smtp     SmtpSettingS
 }
 
 func (s *Setting) ReadSection(key string, value any) error {

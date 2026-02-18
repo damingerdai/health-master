@@ -22,3 +22,8 @@ Redis:
   DB: 0
 Logger:
   Level: debug
+Smtp:
+  Host:
+  Port:
+  Address:
+  Password:

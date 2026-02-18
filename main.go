@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/logger"
+	"github.com/damingerdai/health-master/internal/mail"
 	"github.com/damingerdai/health-master/internal/routers"
 	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
@@ -45,8 +47,13 @@ func init() {
 	if err != nil {
 		panic("init setup logger err: " + err.Error())
 	}
-	global.Logger.Info("setyup logger")
+	global.Logger.Info("setup logger")
 	log.Println("setup logger")
+	err = setupMailer()
+	if err != nil {
+		panic("init setup mail err:" + err.Error())
+	}
+	global.Logger.Info("setup mailler")
 }
 
 // @title						health master api
@@ -100,6 +107,7 @@ func setupSetting() error {
 	global.JwtSetting = &appSetting.JWT
 	global.RedisSetting = &appSetting.Redis
 	global.LoggerSetting = &appSetting.Logger
+	global.SmtpSetting = &appSetting.Smtp
 
 	return nil
 }
@@ -141,6 +149,16 @@ func setupLogger() error {
 		return err
 	}
 	global.Logger = log
+
+	return nil
+}
+
+func setupMailer() error {
+	if global.SmtpSetting.Host == "" {
+		return errors.New("SMTP_HOST is required")
+	}
+	mailler := mail.NewMailer(global.SmtpSetting.Host, global.SmtpSetting.Port, global.SmtpSetting.Address, global.SmtpSetting.Password)
+	global.Mailer = mailler
 
 	return nil
 }
