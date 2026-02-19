@@ -92,6 +92,24 @@ redis:
 
 ```
 
+### Logging Configuration
+
+```yaml
+logger:
+  level: info                      # logger level：debug/info/warn/error
+```
+
+### SMTP Configuration
+
+```yaml
+smtp:
+  host: smtp.gmail.com             # SMTP server host
+  port: 587                        # SMTP server port
+  address: health-master@gmail.com # Sender email address
+  password: health-master-password # Sender email password
+
+```
+
 ## Common Commands
 
 ### Installation

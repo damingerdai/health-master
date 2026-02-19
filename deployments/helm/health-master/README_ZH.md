@@ -94,6 +94,18 @@ logger:
   level: info                      # 日志级别：debug/info/warn/error
 ```
 
+### SMTP 配置
+
+```yaml
+smtp:
+  host: smtp.gmail.com             # SMTP 服务器主机
+  port: 587                        # SMTP 服务器端口
+  address: health-master@gmail.com # 发件人邮箱地址
+  password: health-master-password # 发件人邮箱密码
+```
+
+
+
 ## 常用命令
 
 ### 安装

@@ -43,6 +43,12 @@ redis:
 logger:
   level: info
 
+smtp:
+  host: smtp.gmail.com
+  port: 587
+  address: health-master@gmail.com
+  password: health-master-password
+
 # Service configuration
 service:
   type: ClusterIP
