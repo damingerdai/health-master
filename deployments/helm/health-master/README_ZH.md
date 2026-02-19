@@ -46,6 +46,29 @@ image:
   pullPolicy: IfNotPresent         # 拉取策略
 ```
 
+### 前端配置
+
+```yaml
+web:
+  enabled: false                   # 是否部署前端 (设置为 true 部署前端)
+  image:
+    repository: health-master-web # 前端镜像仓库
+    tag: latest                    # 前端镜像标签版本
+    pullPolicy: IfNotPresent       # 前端镜像拉取策略
+  service:
+    type: ClusterIP                # 前端服务类型
+    port: 3000                     # 前端服务端口
+    targetPort: 3000               # 前端容器端口
+  resources:                       # 前端资源限制和请求
+    limits:
+      cpu: 512m
+      memory: 1024Mi
+    requests:
+      cpu: 256m
+      memory: 512Mi
+
+```
+
 ### 服务器配置
 
 ```yaml

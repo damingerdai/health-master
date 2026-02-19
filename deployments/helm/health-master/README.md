@@ -47,6 +47,29 @@ image:
 
 ```
 
+### Frontend Configuration
+
+```yaml
+web:
+  enabled: false                   # Set to true to deploy the frontend
+  image:
+    repository: health-master-web # Frontend image repository
+    tag: latest                    # Frontend image version tag
+    pullPolicy: IfNotPresent       # Frontend image pull policy
+  service:
+    type: ClusterIP                # Frontend service type
+    port: 3000                     # Frontend service port
+    targetPort: 3000               # Frontend container port
+  resources:                       # Frontend resource limits and requests
+    limits:
+      cpu: 512m
+      memory: 1024Mi
+    requests:
+      cpu: 256m
+      memory: 512Mi
+
+```
+
 ### Server Configuration
 
 ```yaml

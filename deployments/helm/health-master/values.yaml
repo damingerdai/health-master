@@ -49,7 +49,26 @@ smtp:
   address: health-master@gmail.com
   password: health-master-password
 
-# Service configuration
+# Frontend configuration
+web:
+  enabled: false # Set to true to deploy the frontend
+  image:
+    repository: health-master-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000 # Default Next.js port
+    targetPort: 3000
+  resources:
+    limits:
+      cpu: 512m
+      memory: 1024Mi
+    requests:
+      cpu: 256m
+      memory: 512Mi
+
+# Service configuration (for backend)
 service:
   type: ClusterIP
   port: 8000
