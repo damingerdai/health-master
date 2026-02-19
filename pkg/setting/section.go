@@ -81,6 +81,11 @@ func (s *Setting) ReadAllSection(value any) error {
 func (s *Setting) BindEnvs(iface any, parts ...string) {
 	ifv := reflect.ValueOf(iface)
 	ift := reflect.TypeOf(iface)
+	// if ift is ptioner
+	if ift.Kind() == reflect.Ptr {
+		ifv = ifv.Elem()
+		ift = ift.Elem()
+	}
 	for i := 0; i < ift.NumField(); i++ {
 		v := ifv.Field(i)
 		t := ift.Field(i)
@@ -88,11 +93,13 @@ func (s *Setting) BindEnvs(iface any, parts ...string) {
 		if !ok {
 			tv = strings.ToUpper(t.Name)
 		}
+		currentKey := strings.Join(append(parts, tv), ".")
 		switch v.Kind() {
 		case reflect.Struct:
 			s.BindEnvs(v.Interface(), append(parts, tv)...)
 		default:
-			s.vp.BindEnv(strings.Join(append(parts, tv), "."))
+			envKey := strings.ToUpper(strings.ReplaceAll(currentKey, ".", "_"))
+			s.vp.BindEnv(currentKey, envKey)
 		}
 	}
 }

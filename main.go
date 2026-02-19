@@ -88,6 +88,7 @@ func setupSetting() error {
 		return err
 	}
 	var appSetting setting.Settings
+	settings.BindEnvs(appSetting)
 	err = settings.ReadAllSection(&appSetting)
 	if err != nil {
 		// cannot parse 'Redis.Port' as int: strconv.ParseInt: parsing "tcp://****:6379": invalid syntax
