@@ -16,8 +16,8 @@ deployments/helm/
 │       ├── configmap.yaml        # 配置映射
 │       ├── deployment.yaml       # 应用部署
 │       └── service.yaml          # 服务
-├── values-dev.yaml               # 开发环境配置
-└── values-prod.yaml              # 生产环境配置
+├── values-dev.yaml               # 开发环境配置 (remove)
+└── values-prod.yaml              # 生产环境配置 (remove)
 ```
 
 ## 快速开始

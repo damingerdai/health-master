@@ -7,6 +7,8 @@ image:
 # Namespace configuration
 namespace: health-master-namespace
 
+autoscaling: 
+  enable: false
 # Replica configuration
 replicas: 1
 
@@ -53,7 +55,7 @@ smtp:
 web:
   enabled: false # Set to true to deploy the frontend
   image:
-    repository: health-master-frontend
+    repository: health-master-web
     tag: latest
     pullPolicy: IfNotPresent
   service:
