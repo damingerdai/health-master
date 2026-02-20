@@ -1,13 +1,10 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { MailCheck, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-export default function SuccessPage() {
-  const searchParams = useSearchParams();
-  const email = searchParams.get('email') || 'your email address';
+export default async function Page({ searchParams }: { searchParams: { email?: string } }) {
+  const currentSearchParams = await searchParams;
+  const email = currentSearchParams.email || 'your email address';
 
   return (
     <div className="flex flex-col items-center gap-6 text-center animate-in fade-in zoom-in duration-500">
@@ -31,9 +28,9 @@ export default function SuccessPage() {
             Open your email
           </Link>
         </Button>
-        
+
         <p className="text-xs text-muted-foreground mt-2">
-          Didn&apos;t receive the email? Check your spam folder or 
+          Didn&apos;t receive the email? Check your spam folder or
           <Link href="/forgot-password" title="Try again" className="ml-1 text-primary hover:underline font-medium">
             try again
           </Link>
@@ -41,8 +38,8 @@ export default function SuccessPage() {
       </div>
 
       <div className="mt-4">
-        <Link 
-          href="/login" 
+        <Link
+          href="/login"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-all group"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
