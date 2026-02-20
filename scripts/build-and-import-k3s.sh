@@ -8,7 +8,7 @@ echo "Building backend image: health-master:${sha}"
 podman build -t health-master:${sha} .
 
 echo "Building frontend image: health-master-web:${sha}"
-podman build -f web/Dockerfile -t health-master-web:${sha} ./web/
+podman build -f web/Containerfile -t health-master-web:${sha} ./web/
 
 echo "Importing health-master:${sha} into k3s..."
 podman save -o health-master-${sha}.tar health-master:${sha}
