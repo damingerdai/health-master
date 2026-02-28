@@ -21,7 +21,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.17.0
 	github.com/swaggo/files v1.0.1
-	github.com/swaggo/gin-swagger v1.6.0
+	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.3
 	github.com/xuri/excelize/v2 v2.8.1
 	go.uber.org/zap v1.27.0
