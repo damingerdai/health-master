@@ -22,7 +22,7 @@ require (
 	github.com/spf13/viper v1.17.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
-	github.com/swaggo/swag v1.16.3
+	github.com/swaggo/swag v1.16.6
 	github.com/xuri/excelize/v2 v2.8.1
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.45.0
@@ -92,6 +92,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
+	golang.org/x/mod v0.29.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/sync v0.18.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
