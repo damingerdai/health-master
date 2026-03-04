@@ -7,6 +7,8 @@ import (
 	"html/template"
 	"net/smtp"
 	"time"
+
+	"github.com/go-mail/mail/v2"
 )
 
 //go:embed templates/*.html
@@ -62,5 +64,43 @@ func (m *Mailer) SendResetPassword(toEmail, env, link string) error {
 		return fmt.Errorf("failed to send email via smtp: %w", err)
 	}
 
+	return nil
+}
+
+func (m *Mailer) SendResetPasswordV2(toEmail, env, link string) error {
+	data := ResetPasswordData{
+		Env:  env,
+		Link: link,
+		Year: time.Now().Year(),
+	}
+
+	tmpl, err := template.ParseFS(templateFS, "templates/reset_password.html")
+	if err != nil {
+		return fmt.Errorf("failed to parse template: %w", err)
+	}
+
+	var body bytes.Buffer
+	if err := tmpl.Execute(&body, data); err != nil {
+		return fmt.Errorf("failed to execute template: %w", err)
+	}
+
+	subject := "Subject: Reset your Health Master password"
+	msg := mail.NewMessage()
+	msg.SetHeader("From", m.from)
+	msg.SetHeader("To", toEmail)
+	msg.SetHeader("Subject", subject)
+	msg.SetBody("text/html", body.String())
+	portInt := 587 // 或者 465
+	if m.port == "465" {
+		portInt = 465
+	}
+	d := mail.NewDialer(m.host, portInt, m.from, m.password)
+
+	if portInt == 465 {
+		d.SSL = true
+	}
+	if err := d.DialAndSend(msg); err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
 	return nil
 }
