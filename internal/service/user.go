@@ -125,16 +125,20 @@ func (userService *UserService) ResetPassword(ctx context.Context, email string,
 
 	tokenRecord, err := userService.tokenRecordRepository.ConsumeToken(ctx, rawToken, contants.TokenCategoryPasswordReset)
 	if err != nil {
+		global.Logger.Error("fail to consume token", zap.String("rawToken", rawToken), zap.Error(err))
 		return nil, fmt.Errorf("invalid or expired token: %w", err)
 	}
 	user, err = userService.userRepository.FindByEmail(ctx, email)
 	if err != nil {
+		global.Logger.Error("fail to find user by email", zap.String("email", email), zap.Error(err))
 		return nil, err
 	}
 	if user == nil {
+		global.Logger.Error("user not found", zap.String("email", email))
 		return nil, fmt.Errorf("invalid or expired token")
 	}
 	if tokenRecord.UserID.String() != user.Id {
+		global.Logger.Error("token user id not match user id", zap.String("tokenUserId", tokenRecord.UserID.String()), zap.String("userId", user.Id))
 		return nil, fmt.Errorf("invalid or expired token")
 	}
 	user.Password = hashedPassword

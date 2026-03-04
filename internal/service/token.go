@@ -31,11 +31,22 @@ func (ts *TokenService) CreateToken(ctx context.Context, username string, passwo
 	if err != nil {
 		return nil, err
 	}
+	if user == nil {
+		user, err = ts.userRepository.FindByEmail(ctx, username)
+		if err != nil {
+			return nil, err
+		}
+		if user == nil {
+			return nil, errors.New("user not found")
+		}
+	}
+
 	global.Logger.Info("founded user", zap.String("username", username), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
-	if user == nil || user.Id == "" || user.Password != util.GetMd5Hash(password) {
+	if user.Password != util.GetMd5Hash(password) {
 		global.Logger.Error("username or password error", zap.String("username", username), zap.String("password", password), zap.String("hashedPassword", util.GetMd5Hash(password)))
 		return nil, errors.New("username or password error")
 	}
+	global.Logger.Info("founded user", zap.String("username", username), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
 	var userKey = fmt.Sprintf("token-user-%s", user.Id)
 	result, err := redisService.Get(ctx, userKey)
 	if err == redis.Nil {

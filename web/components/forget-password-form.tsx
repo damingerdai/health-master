@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { Loader2Icon, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { forgetPassword } from './actions/forget-password';
 
 // Schema focusing on email validation
 const forgetPasswordSchema = z.object({
@@ -48,10 +49,7 @@ export function ForgetPasswordForm({
         {...props}
         onSubmit={form.handleSubmit(async (data: ForgetPasswordData) => {
           try {
-            // Replace with your actual password reset logic/API call
-            // e.g., await api.auth.requestPasswordReset(data.email);
-
-            await new Promise((resolve) => setTimeout(resolve, 1500)); // Mock delay 
+            await forgetPassword(data.email);
             toast.success('Check your email', {
               description: 'We have sent a password reset link to your email address.',
               position: 'top-right'

@@ -31,7 +31,7 @@ export default async function Page({ searchParams }: { searchParams: { email?: s
 
         <p className="text-xs text-muted-foreground mt-2">
           Didn&apos;t receive the email? Check your spam folder or
-          <Link href="/forgot-password" title="Try again" className="ml-1 text-primary hover:underline font-medium">
+          <Link href="/forget-password" title="Try again" className="ml-1 text-primary hover:underline font-medium">
             try again
           </Link>
         </p>
