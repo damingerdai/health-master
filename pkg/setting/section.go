@@ -14,6 +14,7 @@ type ServerSettingS struct {
 	HttpPort     string
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
+	FrontendURL  string
 }
 
 type DatabaseSettingS struct {

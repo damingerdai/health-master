@@ -3,6 +3,8 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
@@ -41,19 +43,40 @@ func CreateResetPassword(c *gin.Context) {
 	// Here you would typically send the reset link via email to the user.
 	// For this example, we'll just log the token.
 	global.Logger.Info("Password reset link (token):", zap.String("token", resetPasswordToken))
-	go func(email, token string) {
-		resetLink := fmt.Sprintf("https://health-master.damingerdai.com/reset?token=%s", token)
-		currentEnv := "staging"
-		err := global.Mailer.SendResetPassword(email, currentEnv, resetLink)
-		if err != nil {
-			global.Logger.Error("fail to send reset password email", zap.Error(err), zap.String("email", email), zap.String("tolen", resetPasswordToken))
-			return
-		}
-		global.Logger.Info("send reset password email", zap.String("email", email), zap.String("tolen", resetPasswordToken))
-	}(input.Email, resetPasswordToken)
+	targetEmail := input.Email
+	targetToken := resetPasswordToken
+	go sendResetPasswordEmail(targetEmail, targetToken)
 	c.JSON(http.StatusAccepted, gin.H{
 		"message": "If the email exists, a password reset link has been sent.",
 	})
+}
+
+func sendResetPasswordEmail(email, token string) {
+	defer func() {
+		if r := recover(); r != nil {
+			global.Logger.Error("Recovered from panic in sendResetPasswordEmail",
+				zap.Any("panic", r),
+				zap.String("email", email),
+			)
+		}
+	}()
+	frontendURL := strings.TrimRight(global.ServerSetting.FrontendURL, "/")
+	resetLink := fmt.Sprintf("%s/reset?token=%s", frontendURL, token)
+	currentEnv := "staging"
+	maxRetries := 3
+	var err error
+	for i := range maxRetries {
+		err = global.Mailer.SendResetPassword(email, currentEnv, resetLink)
+		if err == nil {
+			global.Logger.Info("Send reset email success", zap.String("email", email))
+			return
+		}
+		if i < maxRetries-1 {
+			time.Sleep(time.Second * time.Duration(i+1))
+		}
+	}
+
+	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token))
 }
 
 // @Summary		verify password reset token
