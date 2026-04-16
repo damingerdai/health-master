@@ -61,7 +61,7 @@ func sendResetPasswordEmail(email, token string) {
 		}
 	}()
 	frontendURL := strings.TrimRight(global.ServerSetting.FrontendURL, "/")
-	resetLink := fmt.Sprintf("%s/reset?token=%s", frontendURL, token)
+	resetLink := fmt.Sprintf("%s/reset-password?token=%s", frontendURL, token)
 	currentEnv := "staging"
 	maxRetries := 3
 	var err error
@@ -76,7 +76,7 @@ func sendResetPasswordEmail(email, token string) {
 		}
 	}
 
-	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token))
+	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink))
 }
 
 // @Summary		verify password reset token
