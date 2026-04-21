@@ -12,6 +12,13 @@ var (
 	UnauthorizedTokenGenerate = NewError(10000007, "Authentication Failed: Token Generation Failed")
 	TooManyRequests           = NewError(10000009, "Too Many Requests")
 	NotImplemented            = NewError(10000010, "Not Implemented")
+	FailedToCreatePasswordResetToken = NewError(10000011, "Failed to Create Password Reset Token")
+	InvalidOrExpiredToken            = NewError(10000012, "Invalid or Expired Token")
+	ConfirmPasswordCannotBeEmpty     = NewError(10000013, "Confirm Password Cannot Be Empty")
+	PasswordsDoNotMatch              = NewError(10000014, "Passwords Do Not Match")
+	FailedToResetPassword            = NewError(10000015, "Failed to Reset Password")
+	PasswordResetEmailSent           = NewError(10000016, "If the email exists, a password reset link has been sent.")
+	PasswordResetSuccessfully        = NewError(10000017, "Password Reset Successfully")
 
 	CreateUserError             = NewError(20000001, "Failed to Create User")
 	CreateUplicateUserNameError = NewError(20000002, "Username Already Exists")

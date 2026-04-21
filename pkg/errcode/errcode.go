@@ -40,11 +40,13 @@ func (e *Error) Error() string {
 
 func (e *Error) StatusCode() int {
 	switch e.Code() {
-	case Success.Code():
-		return http.StatusOK
-	case ServerError.Code():
-		return http.StatusInternalServerError
 	case InvalidParams.Code():
+		fallthrough
+	case InvalidOrExpiredToken.Code():
+		fallthrough
+	case ConfirmPasswordCannotBeEmpty.Code():
+		fallthrough
+	case PasswordsDoNotMatch.Code():
 		return http.StatusBadRequest
 	case UnauthorizedAuthNotExist.Code():
 		fallthrough
@@ -58,6 +60,18 @@ func (e *Error) StatusCode() int {
 		return http.StatusTooManyRequests
 	case NotFound.Code():
 		return http.StatusNotFound
+	case PasswordResetEmailSent.Code():
+		return http.StatusAccepted
+	case Success.Code():
+		fallthrough
+	case PasswordResetSuccessfully.Code():
+		return http.StatusOK
+	case ServerError.Code():
+		fallthrough
+	case FailedToCreatePasswordResetToken.Code():
+		fallthrough
+	case FailedToResetPassword.Code():
+		return http.StatusInternalServerError
 	}
 
 	return http.StatusInternalServerError

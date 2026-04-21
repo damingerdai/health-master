@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
@@ -10,6 +9,8 @@ import (
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/internal/service"
+	"github.com/damingerdai/health-master/pkg/errcode"
+	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -25,9 +26,11 @@ import (
 // @Failure		500					{object}	map[string]interface{}					"internal server error"
 // @Router			/api/v1/password-resets [post]
 func CreateResetPassword(c *gin.Context) {
+	var err error
 	var input model.RequestResetInput
+	res := response.NewResponse(c)
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		res.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 
@@ -37,7 +40,7 @@ func CreateResetPassword(c *gin.Context) {
 	resetPasswordToken, err := tokenService.CreatePasswordResetToken(c, input.Email)
 	if err != nil {
 		global.Logger.Error("fail to create password reset token", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create password reset token"})
+		res.ToErrorResponse(errcode.FailedToCreatePasswordResetToken)
 		return
 	}
 	// Here you would typically send the reset link via email to the user.
@@ -46,9 +49,7 @@ func CreateResetPassword(c *gin.Context) {
 	targetEmail := input.Email
 	targetToken := resetPasswordToken
 	go sendResetPasswordEmail(targetEmail, targetToken)
-	c.JSON(http.StatusAccepted, gin.H{
-		"message": "If the email exists, a password reset link has been sent.",
-	})
+	res.ToResponse(errcode.PasswordResetEmailSent)
 }
 
 func sendResetPasswordEmail(email, token string) {
@@ -91,15 +92,16 @@ func sendResetPasswordEmail(email, token string) {
 // @Router			/api/v1/password-resets/{token} [get]
 func VerifyResetToken(c *gin.Context) {
 	token := c.Param("token")
+	res := response.NewResponse(c)
 	srv := service.New(global.DBEngine, global.Logger)
 	tokenService := srv.TokenService
 
 	email, err := tokenService.VerifyPasswordResetToken(c, token)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid or expired token"})
+		res.ToErrorResponse(errcode.InvalidOrExpiredToken)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"email": email})
+	res.ToResponse(gin.H{"email": email})
 }
 
 // @Summary		reset password
@@ -114,29 +116,31 @@ func VerifyResetToken(c *gin.Context) {
 // @Failure		500							{object}	map[string]interface{}			"internal server error"
 // @Router			/api/v1/password-resets/{token} [put]
 func ResetPassword(c *gin.Context) {
+	var err error
 	var input model.ResetPasswordSubmitInput
+	res := response.NewResponse(c)
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		res.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
 	if input.ConfirmPassword == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Confirm password cannot be empty"})
+		res.ToErrorResponse(errcode.ConfirmPasswordCannotBeEmpty)
 		return
 	}
 	if input.Password != input.ConfirmPassword {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+		res.ToErrorResponse(errcode.PasswordsDoNotMatch)
 		return
 	}
 	token := c.Param("token")
 	srv := service.New(global.DBEngine, global.Logger)
 	userService := srv.UserService
 
-	_, err := userService.ResetPassword(c.Request.Context(), input.Email, token, input.Password)
+	_, err = userService.ResetPassword(c.Request.Context(), input.Email, token, input.Password)
 	if err != nil {
 		global.Logger.Error("Failed to reset password", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset password"})
+		res.ToErrorResponse(errcode.FailedToResetPassword)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Password reset successfully"})
+	res.ToResponse(errcode.PasswordResetSuccessfully)
 }
