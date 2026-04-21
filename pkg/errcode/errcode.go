@@ -15,7 +15,7 @@ var codes = map[int]string{}
 
 func NewError(code int, message string) *Error {
 	if _, ok := codes[code]; ok {
-		panic(fmt.Sprintf("错误码 %d 已经存在，请更换一个", code))
+		panic(fmt.Sprintf("error code %d already exists, please use another one", code))
 	}
 	codes[code] = message
 
@@ -35,7 +35,7 @@ func (e *Error) Details() []string {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("错误码: %d, 错误信息: %s", e.code, e.message)
+	return fmt.Sprintf("error code: %d, message: %s", e.code, e.message)
 }
 
 func (e *Error) StatusCode() int {
