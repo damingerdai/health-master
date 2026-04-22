@@ -68,10 +68,12 @@ func CreateUserBloodPressure(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			Authorization	header	string	true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			page			query	string	false	"page"
+//	@Param			limit			query	string	false	"limit"
 //	@Security		BearerAuth
-//	@Success		200	{arrary}	model.UserBloodPressure	"sucess"
-//	@Failure		400	{object}	errcode.Error			"bad request error"
-//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Success		200	{object}	model.ListResponse[model.UserBloodPressure]	"sucess"
+//	@Failure		400	{object}	errcode.Error								"bad request error"
+//	@Failure		500	{object}	errcode.Error								"internal server error"
 //	@Router			/api/v1/user_blood_pressures [post]
 func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
@@ -97,7 +99,7 @@ func ListBloodPressures(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path	string	true	"user blood pressure id"
 //	@Security		BearerAuth
-//	@Success		200	{arrary}	model.SuccessReponseSwagger	"sucess"
+//	@Success		200	{array}		model.SuccessReponseSwagger	"sucess"
 //	@Failure		400	{object}	errcode.Error				"bad request error"
 //	@Failure		500	{object}	errcode.Error				"internal server error"
 //	@Router			/api/v1/user_blood_pressure/{id} [post]
@@ -113,6 +115,19 @@ func DeleteBloodPressure(c *gin.Context) {
 	}
 }
 
+// download user blood pressure excel godoc
+//
+//	@Summary		download user blood pressure excel
+//	@Description	download user blood pressure excel
+//	@Tags			user_blood_pressure
+//	@Accept			json
+//	@Produce		application/octet-stream
+//	@Param			id	path	string	true	"user blood pressure id"
+//	@Security		BearerAuth
+//	@Success		200	{file}		binary			"excel file"
+//	@Failure		400	{object}	errcode.Error	"bad request error"
+//	@Failure		500	{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/user_blood_pressure/{id}/export [get]
 func DowonloadBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine, global.Logger)

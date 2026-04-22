@@ -16,10 +16,10 @@ import (
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerAuth
-//	@Success		200	{object}	model.Role		"sucess"
+//	@Success		200	{array}		model.Role		"sucess"
 //	@Failure		400	{object}	errcode.Error	"bad request error"
 //	@Failure		500	{object}	errcode.Error	"internal server error"
-//	@Router			/api/v1/roles [get])
+//	@Router			/api/v1/roles [get]
 func ListRoles(c *gin.Context) {
 	res := response.NewResponse(c)
 	srv := service.New(global.DBEngine, global.Logger)

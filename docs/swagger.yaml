@@ -1,6 +1,24 @@
 definitions:
   errcode.Error:
     type: object
+  model.ListResponse-model_UserBloodPressure:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.UserBloodPressure'
+        type: array
+    type: object
+  model.ListResponse-model_WeightRecordVO:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.WeightRecordVO'
+        type: array
+    type: object
   model.RequestResetInput:
     properties:
       email:
@@ -30,6 +48,11 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  model.SuccessReponseSwagger:
+    properties:
+      success:
+        type: boolean
     type: object
   model.User:
     properties:
@@ -83,12 +106,118 @@ definitions:
       userId:
         type: string
     type: object
+  model.UserHeight:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      height:
+        type: number
+      id:
+        type: string
+      recordDate:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - userId
+    type: object
+  model.UserHeightVO:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      height:
+        type: number
+      id:
+        type: string
+      recordDate:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+      userId:
+        type: string
+    required:
+    - userId
+    type: object
+  model.UserTemperature:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      notes:
+        type: string
+      recordDate:
+        type: string
+      temperature:
+        type: number
+      unit:
+        description: e.g. "C" or "F"
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+      userId:
+        type: string
+    type: object
   model.UserToken:
     properties:
       accessToken:
         type: string
       expired:
         type: string
+    type: object
+  model.WeightRecord:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      recordDate:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+      weight:
+        maximum: 500
+        type: number
+    required:
+    - weight
+    type: object
+  model.WeightRecordVO:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      recordDate:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+      userId:
+        type: string
+      weight:
+        maximum: 500
+        type: number
+    required:
+    - weight
     type: object
 info:
   contact: {}
@@ -97,6 +226,38 @@ info:
   title: health master api
   version: "1.0"
 paths:
+  /api/v1/height:
+    post:
+      consumes:
+      - application/json
+      description: create a new record for user height
+      parameters:
+      - description: create a user height record
+        in: body
+        name: user_height
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserHeight'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.UserHeightVO'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: create a user height record
+      tags:
+      - user_height
   /api/v1/password-resets:
     post:
       consumes:
@@ -112,21 +273,18 @@ paths:
       produces:
       - application/json
       responses:
-        "202":
+        "200":
           description: password reset link sent
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
         "400":
           description: bad request error
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
         "500":
           description: internal server error
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
       summary: create a password reset request
       tags:
       - password-reset
@@ -147,18 +305,17 @@ paths:
         "200":
           description: masked email
           schema:
-            additionalProperties: true
+            additionalProperties:
+              type: string
             type: object
         "400":
           description: invalid or expired token
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
         "500":
           description: internal server error
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
       summary: verify password reset token
       tags:
       - password-reset
@@ -184,18 +341,15 @@ paths:
         "200":
           description: password reset successfully
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
         "400":
           description: bad request error
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
         "500":
           description: internal server error
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/errcode.Error'
       summary: reset password
       tags:
       - password-reset
@@ -210,7 +364,9 @@ paths:
         "200":
           description: sucess
           schema:
-            $ref: '#/definitions/model.Role'
+            items:
+              $ref: '#/definitions/model.Role'
+            type: array
         "400":
           description: bad request error
           schema:
@@ -224,6 +380,39 @@ paths:
       summary: get all roles
       tags:
       - roles
+  /api/v1/tmptoken:
+    post:
+      consumes:
+      - application/json
+      description: get a temporary token (1 minute expiry)
+      parameters:
+      - description: access token
+        in: query
+        name: accessToken
+        type: string
+      - default: Bearer <Add access token here>
+        description: Authorization token
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.UserToken'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: get tmp token
+      tags:
+      - token
   /api/v1/token:
     get:
       consumes:
@@ -319,6 +508,101 @@ paths:
       summary: create a user
       tags:
       - user
+  /api/v1/user-temperature:
+    post:
+      consumes:
+      - application/json
+      description: create a new record for user temperature
+      parameters:
+      - description: create a user temperature record
+        in: body
+        name: user_temperature
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserTemperature'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.UserTemperature'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: create a user temperature record
+      tags:
+      - user_temperature
+  /api/v1/user-temperature/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get a user temperature record by id
+      parameters:
+      - description: user temperature id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.UserTemperature'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: get a user temperature record
+      tags:
+      - user_temperature
+  /api/v1/user-temperatures:
+    get:
+      consumes:
+      - application/json
+      description: list all user temperature records for a user
+      parameters:
+      - description: user id
+        in: query
+        name: userId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            items:
+              $ref: '#/definitions/model.UserTemperature'
+            type: array
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: list all user temperature records
+      tags:
+      - user_temperature
   /api/v1/user/:
     get:
       consumes:
@@ -431,7 +715,9 @@ paths:
         "200":
           description: sucess
           schema:
-            type: arrary
+            items:
+              $ref: '#/definitions/model.SuccessReponseSwagger'
+            type: array
         "400":
           description: bad request error
           schema:
@@ -443,6 +729,37 @@ paths:
       security:
       - BearerAuth: []
       summary: delete a user blood pressure record
+      tags:
+      - user_blood_pressure
+  /api/v1/user_blood_pressure/{id}/export:
+    get:
+      consumes:
+      - application/json
+      description: download user blood pressure excel
+      parameters:
+      - description: user blood pressure id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: excel file
+          schema:
+            type: file
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: download user blood pressure excel
       tags:
       - user_blood_pressure
   /api/v1/user_blood_pressures:
@@ -457,13 +774,21 @@ paths:
         name: Authorization
         required: true
         type: string
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: sucess
           schema:
-            type: arrary
+            $ref: '#/definitions/model.ListResponse-model_UserBloodPressure'
         "400":
           description: bad request error
           schema:
@@ -477,6 +802,116 @@ paths:
       summary: list all user blood pressure for single user
       tags:
       - user_blood_pressure
+  /api/v1/weight-record:
+    post:
+      consumes:
+      - application/json
+      description: create a new weight record
+      parameters:
+      - description: create a weight record
+        in: body
+        name: weight_record
+        required: true
+        schema:
+          $ref: '#/definitions/model.WeightRecord'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.WeightRecord'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: create a weight record
+      tags:
+      - weight_record
+  /api/v1/weight-record/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete a weight record by id
+      parameters:
+      - description: weight record id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: delete a weight record
+      tags:
+      - weight_record
+  /api/v1/weight-records:
+    get:
+      consumes:
+      - application/json
+      description: list weight records with pagination
+      parameters:
+      - description: user id
+        in: query
+        name: userId
+        type: string
+      - description: access token
+        in: query
+        name: accessToken
+        type: string
+      - description: Authorization token
+        in: header
+        name: Authorization
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.ListResponse-model_WeightRecordVO'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: list weight records
+      tags:
+      - weight_record
   /ping:
     get:
       consumes:

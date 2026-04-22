@@ -14,6 +14,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// create a user temperature record godoc
+//
+//	@Summary		create a user temperature record
+//	@Description	create a new record for user temperature
+//	@Tags			user_temperature
+//	@Accept			json
+//	@Produce		json
+//	@Param			user_temperature	body	model.UserTemperature	true	"create a user temperature record"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.UserTemperature	"success"
+//	@Failure		400	{object}	errcode.Error			"bad request error"
+//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Router			/api/v1/user-temperature [post]
 func CreateUsersTemperatures(c *gin.Context) {
 	var userTemperature model.UserTemperature
 	resp := response.NewResponse(c)
@@ -48,6 +61,19 @@ func CreateUsersTemperatures(c *gin.Context) {
 	}
 }
 
+// get a user temperature record godoc
+//
+//	@Summary		get a user temperature record
+//	@Description	get a user temperature record by id
+//	@Tags			user_temperature
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"user temperature id"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.UserTemperature	"success"
+//	@Failure		400	{object}	errcode.Error			"bad request error"
+//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Router			/api/v1/user-temperature/{id} [get]
 func GetUsersTemperatures(c *gin.Context) {
 	id := c.Param("id")
 	resp := response.NewResponse(c)
@@ -68,6 +94,19 @@ func GetUsersTemperatures(c *gin.Context) {
 	}
 }
 
+// list all user temperature records godoc
+//
+//	@Summary		list all user temperature records
+//	@Description	list all user temperature records for a user
+//	@Tags			user_temperature
+//	@Accept			json
+//	@Produce		json
+//	@Param			userId	query	string	false	"user id"
+//	@Security		BearerAuth
+//	@Success		200	{array}		model.UserTemperature	"success"
+//	@Failure		400	{object}	errcode.Error			"bad request error"
+//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Router			/api/v1/user-temperatures [get]
 func ListUsersTemperatures(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine, global.Logger)

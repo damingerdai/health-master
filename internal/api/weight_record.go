@@ -13,6 +13,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// create a weight record godoc
+//
+//	@Summary		create a weight record
+//	@Description	create a new weight record
+//	@Tags			weight_record
+//	@Accept			json
+//	@Produce		json
+//	@Param			weight_record	body	model.WeightRecord	true	"create a weight record"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.WeightRecord	"success"
+//	@Failure		400	{object}	errcode.Error		"bad request error"
+//	@Failure		500	{object}	errcode.Error		"internal server error"
+//	@Router			/api/v1/weight-record [post]
 func AddWeightRecord(c *gin.Context) {
 	var weightRecord model.WeightRecord
 	resp := response.NewResponse(c)
@@ -33,6 +46,23 @@ func AddWeightRecord(c *gin.Context) {
 	resp.ToResponse(weightRecord)
 }
 
+// list weight records godoc
+//
+//	@Summary		list weight records
+//	@Description	list weight records with pagination
+//	@Tags			weight_record
+//	@Accept			json
+//	@Produce		json
+//	@Param			userId			query	string	false	"user id"
+//	@Param			accessToken		query	string	false	"access token"
+//	@Param			Authorization	header	string	false	"Authorization token"
+//	@Param			page			query	string	false	"page"
+//	@Param			limit			query	string	false	"limit"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.ListResponse[model.WeightRecordVO]	"success"
+//	@Failure		400	{object}	errcode.Error								"bad request error"
+//	@Failure		500	{object}	errcode.Error								"internal server error"
+//	@Router			/api/v1/weight-records [get]
 func ListWeightRecords(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine, global.Logger)
@@ -80,6 +110,19 @@ func ListWeightRecords(c *gin.Context) {
 	resp.ToResponse(res)
 }
 
+// delete a weight record godoc
+//
+//	@Summary		delete a weight record
+//	@Description	delete a weight record by id
+//	@Tags			weight_record
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"weight record id"
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}	"success"
+//	@Failure		400	{object}	errcode.Error			"bad request error"
+//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Router			/api/v1/weight-record/{id} [delete]
 func DeleteWeightRecord(c *gin.Context) {
 	resp := response.NewResponse(c)
 	service := service.New(global.DBEngine, global.Logger)

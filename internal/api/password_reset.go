@@ -21,9 +21,9 @@ import (
 // @Accept			json
 // @Produce		json
 // @Param			RequestResetInput	body		model.RequestResetInput	true	"email address"
-// @Success		202					{object}	map[string]interface{}					"password reset link sent"
-// @Failure		400					{object}	map[string]interface{}					"bad request error"
-// @Failure		500					{object}	map[string]interface{}					"internal server error"
+// @Success		200					{object}	errcode.Error							"password reset link sent"
+// @Failure		400					{object}	errcode.Error							"bad request error"
+// @Failure		500					{object}	errcode.Error							"internal server error"
 // @Router			/api/v1/password-resets [post]
 func CreateResetPassword(c *gin.Context) {
 	var err error
@@ -86,9 +86,9 @@ func sendResetPasswordEmail(email, token string) {
 // @Accept			json
 // @Produce		json
 // @Param			token	path		string	true	"password reset token"
-// @Success		200		{object}	map[string]interface{}	"masked email"
-// @Failure		400		{object}	map[string]interface{}	"invalid or expired token"
-// @Failure		500		{object}	map[string]interface{}	"internal server error"
+// @Success		200		{object}	map[string]string	"masked email"
+// @Failure		400		{object}	errcode.Error		"invalid or expired token"
+// @Failure		500		{object}	errcode.Error		"internal server error"
 // @Router			/api/v1/password-resets/{token} [get]
 func VerifyResetToken(c *gin.Context) {
 	token := c.Param("token")
@@ -111,9 +111,9 @@ func VerifyResetToken(c *gin.Context) {
 // @Produce		json
 // @Param			token						path		string							true	"password reset token"
 // @Param			ResetPasswordSubmitInput	body		model.ResetPasswordSubmitInput	true	"new password and confirmation"
-// @Success		200							{object}	map[string]interface{}			"password reset successfully"
-// @Failure		400							{object}	map[string]interface{}			"bad request error"
-// @Failure		500							{object}	map[string]interface{}			"internal server error"
+// @Success		200							{object}	errcode.Error					"password reset successfully"
+// @Failure		400							{object}	errcode.Error					"bad request error"
+// @Failure		500							{object}	errcode.Error					"internal server error"
 // @Router			/api/v1/password-resets/{token} [put]
 func ResetPassword(c *gin.Context) {
 	var err error

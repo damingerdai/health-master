@@ -10,6 +10,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// create a user height record godoc
+//
+//	@Summary		create a user height record
+//	@Description	create a new record for user height
+//	@Tags			user_height
+//	@Accept			json
+//	@Produce		json
+//	@Param			user_height	body	model.UserHeight	true	"create a user height record"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.UserHeightVO	"success"
+//	@Failure		400	{object}	errcode.Error		"bad request error"
+//	@Failure		500	{object}	errcode.Error		"internal server error"
+//	@Router			/api/v1/height [post]
 func CreateUserHeight(c *gin.Context) {
 	var err error
 	var userHeight model.UserHeight

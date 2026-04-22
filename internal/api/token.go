@@ -105,6 +105,19 @@ func ParseToken(c *gin.Context) {
 	res.ToResponse(user)
 }
 
+// get tmp token godoc
+//
+//	@Summary		get tmp token
+//	@Description	get a temporary token (1 minute expiry)
+//	@Tags			token
+//	@Accept			json
+//	@Produce		json
+//	@Param			accessToken		query		string			false	"access token"
+//	@Param			Authorization	header		string			false	"Authorization token"	default(Bearer <Add access token here>)
+//	@Success		200				{object}	model.UserToken	"success"
+//	@Failure		400				{object}	errcode.Error	"bad request error"
+//	@Failure		500				{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/tmptoken [post]
 func GetTmpToken(c *gin.Context) {
 	res := response.NewResponse(c)
 

@@ -16,6 +16,57 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/height": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create a new record for user height",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_height"
+                ],
+                "summary": "create a user height record",
+                "parameters": [
+                    {
+                        "description": "create a user height record",
+                        "name": "user_height",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserHeight"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserHeightVO"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/password-resets": {
             "post": {
                 "description": "send a password reset link to the user's email",
@@ -41,25 +92,22 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "202": {
+                    "200": {
                         "description": "password reset link sent",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     },
                     "400": {
                         "description": "bad request error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     },
                     "500": {
                         "description": "internal server error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     }
                 }
@@ -92,21 +140,21 @@ const docTemplate = `{
                         "description": "masked email",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": true
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "invalid or expired token",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     },
                     "500": {
                         "description": "internal server error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     }
                 }
@@ -145,22 +193,19 @@ const docTemplate = `{
                     "200": {
                         "description": "password reset successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     },
                     "400": {
                         "description": "bad request error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     },
                     "500": {
                         "description": "internal server error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/errcode.Error"
                         }
                     }
                 }
@@ -188,7 +233,60 @@ const docTemplate = `{
                     "200": {
                         "description": "sucess",
                         "schema": {
-                            "$ref": "#/definitions/model.Role"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Role"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmptoken": {
+            "post": {
+                "description": "get a temporary token (1 minute expiry)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "token"
+                ],
+                "summary": "get tmp token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access token",
+                        "name": "accessToken",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserToken"
                         }
                     },
                     "400": {
@@ -334,6 +432,157 @@ const docTemplate = `{
                         "description": "sucess",
                         "schema": {
                             "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-temperature": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create a new record for user temperature",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_temperature"
+                ],
+                "summary": "create a user temperature record",
+                "parameters": [
+                    {
+                        "description": "create a user temperature record",
+                        "name": "user_temperature",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserTemperature"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserTemperature"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-temperature/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get a user temperature record by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_temperature"
+                ],
+                "summary": "get a user temperature record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user temperature id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserTemperature"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-temperatures": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "list all user temperature records for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_temperature"
+                ],
+                "summary": "list all user temperature records",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserTemperature"
+                            }
                         }
                     },
                     "400": {
@@ -532,7 +781,59 @@ const docTemplate = `{
                     "200": {
                         "description": "sucess",
                         "schema": {
-                            "type": "arrary"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.SuccessReponseSwagger"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user_blood_pressure/{id}/export": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "download user blood pressure excel",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "user_blood_pressure"
+                ],
+                "summary": "download user blood pressure excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user blood pressure id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "excel file",
+                        "schema": {
+                            "type": "file"
                         }
                     },
                     "400": {
@@ -576,13 +877,198 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "sucess",
                         "schema": {
-                            "type": "arrary"
+                            "$ref": "#/definitions/model.ListResponse-model_UserBloodPressure"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/weight-record": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create a new weight record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weight_record"
+                ],
+                "summary": "create a weight record",
+                "parameters": [
+                    {
+                        "description": "create a weight record",
+                        "name": "weight_record",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WeightRecord"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.WeightRecord"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/weight-record/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "delete a weight record by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weight_record"
+                ],
+                "summary": "delete a weight record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "weight record id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/weight-records": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "list weight records with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weight_record"
+                ],
+                "summary": "list weight records",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "access token",
+                        "name": "accessToken",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.ListResponse-model_WeightRecordVO"
                         }
                     },
                     "400": {
@@ -628,6 +1114,34 @@ const docTemplate = `{
         "errcode.Error": {
             "type": "object"
         },
+        "model.ListResponse-model_UserBloodPressure": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserBloodPressure"
+                    }
+                }
+            }
+        },
+        "model.ListResponse-model_WeightRecordVO": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.WeightRecordVO"
+                    }
+                }
+            }
+        },
         "model.RequestResetInput": {
             "type": "object",
             "required": [
@@ -670,6 +1184,14 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.SuccessReponseSwagger": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
                 }
             }
         },
@@ -750,6 +1272,103 @@ const docTemplate = `{
                 }
             }
         },
+        "model.UserHeight": {
+            "type": "object",
+            "required": [
+                "userId"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recordDate": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserHeightVO": {
+            "type": "object",
+            "required": [
+                "userId"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recordDate": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserTemperature": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "recordDate": {
+                    "type": "string"
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "unit": {
+                    "description": "e.g. \"C\" or \"F\"",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "model.UserToken": {
             "type": "object",
             "properties": {
@@ -758,6 +1377,69 @@ const docTemplate = `{
                 },
                 "expired": {
                     "type": "string"
+                }
+            }
+        },
+        "model.WeightRecord": {
+            "type": "object",
+            "required": [
+                "weight"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recordDate": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number",
+                    "maximum": 500
+                }
+            }
+        },
+        "model.WeightRecordVO": {
+            "type": "object",
+            "required": [
+                "weight"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recordDate": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number",
+                    "maximum": 500
                 }
             }
         }
