@@ -28,6 +28,7 @@ const schemas = z
       .string()
       .min(3, 'Username must be at least 3 characters')
       .regex(/^[A-Za-z0-9]+$/, 'Only letters and numbers allowed'),
+    email: z.string().email('Invalid email address'),
     firstName: z.string().min(1, 'Required'),
     lastName: z.string().min(1, 'Required'),
     gender: z.enum(['M', 'F', 'U']),
@@ -53,6 +54,7 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
     resolver: zodResolver(schemas),
     defaultValues: {
       username: '',
+      email: '',
       firstName: '',
       lastName: '',
       gender: 'U',
@@ -98,6 +100,18 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl><Input placeholder="johndoe" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl><Input placeholder="m@example.com" type="email" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}
