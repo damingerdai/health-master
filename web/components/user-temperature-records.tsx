@@ -81,17 +81,20 @@ export const UserTemperatureRecords: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {records?.length === 0 ? (
+            {!records || records.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-[300px] text-center">
-                  <div className="flex flex-col items-center justify-center gap-3">
-                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 dark:bg-orange-900/20">
-                      <Thermometer className="h-8 w-8 text-orange-500" strokeWidth={1.5} />
+                <TableCell colSpan={4} className="h-[400px] text-center">
+                  <div className="flex flex-col items-center justify-center gap-4 animate-in fade-in zoom-in duration-500">
+                    <div className="relative">
+                      <div className="absolute -inset-4 rounded-full bg-orange-100/50 dark:bg-orange-900/10 animate-pulse" />
+                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800">
+                        <Thermometer className="h-10 w-10 text-orange-500" strokeWidth={1.5} />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="font-medium text-slate-900">No temperature records yet</p>
-                      <p className="text-sm text-muted-foreground">
-                        Keep track of your body temperature for health monitoring.
+                    <div className="space-y-2 max-w-[280px] mx-auto">
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">No records found</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Start tracking to monitor your health trends.
                       </p>
                     </div>
                     <Button variant="outline" size="sm" asChild className="mt-2">

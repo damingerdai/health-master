@@ -81,15 +81,18 @@ export const BloodPressureTable: React.FC = () => {
           <TableBody>
             {bloodPressures.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-[300px] text-center">
-                  <div className="flex flex-col items-center justify-center gap-3">
-                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-900/20">
-                      <HeartPulse className="h-8 w-8 text-rose-500" strokeWidth={1.5} />
+                <TableCell colSpan={5} className="h-[400px] text-center">
+                  <div className="flex flex-col items-center justify-center gap-4 animate-in fade-in zoom-in duration-500">
+                    <div className="relative">
+                      <div className="absolute -inset-4 rounded-full bg-rose-100/50 dark:bg-rose-900/10 animate-pulse" />
+                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800">
+                        <HeartPulse className="h-10 w-10 text-rose-500" strokeWidth={1.5} />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="font-medium text-slate-900">No records yet</p>
-                      <p className="text-sm text-muted-foreground">
-                        Start tracking your blood pressure to see your health trends.
+                    <div className="space-y-2 max-w-[280px] mx-auto">
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">No readings found</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Start tracking to monitor your health trends.
                       </p>
                     </div>
                     <Button variant="outline" size="sm" asChild className="mt-2">
