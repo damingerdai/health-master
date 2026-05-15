@@ -48,8 +48,9 @@ type LoggerSettingS struct {
 type SmtpSettingS struct {
 	Host     string
 	Port     string
-	Address  string
+	Username string
 	Password string
+	From     string
 }
 
 type Settings struct {

@@ -76,8 +76,11 @@ func sendResetPasswordEmail(email, token string) {
 			time.Sleep(time.Second * time.Duration(i+1))
 		}
 	}
-
-	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink))
+	if err != nil {
+		global.Logger.Error("Failed to send reset password email after retries", zap.String("email", email), zap.Error(err))
+	} else {
+		global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink))
+	}
 }
 
 // @Summary		verify password reset token

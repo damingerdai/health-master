@@ -26,5 +26,6 @@ Logger:
 Smtp:
   Host:
   Port:
-  Address:
+  Username:
   Password:
+  From:

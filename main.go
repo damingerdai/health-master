@@ -158,8 +158,8 @@ func setupMailer() error {
 	if global.SmtpSetting.Host == "" {
 		return errors.New("SMTP_HOST is required")
 	}
-	mailler := mail.NewMailer(global.SmtpSetting.Host, global.SmtpSetting.Port, global.SmtpSetting.Address, global.SmtpSetting.Password)
-	global.Mailer = mailler
+	mailer := mail.NewMailer(global.SmtpSetting.Host, global.SmtpSetting.Port, global.SmtpSetting.Username, global.SmtpSetting.Password, global.SmtpSetting.From)
+	global.Mailer = mailer
 
 	return nil
 }
