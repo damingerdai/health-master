@@ -1,7 +1,6 @@
-version: "3"
 services:
   pg:
-    image: postgres:17.5-alpine3.21
+    image: postgres:18.4-alpine3.23
     container_name: "health-master-pg"
     ports:
       - 5432:5432
@@ -34,7 +33,7 @@ services:
     depends_on:
       - pg
   redis:
-    image: redis:8.0.6-alpine3.21
+    image: redis:8.8-m03-alpine3.23
     container_name: "health-master-redis"
     ports:
       - 6379:6379
@@ -44,7 +43,7 @@ services:
     networks:
       - daming-health-master-network
   kuma:
-    image: louislam/uptime-kuma:1.23.17-alpine
+    image: louislam/uptime-kuma:2.3.2-slim
     restart: unless-stopped
     ports:
       - "3001:3001"
@@ -53,13 +52,13 @@ services:
     container_name: uptime-kuma
     networks:
       - daming-health-master-network
-  pgweb:
-    image: sosedoff/pgweb:0.16.2
-    container_name: pgweb
-    ports:
-      - 8081:8081
-    networks:
-      - daming-health-master-network
+  # pgweb:
+  #   image: sosedoff/pgweb:0.16.2
+  #   container_name: pgweb
+  #   ports:
+  #     - 8081:8081
+  #   networks:
+  #     - daming-health-master-network
 
 volumes:
   daming-health-master-volume:
