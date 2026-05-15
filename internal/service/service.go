@@ -17,6 +17,7 @@ type srv struct {
 	WeightRecordService      *WeightRecordService
 	UserHeightService        *UserHeightService
 	UserTemperatureService   *UsersTemperaturesService
+	StatisticsService        *StatisticsService
 }
 
 func New(db db.Connection, logger *zap.Logger) *srv {
@@ -42,5 +43,6 @@ func New(db db.Connection, logger *zap.Logger) *srv {
 		WeightRecordService:      NewWeightRecordService(weigthRecordRepository, userRepository),
 		UserHeightService:        NewUserHeightService(userRepository, userHeightRepository),
 		UserTemperatureService:   NewUsersTemperaturesService(*userTemperatureRepository),
+		StatisticsService:        NewStatisticsService(userBloodPressureRepository, weigthRecordRepository, userTemperatureRepository, userHeightRepository),
 	}
 }
