@@ -63,6 +63,7 @@ func NewRouter() *gin.Engine {
 		apiV1.GET("/user-temperature/:id", api.GetUsersTemperatures)
 		apiV1.GET("/user-temperatures", api.ListUsersTemperatures)
 
+		apiV1.GET("/statistics/summary", api.GetStatisticsSummary)
 	}
 
 	resetPasswordApiV1 := r.Group("/api/v1")

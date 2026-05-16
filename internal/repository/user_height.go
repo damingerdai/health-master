@@ -29,3 +29,29 @@ func (repos *UserHeightRepository) Create(ctx context.Context, height *model.Use
 
 	return nil
 }
+
+func (repos *UserHeightRepository) List(ctx context.Context, userId string) ([]*model.UserHeightVO, error) {
+	statement := `
+		SELECT id, user_id, height, record_date
+		FROM user_heights
+		WHERE user_id = $1
+		ORDER BY record_date DESC
+	`
+	rows, err := repos.db.Query(ctx, statement, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var res []*model.UserHeightVO
+	for rows.Next() {
+		var h model.UserHeight
+		err := rows.Scan(&h.Id, &h.UserId, &h.Height, &h.RecordDate)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, &model.UserHeightVO{UserHeight: h})
+	}
+
+	return res, nil
+}
