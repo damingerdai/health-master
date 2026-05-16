@@ -39,8 +39,7 @@ export const WeightTable: React.FC = () => {
         code: number;
         data: WeightRecord[];
       }>({ url: '/api/user-weight-records' });
-
-      setWeightRecords(res.code === 200 ? res.data : []);
+      setWeightRecords(res.data || []);
     } catch (error) {
       console.error('Failed to fetch weight records:', error);
     } finally {
@@ -60,6 +59,7 @@ export const WeightTable: React.FC = () => {
   }, [loadWeightRecords]);
 
   if (loading) return <TablePlaceholder />;
+
 
   return (
     <div className="space-y-4">
