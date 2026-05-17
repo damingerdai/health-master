@@ -33,5 +33,6 @@ data:
     Smtp:
       Host: {{ .Values.smtp.host }}
       Port: {{ .Values.smtp.port }}
-      Address: {{ .Values.smtp.address }}
-      Password: {{ .Values.smtp.password }}
+      Username: {{ .Values.smtp.username | quote }}
+      Password: {{ .Values.smtp.password | quote }}
+      From: {{ .Values.smtp.from | quote }}

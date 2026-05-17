@@ -48,8 +48,9 @@ logger:
 smtp:
   host: smtp.gmail.com
   port: 587
-  address: health-master@gmail.com
+  username: health-master@gmail.com
   password: health-master-password
+  from: health-master@gmail.com
 
 # Frontend configuration
 web:
@@ -69,6 +70,15 @@ web:
     requests:
       cpu: 256m
       memory: 512Mi
+  ingress:
+    enabled: false
+    hosts:
+      - host: health-master.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+    annotations: {}
 
 # Service configuration (for backend)
 service:
