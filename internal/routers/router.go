@@ -12,6 +12,7 @@ import (
 	"github.com/penglongli/gin-metrics/ginmetrics"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 var rule = limiter.LimiterBucketRule{
@@ -29,6 +30,7 @@ func NewRouter() *gin.Engine {
 	middleware.SetServices(services)
 
 	r := gin.New()
+	r.Use(otelgin.Middleware("health-master"))
 	m := ginmetrics.GetMonitor()
 	m.SetMetricPath("/metrics")
 	m.SetSlowTime(10)
