@@ -117,6 +117,10 @@ func (userService *UserService) FindByUserName(ctx context.Context, username str
 	return userService.userRepository.FindByUserName(ctx, username)
 }
 
+func (userService *UserService) Update(ctx context.Context, user *model.User) error {
+	return userService.userRepository.Update(ctx, user)
+}
+
 func (userService *UserService) ResetPassword(ctx context.Context, email string, rawToken string, newPassword string) (user *model.User, err error) {
 	hashedPassword := util.GetMd5Hash(newPassword)
 

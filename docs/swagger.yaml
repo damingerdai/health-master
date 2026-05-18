@@ -49,6 +49,29 @@ definitions:
       name:
         type: string
     type: object
+  model.StatisticsSummary:
+    properties:
+      bloodPressureTrend:
+        items:
+          $ref: '#/definitions/model.UserBloodPressure'
+        type: array
+      latestBloodPressure:
+        $ref: '#/definitions/model.UserBloodPressure'
+      latestHeight:
+        $ref: '#/definitions/model.UserHeightVO'
+      latestTemperature:
+        $ref: '#/definitions/model.UserTemperatureRecord'
+      latestWeight:
+        $ref: '#/definitions/model.WeightRecord'
+      temperatureTrend:
+        items:
+          $ref: '#/definitions/model.UserTemperature'
+        type: array
+      weightTrend:
+        items:
+          $ref: '#/definitions/model.WeightRecord'
+        type: array
+    type: object
   model.SuccessReponseSwagger:
     properties:
       success:
@@ -167,6 +190,28 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/model.User'
+      userId:
+        type: string
+    type: object
+  model.UserTemperatureRecord:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      notes:
+        type: string
+      recordDate:
+        type: string
+      temperature:
+        type: number
+      unit:
+        description: e.g. "C" or "F"
+        type: string
+      updatedAt:
+        type: string
       userId:
         type: string
     type: object
@@ -380,6 +425,31 @@ paths:
       summary: get all roles
       tags:
       - roles
+  /api/v1/statistics/summary:
+    get:
+      consumes:
+      - application/json
+      description: Get statistics summary for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.StatisticsSummary'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: Get statistics summary
+      tags:
+      - statistics
   /api/v1/tmptoken:
     post:
       consumes:
@@ -448,9 +518,9 @@ paths:
       - application/json
       description: create a new token
       parameters:
-      - description: username
+      - description: email
         in: header
-        name: username
+        name: email
         required: true
         type: string
       - description: password

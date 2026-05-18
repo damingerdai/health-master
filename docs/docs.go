@@ -254,6 +254,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/statistics/summary": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get statistics summary for the current user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get statistics summary",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.StatisticsSummary"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/tmptoken": {
             "post": {
                 "description": "get a temporary token (1 minute expiry)",
@@ -363,8 +403,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "username",
-                        "name": "username",
+                        "description": "email",
+                        "name": "email",
                         "in": "header",
                         "required": true
                     },
@@ -1187,6 +1227,41 @@ const docTemplate = `{
                 }
             }
         },
+        "model.StatisticsSummary": {
+            "type": "object",
+            "properties": {
+                "bloodPressureTrend": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserBloodPressure"
+                    }
+                },
+                "latestBloodPressure": {
+                    "$ref": "#/definitions/model.UserBloodPressure"
+                },
+                "latestHeight": {
+                    "$ref": "#/definitions/model.UserHeightVO"
+                },
+                "latestTemperature": {
+                    "$ref": "#/definitions/model.UserTemperatureRecord"
+                },
+                "latestWeight": {
+                    "$ref": "#/definitions/model.WeightRecord"
+                },
+                "temperatureTrend": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserTemperature"
+                    }
+                },
+                "weightTrend": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.WeightRecord"
+                    }
+                }
+            }
+        },
         "model.SuccessReponseSwagger": {
             "type": "object",
             "properties": {
@@ -1363,6 +1438,39 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/model.User"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserTemperatureRecord": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "recordDate": {
+                    "type": "string"
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "unit": {
+                    "description": "e.g. \"C\" or \"F\"",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 },
                 "userId": {
                     "type": "string"

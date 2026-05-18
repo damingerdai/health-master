@@ -1,10 +1,12 @@
 'use client';
 
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import {
   //IconCreditCard,
   IconDotsVertical,
   IconLogout,
+  IconUserCircle,
   // IconNotification,
   // IconUserCircle
 } from '@tabler/icons-react';
@@ -80,21 +82,13 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/profile">
                 <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator /> */}
+                Profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem 
               onClick={() => signOut()}
               className="cursor-pointer"

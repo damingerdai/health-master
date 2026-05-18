@@ -106,6 +106,16 @@ func (userRepository *UserRepository) UpdatePassword(ctx context.Context, userID
 	return err
 }
 
+func (userRepository *UserRepository) Update(ctx context.Context, user *model.User) error {
+	statement := `
+		UPDATE users 
+		SET username = $1, first_name = $2, last_name = $3, gender = $4, updated_at = NOW() 
+		WHERE id = $5 AND deleted_at IS NULL
+	`
+	_, err := userRepository.db.Exec(ctx, statement, user.Username, user.FirstName, user.LastName, user.Gender, user.Id)
+	return err
+}
+
 func (userRepository *UserRepository) Delete(ctx context.Context, id string) error {
 	statement := "UPDATE users SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL"
 	_, err := userRepository.db.Exec(ctx, statement, id)

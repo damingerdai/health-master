@@ -146,3 +146,38 @@ func GetCurrentUser(c *gin.Context) {
 		response.ToResponse(user)
 	}
 }
+
+// update user godoc
+//
+//	@Summary		update user
+//	@Description	update user details
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body	model.User	true	"update user"
+//	@Security		BearerAuth
+//	@Success		200	{object}	model.User		"sucess"
+//	@Failure		400	{object}	errcode.Error	"bad request error"
+//	@Failure		500	{object}	errcode.Error	"internal server error"
+//	@Router			/api/v1/user [put]
+func UpdateUser(c *gin.Context) {
+	res := response.NewResponse(c)
+	var user model.User
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		res.ToErrorResponse(errcode.InvalidParams)
+		return
+	}
+	userId := c.GetString("UserId")
+	user.Id = userId
+
+	services := service.New(global.DBEngine, global.Logger)
+	userService := services.UserService
+	err = userService.Update(c, &user)
+	if err != nil {
+		res.ToErrorResponse(errcode.ServerError)
+		return
+	}
+
+	res.ToResponse(user)
+}

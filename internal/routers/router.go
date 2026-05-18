@@ -39,6 +39,7 @@ func NewRouter() *gin.Engine {
 	apiV1.Use(middleware.RateLimiter(methodLimiters))
 	{
 		apiV1.POST("/user", api.CreateUser)
+		apiV1.PUT("/user", api.UpdateUser)
 		apiV1.GET("/user", api.GetCurrentUser)
 		apiV1.GET("/user/:id", api.GetUser)
 
