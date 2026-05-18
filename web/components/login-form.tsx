@@ -21,7 +21,7 @@ import { Loader2Icon, LockIcon, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 
 const schemas = z.object({
-  username: z.string().min(1, 'Username is required'),
+  email: z.string().min(1, 'Email is required'),
   password: z.string().min(1, 'Password is required')
 });
 type InputData = z.infer<typeof schemas>;
@@ -33,7 +33,7 @@ export function LoginForm({
   const router = useRouter();
   const form = useForm<InputData>({ 
     resolver: zodResolver(schemas), 
-    defaultValues: { username: '', password: '' } 
+    defaultValues: { email: '', password: '' } 
   });
 
   const isSubmitting = form.formState.isSubmitting;
@@ -42,14 +42,13 @@ export function LoginForm({
     try {
       const res = await signIn('credentials', {
         redirect: false,
-        username: data.username,
+        email: data.email,
         password: data.password
       });
 
       if (!res?.ok) {
         toast.error('Login failed', {
           description: res?.error || 'Please check your credentials',
-          position: 'top-right'
         });
         return;
       }
@@ -78,15 +77,15 @@ export function LoginForm({
         <div className="grid gap-4">
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input 
-                      placeholder="admin" 
+                      placeholder="admin@example.com" 
                       className="pl-9" 
                       {...field} 
                     />
@@ -115,7 +114,7 @@ export function LoginForm({
                     <LockIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input 
                       type="password" 
-                      placeholder="••••••••"
+                      placeholder="Your password"
                       className="pl-9" 
                       {...field} 
                     />

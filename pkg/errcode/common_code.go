@@ -1,17 +1,17 @@
 package errcode
 
 var (
-	Success                   = NewError(200, "Success")
-	ServerError               = NewError(10000000, "Internal Server Error")
-	InvalidParams             = NewError(10000001, "Invalid Parameters")
-	NotFound                  = NewError(10000002, "Not Found")
-	NotFoundAuthorization     = NewError(10000003, "Authorization Header Missing")
-	UnauthorizedAuthNotExist  = NewError(10000004, "Authentication Failed: User Not Found")
-	UnauthorizedTokenError    = NewError(10000005, "Authentication Failed: Invalid Token")
-	UnauthorizedTokenTimeout  = NewError(10000006, "Authentication Failed: Token Expired")
-	UnauthorizedTokenGenerate = NewError(10000007, "Authentication Failed: Token Generation Failed")
-	TooManyRequests           = NewError(10000009, "Too Many Requests")
-	NotImplemented            = NewError(10000010, "Not Implemented")
+	Success                          = NewError(200, "Success")
+	ServerError                      = NewError(10000000, "Internal Server Error")
+	InvalidParams                    = NewError(10000001, "Invalid Parameters")
+	NotFound                         = NewError(10000002, "Not Found")
+	NotFoundAuthorization            = NewError(10000003, "Authorization Header Missing")
+	UnauthorizedAuthNotExist         = NewError(10000004, "User Not Found")
+	UnauthorizedTokenError           = NewError(10000005, "Invalid Token")
+	UnauthorizedTokenTimeout         = NewError(10000006, "Token Expired")
+	UnauthorizedTokenGenerate        = NewError(10000007, "Token Generation Failed")
+	TooManyRequests                  = NewError(10000009, "Too Many Requests")
+	NotImplemented                   = NewError(10000010, "Not Implemented")
 	FailedToCreatePasswordResetToken = NewError(10000011, "Failed to Create Password Reset Token")
 	InvalidOrExpiredToken            = NewError(10000012, "Invalid or Expired Token")
 	ConfirmPasswordCannotBeEmpty     = NewError(10000013, "Confirm Password Cannot Be Empty")
@@ -22,6 +22,7 @@ var (
 
 	CreateUserError             = NewError(20000001, "Failed to Create User")
 	CreateUplicateUserNameError = NewError(20000002, "Username Already Exists")
+	CreateDuplicateEmailError   = NewError(20000003, "Email Already Exists")
 
 	CreateUserBloodPressureError = NewError(30000001, "Failed to Create Blood Pressure Record")
 	ListUserBloodPressureError   = NewError(30000002, "Failed to Retrieve Blood Pressure Records")

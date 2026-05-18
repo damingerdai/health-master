@@ -33,8 +33,8 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: {
-          label: 'Username',
+        email: {
+          label: 'Email',
           type: 'text'
         },
         password: {
@@ -44,16 +44,14 @@ export const authOptions: AuthOptions = {
       },
 
       async authorize(credentials) {
-        // console.log("authorize", credentials);
-        const { username, password } = credentials || {};
-        if (!username || !password) {
-          throw new Error('Username and password are required');
+        const { email, password } = credentials || {};
+        if (!email || !password) {
+          throw new Error('Email and password are required');
         }
-        const res = await httpClient.login(username, password);
+        const res = await httpClient.login(email, password);
         if (isErrorResponse(res)) {
           throw new Error(res.message || 'Login failed');
         }
-        // console.log("authorize res", res);
         if (res.data) {
           return {
             id: res.data.id,

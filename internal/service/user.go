@@ -44,15 +44,16 @@ func NewUserService(
 }
 
 func (userService *UserService) Create(ctx context.Context, user *model.User) (*model.FullUser, error) {
-	existUser, err := userService.userRepository.FindByUserName(ctx, user.Username)
+	existUser, err := userService.userRepository.FindByEmail(ctx, user.Email)
+	global.Logger.Info("check if user email already exists", zap.String("email", user.Username), zap.Any("existUser", existUser), zap.Error(err))
 	if err != nil {
 		// userService.logger.Error("fail to create user", zap.Error(err))
 		global.Logger.Error("fail to create user", zap.Error(err))
 		return nil, errcode.CreateUserError
 	}
 	if existUser != nil && existUser.Id != "" {
-		userService.logger.Error("username already exists", zap.String("username", user.Username))
-		return nil, errcode.CreateUplicateUserNameError
+		userService.logger.Error("email already exists", zap.String("email", user.Username))
+		return nil, errcode.CreateDuplicateEmailError
 	}
 	user.Password = util.GetMd5Hash(user.Password)
 	now := time.Now()
@@ -69,10 +70,6 @@ func (userService *UserService) Create(ctx context.Context, user *model.User) (*
 		return nil, errcode.CreateUserError
 	}
 	_, err = userService.userRoleRepository.Create(ctx, user.Id, role.Id)
-	if err != nil {
-		userService.logger.Error("fail to create user", zap.Error(err))
-		return nil, err
-	}
 	if err != nil {
 		userService.logger.Error("fail to create user role", zap.String("username", user.Username), zap.String("role", role.Name), zap.Error(err))
 		return nil, errcode.CreateUserError

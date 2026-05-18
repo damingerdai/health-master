@@ -22,7 +22,7 @@ import (
 //	@Tags			token
 //	@Accept			json
 //	@Produce		json
-//	@Param			username	header		string			true	"username"
+//	@Param			email		header		string			true	"email"
 //	@Param			password	header		string			true	"password"
 //	@Success		200			{object}	model.UserToken	"success"
 //	@Failure		400			{object}	errcode.Error	"bad request error"
@@ -30,9 +30,9 @@ import (
 //	@Router			/api/v1/token [post]
 func CreateToken(c *gin.Context) {
 	response := response.NewResponse(c)
-	username := c.GetHeader("username")
-	if len(username) == 0 {
-		global.Logger.Error("username is empty")
+	email := c.GetHeader("email")
+	if len(email) == 0 {
+		global.Logger.Error("email is empty")
 		response.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
@@ -46,7 +46,7 @@ func CreateToken(c *gin.Context) {
 	tokenRepository := repository.NewTokenRecordRepository(global.DBEngine)
 	tokenService := service.NewTokenService(userRepository, tokenRepository)
 
-	userToken, err := tokenService.CreateToken(c, username, password)
+	userToken, err := tokenService.CreateToken(c, email, password)
 	if err != nil {
 		global.Logger.Error("fail to create token", zap.Error(err))
 		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)

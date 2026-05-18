@@ -29,7 +29,7 @@ export class HttpClient {
   }
 
   public async login(
-    username: string,
+    email: string,
     password: string
   ): Promise<TokenResponse & DataResponse<User>> {
     try {
@@ -37,7 +37,7 @@ export class HttpClient {
         method: 'POST',
         url: '/api/v1/token',
         headers: {
-          username,
+          email,
           password
         }
       });
