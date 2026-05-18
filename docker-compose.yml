@@ -52,6 +52,14 @@ services:
     container_name: uptime-kuma
     networks:
       - daming-health-master-network
+  jaeger:
+    image: jaegertracing/jaeger:2.18.0
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
   # pgweb:
   #   image: sosedoff/pgweb:0.16.2
   #   container_name: pgweb
