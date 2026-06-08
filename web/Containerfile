@@ -6,10 +6,19 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-  if [ -f package-lock.json ]; then npm ci --force; \
-  elif [ -f yarn.lock ]; then yarn --frozen-lockfile --force; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && corepack prepare pnpm@latest --activate && pnpm i --frozen-lockfile --force; \
-  else npm install --force; \
+  if [ -f package-lock.json ]; then \
+    npm config set registry https://registry.npmmirror.com && \
+    npm ci --force; \
+  elif [ -f yarn.lock ]; then \
+    yarn config set registry https://registry.npmmirror.com && \
+    yarn --frozen-lockfile --force; \
+  elif [ -f pnpm-lock.yaml ]; then \
+    corepack enable pnpm && corepack prepare pnpm@latest --activate && \
+    pnpm config set registry https://registry.npmmirror.com && \
+    pnpm i --frozen-lockfile --force; \
+  else \
+    npm config set registry https://registry.npmmirror.com && \
+    npm install --force; \
   fi
 
 # Stage 2: Build the application
@@ -30,10 +39,19 @@ FROM base AS production-deps
 WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-  if [ -f package-lock.json ]; then npm ci --only=production; \
-  elif [ -f yarn.lock ]; then yarn install --production --frozen-lockfile; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --prod --frozen-lockfile; \
-  else npm install --production; \
+  if [ -f package-lock.json ]; then \
+    npm config set registry https://registry.npmmirror.com && \
+    npm ci --only=production; \
+  elif [ -f yarn.lock ]; then \
+    yarn config set registry https://registry.npmmirror.com && \
+    yarn install --production --frozen-lockfile; \
+  elif [ -f pnpm-lock.yaml ]; then \
+    corepack enable pnpm && \
+    pnpm config set registry https://registry.npmmirror.com && \
+    pnpm i --prod --frozen-lockfile; \
+  else \
+    npm config set registry https://registry.npmmirror.com && \
+    npm install --production; \
   fi
 
 # Stage 4: Final runner image

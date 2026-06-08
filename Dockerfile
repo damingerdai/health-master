@@ -9,7 +9,7 @@ WORKDIR /app
 
 COPY go.mod go.sum /app/
 ENV GO111MODULE=on
-ENV GOPROXY=https://goproxy.cn
+ENV GOPROXY=https://goproxy.cn,direct
 # ENV GOOS=linux 
 # ENV GOARCH=amd64
 
