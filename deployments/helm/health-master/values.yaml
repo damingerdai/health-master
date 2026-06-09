@@ -4,9 +4,6 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-# Namespace configuration
-namespace: health-master-namespace
-
 autoscaling: 
   enable: false
 # Replica configuration
