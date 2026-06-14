@@ -85,7 +85,6 @@ func (userRepository *UserRepository) FindByEmail(ctx context.Context, email str
 			return nil, nil
 		}
 		global.Logger.Error("fail to find user by email", zap.String("email", email), zap.Error(err))
-		global.Logger.Sync()
 		return nil, err
 	}
 	user := model.User{

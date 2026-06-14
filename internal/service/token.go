@@ -31,7 +31,12 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 	if err != nil {
 		return nil, err
 	}
-
+	if user == nil {
+		if global.Logger != nil {
+			global.Logger.Warn("user not found", zap.String("email", email))
+		}
+		return nil, errors.New("user not found")
+	}
 	global.Logger.Info("founded user", zap.String("email", email), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
 	if user.Password != util.GetMd5Hash(password) {
 		global.Logger.Error("email or password error", zap.String("email", email), zap.String("password", password), zap.String("hashedPassword", util.GetMd5Hash(password)))
