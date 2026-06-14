@@ -5,7 +5,6 @@ export function parseAuthCookie(
 ): string | null {
   if (!cookieHeader) return null;
   const cookies = cookie.parse(cookieHeader);
-  console.log('Parsed Cookies:', cookies);
 
   return cookies['next-auth.session-token'] || null;
 }

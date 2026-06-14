@@ -105,9 +105,6 @@ export const authOptions: AuthOptions = {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         session.user = token.user as any; // Ensure user is set in session
       }
-      // console.log("token", token);
-      // console.log("user", user);
-      console.log("session callback", session);
       return session;
     },
     async signIn({ user, account, profile, email, credentials }) {

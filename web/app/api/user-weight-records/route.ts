@@ -6,8 +6,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   const authorization = session?.accessToken;
-  console.log('authorization', authorization);
-  console.log('req.nextUrl.search', req.nextUrl.search);
   try {
     const resp = await httpClient.request({
       method: 'GET',

@@ -2,8 +2,6 @@
 
 export async function getCurrentUser(accessToken: string) {
   try {
-    console.log('getCurrentUser with accessToken:', accessToken);
-    console.log('Backend host:', process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST);
      const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
       method: 'GET',
       headers: {
