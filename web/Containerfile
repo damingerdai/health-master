@@ -1,4 +1,4 @@
-FROM node:24.13.1-alpine3.23 AS base
+FROM node:24.13.1-alpine3.24 AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
