@@ -39,9 +39,9 @@ func (userRepository *UserRepository) Create(ctx context.Context, user *model.Us
 
 func (userRepository *UserRepository) Find(ctx context.Context, id string) (*model.User, error) {
 	var user model.User
-	statement := "SELECT id, username, first_name, last_name, email, password, gender FROM users WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
+	statement := "SELECT id, username, first_name, last_name, email, password, gender, two_factor_enabled, two_factor_secret, two_factor_verified_at FROM users WHERE id = $1 AND deleted_at IS NULL LIMIT 1"
 	row := userRepository.db.QueryRow(ctx, statement, id)
-	err := row.Scan(&user.Id, &user.Username, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Gender)
+	err := row.Scan(&user.Id, &user.Username, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Gender, &user.TwoFactorEnabled, &user.TwoFactorSecret, &user.TwoFactorVerifiedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
@@ -52,34 +52,41 @@ func (userRepository *UserRepository) Find(ctx context.Context, id string) (*mod
 }
 
 func (userRepository *UserRepository) FindByUserName(ctx context.Context, username string) (*model.User, error) {
-	statement := "SELECT id, username, first_name, last_name, email, password, gender FROM users WHERE username = $1 AND deleted_at IS NULL LIMIT 1"
+	statement := "SELECT id, username, first_name, last_name, email, password, gender, two_factor_enabled, two_factor_secret, two_factor_verified_at FROM users WHERE username = $1 AND deleted_at IS NULL LIMIT 1"
 	row := userRepository.db.QueryRow(ctx, statement, username)
-	var id, rusername, firstname, lastname, email, password, gender string
-	err := row.Scan(&id, &rusername, &firstname, &lastname, &email, &password, &gender)
+	var id, rusername, firstname, lastname, email, password, gender, twoFactorSecret string
+	var twoFactorEnabled bool
+	var twoFactorVerfifiedAt *time.Time
+	err := row.Scan(&id, &rusername, &firstname, &lastname, &email, &password, &gender, &twoFactorEnabled, &twoFactorSecret, &twoFactorVerfifiedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
 		}
 		global.Logger.Error("fail to find user", zap.String("username", username), zap.Error(err))
-		global.Logger.Sync()
+		// global.Logger.Sync()
 		return nil, err
 	}
 	user := model.User{
-		Id:        id,
-		Username:  rusername,
-		FirstName: firstname,
-		LastName:  lastname,
-		Password:  password,
-		Gender:    gender,
+		Id:                  id,
+		Username:            rusername,
+		FirstName:           firstname,
+		LastName:            lastname,
+		Password:            password,
+		Gender:              gender,
+		TwoFactorEnabled:    twoFactorEnabled,
+		TwoFactorSecret:     &twoFactorSecret,
+		TwoFactorVerifiedAt: twoFactorVerfifiedAt,
 	}
 	return &user, nil
 }
 
 func (userRepository *UserRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
-	statement := "SELECT id, username, first_name, last_name, email, password, gender FROM users WHERE email = $1 AND deleted_at IS NULL LIMIT 1"
+	statement := "SELECT id, username, first_name, last_name, email, password, gender, two_factor_enabled, two_factor_secret, two_factor_verified_at FROM users WHERE email = $1 AND deleted_at IS NULL LIMIT 1"
 	row := userRepository.db.QueryRow(ctx, statement, email)
-	var id, rusername, firstname, lastname, remail, password, gender string
-	err := row.Scan(&id, &rusername, &firstname, &lastname, &remail, &password, &gender)
+	var id, username, firstname, lastname, remail, password, gender, twoFactorSecret string
+	var twoFactorEnabled bool
+	var twoFactorVerfifiedAt *time.Time
+	err := row.Scan(&id, &username, &firstname, &lastname, &remail, &password, &gender, &twoFactorEnabled, &twoFactorSecret, &twoFactorVerfifiedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
@@ -88,13 +95,16 @@ func (userRepository *UserRepository) FindByEmail(ctx context.Context, email str
 		return nil, err
 	}
 	user := model.User{
-		Id:        id,
-		Username:  rusername,
-		FirstName: firstname,
-		LastName:  lastname,
-		Email:     remail,
-		Password:  password,
-		Gender:    gender,
+		Id:                  id,
+		Username:            username,
+		FirstName:           firstname,
+		LastName:            lastname,
+		Email:               remail,
+		Password:            password,
+		Gender:              gender,
+		TwoFactorEnabled:    twoFactorEnabled,
+		TwoFactorSecret:     &twoFactorSecret,
+		TwoFactorVerifiedAt: twoFactorVerfifiedAt,
 	}
 	return &user, nil
 }
@@ -118,5 +128,35 @@ func (userRepository *UserRepository) Update(ctx context.Context, user *model.Us
 func (userRepository *UserRepository) Delete(ctx context.Context, id string) error {
 	statement := "UPDATE users SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL"
 	_, err := userRepository.db.Exec(ctx, statement, id)
+	return err
+}
+
+func (userRepository *UserRepository) SaveTwoFactorSecret(ctx context.Context, userID string, twoFactorySecert string) error {
+	statement := `
+		UPDATE users
+	  SET two_factor_secret = $1, updated_at = NOW() 
+	  WHERE id = $2 AND deleted_at IS NULL
+	`
+	_, err := userRepository.db.Exec(ctx, statement, twoFactorySecert, userID)
+	return err
+}
+
+func (userRepository *UserRepository) EnableTwoFactor(ctx context.Context, userID string) error {
+	statement := `
+		UPDATE users
+		SET two_factor_enabled = TRUE, two_factor_verified_at = NOW(), updated_at = NOW()
+	  WHERE id = $1 AND deleted_at IS NULL
+	`
+	_, err := userRepository.db.Exec(ctx, statement, userID)
+	return err
+}
+
+func (userRepository *UserRepository) DisableTwoFactor(ctx context.Context, userID string) error {
+	statement := `
+		UPDATE users
+		SET two_factor_enabled = FALSE, two_factor_secret = null, two_factor_verified_at = null, updated_at = NOW()
+		WHERE id = $1 AND deleted_at IS NULL
+	`
+	_, err := userRepository.db.Exec(ctx, statement, userID)
 	return err
 }

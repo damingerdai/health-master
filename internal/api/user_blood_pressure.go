@@ -8,7 +8,6 @@ import (
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -36,8 +35,8 @@ func CreateUserBloodPressure(c *gin.Context) {
 	}
 
 	err := db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
-		service := service.New(conn, global.Logger)
-		user, err := service.UserService.Find(c, userBloodPressure.UserId)
+		srvs := getTxServices(conn)
+		user, err := srvs.UserService.Find(c, userBloodPressure.UserId)
 		if err != nil {
 			return err
 		}
@@ -45,7 +44,7 @@ func CreateUserBloodPressure(c *gin.Context) {
 			return errors.New("no user")
 		}
 
-		err = service.UserBloodPressureService.Create(c, &userBloodPressure)
+		err = srvs.UserBloodPressureService.Create(c, &userBloodPressure)
 		if err != nil {
 			return err
 		}
@@ -77,11 +76,11 @@ func CreateUserBloodPressure(c *gin.Context) {
 //	@Router			/api/v1/user_blood_pressures [post]
 func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	userId := c.GetString("UserId")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
-	userBloodPressureService := service.UserBloodPressureService
+	userBloodPressureService := srvs.UserBloodPressureService
 	ubps, err := userBloodPressureService.PagingQueryByUserId(c, userId, page, limit)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ListUserBloodPressureError)
@@ -105,9 +104,9 @@ func ListBloodPressures(c *gin.Context) {
 //	@Router			/api/v1/user_blood_pressure/{id} [post]
 func DeleteBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	id := c.Params.ByName("id")
-	err := service.UserBloodPressureService.Delete(c, id)
+	err := srvs.UserBloodPressureService.Delete(c, id)
 	if err != nil {
 		resp.ToErrorResponseWithError(errcode.DeleteUserBloodPressureError, err)
 	} else {
@@ -130,9 +129,9 @@ func DeleteBloodPressure(c *gin.Context) {
 //	@Router			/api/v1/user_blood_pressure/{id}/export [get]
 func DowonloadBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	id := c.Params.ByName("id")
-	f, err := service.UserBloodPressureService.CreateExcelizeFile(c, id)
+	f, err := srvs.UserBloodPressureService.CreateExcelizeFile(c, id)
 	if err != nil {
 		resp.ToErrorResponseWithError(errcode.DeleteUserBloodPressureError, err)
 		return

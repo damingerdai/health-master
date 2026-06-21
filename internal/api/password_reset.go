@@ -96,7 +96,7 @@ func sendResetPasswordEmail(email, token string) {
 func VerifyResetToken(c *gin.Context) {
 	token := c.Param("token")
 	res := response.NewResponse(c)
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	tokenService := srv.TokenService
 
 	email, err := tokenService.VerifyPasswordResetToken(c, token)
@@ -135,7 +135,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 	token := c.Param("token")
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	userService := srv.UserService
 
 	_, err = userService.ResetPassword(c.Request.Context(), input.Email, token, input.Password)
