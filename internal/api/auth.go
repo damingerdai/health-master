@@ -50,16 +50,18 @@ func Login(c *gin.Context) {
 
 // VerifyLogin godoc
 //
-// @Summary Verify Two-Factor Authentication
-// @Description Complete login using a challenge token and TOTP verification code.
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param request body model.VerifyLoginRequest true "Verify Login Request"
-// @Success 200 {object} response.Response{data=model.UserToken}
-// @Failure 400 {object} response.Response
-// @Failure 401 {object} response.Response
-// @Router /auth/login/2fa [post]
+//	@Summary		Verify Two-Factor Authentication
+//	@Description	Complete login using a challenge token and TOTP verification code.
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		model.VerifyLoginRequest	true	"Verify Login Request"
+//
+//	@Success		200		{object}	model.UserToken				"success"
+//	@Failure		400		{object}	errcode.Error				"bad request error"
+//	@Failure		500		{object}	errcode.Error				"internal server error"
+//
+//	@Router			/api/v1/auth/login/2fa [post]
 func VerifyLogin(c *gin.Context) {
 	var req model.VerifyLoginRequest
 	res := response.NewResponse(c)

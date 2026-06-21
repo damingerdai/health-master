@@ -16,6 +16,104 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "description": "Login with email and password. If 2FA is enabled, a challenge token will be returned.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "login request",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login/2fa": {
+            "post": {
+                "description": "Complete login using a challenge token and TOTP verification code.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Verify Two-Factor Authentication",
+                "parameters": [
+                    {
+                        "description": "Verify Login Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.VerifyLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserToken"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/height": {
             "post": {
                 "security": [
@@ -439,6 +537,55 @@ const docTemplate = `{
             }
         },
         "/api/v1/user": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "update user details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "update user",
+                "parameters": [
+                    {
+                        "description": "update user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "sucess",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1182,6 +1329,35 @@ const docTemplate = `{
                 }
             }
         },
+        "model.LoginInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "challengeToken": {
+                    "type": "string"
+                },
+                "needTwoFactor": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "$ref": "#/definitions/model.UserToken"
+                }
+            }
+        },
         "model.RequestResetInput": {
             "type": "object",
             "required": [
@@ -1302,6 +1478,15 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "two_factor_enabled": {
+                    "type": "boolean"
+                },
+                "two_factor_secret": {
+                    "type": "string"
+                },
+                "two_factor_verified_at": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -1484,6 +1669,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "expired": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.VerifyLoginRequest": {
+            "type": "object",
+            "required": [
+                "challengeToken",
+                "code"
+            ],
+            "properties": {
+                "challengeToken": {
+                    "type": "string"
+                },
+                "code": {
                     "type": "string"
                 }
             }

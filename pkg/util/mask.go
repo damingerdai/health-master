@@ -5,9 +5,9 @@ import "strings"
 // MaskEmail returns a masked version of the given email, keeping the first
 // and last character of the local-part and replacing the middle with '*'.
 // Examples:
-//  - "damingerdai@gmail.com" -> "d*********i@gmail.com"
-//  - "ab@c.com" -> "a*@c.com"
-//  - "a@b.com" -> "*@b.com"
+//   - "damingerdai@gmail.com" -> "d*********i@gmail.com"
+//   - "ab@c.com" -> "a*@c.com"
+//   - "a@b.com" -> "*@b.com"
 func MaskEmail(email string) string {
 	if email == "" {
 		return ""

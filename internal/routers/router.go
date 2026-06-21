@@ -81,10 +81,10 @@ func NewRouter() *gin.Engine {
 		resetPasswordApiV1.PUT("/password-resets/:token", api.ResetPassword)
 	}
 
-	auth := apiV1.Group("/auth")
+	auth := r.Group("/api/v1/auth")
 	{
 		auth.POST("/login", api.Login)
-		auth.POST("/login/verify", api.VerifyLogin)
+		auth.POST("/login/2fa ", api.VerifyLogin)
 	}
 
 	return r
