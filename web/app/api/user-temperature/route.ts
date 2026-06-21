@@ -2,6 +2,7 @@ import { httpClient } from '@/lib/http-client';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth-options';
+import { revalidatePath } from 'next/cache';
 
 export async function POST(req: NextRequest) {
   const [session, data] = await Promise.all([
@@ -25,7 +26,8 @@ export async function POST(req: NextRequest) {
         Authorization: authorization
       }
     });
-
+    revalidatePath('/dashboard');
+    revalidatePath('/temperature');
     return NextResponse.json(resp.data);
   } catch (err) {
     return NextResponse.json(err, { status: 500 });
