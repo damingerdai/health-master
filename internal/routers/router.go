@@ -84,7 +84,14 @@ func NewRouter() *gin.Engine {
 	auth := r.Group("/api/v1/auth")
 	{
 		auth.POST("/login", api.Login)
-		auth.POST("/login/2fa ", api.VerifyLogin)
+		auth.POST("/login/2fa", api.VerifyLogin)
+	}
+
+	settingsApi := r.Group("/api/v1/settings")
+	settingsApi.Use(middleware.JWT())
+	{
+		settingsApi.GET("/2fa", api.GetTwoFactor)
+		settingsApi.PUT("/2fa", api.UpdateTwoFactor)
 	}
 
 	return r

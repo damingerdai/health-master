@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/cryptox"
@@ -62,12 +64,12 @@ func New(db db.Connection, logger *zap.Logger, opts ...NewOption) *Services {
 	userTemperatureRepository := repo.UserTemperatureRepository
 	tokenService := NewTokenService(userRepository, tokenRecordRepository)
 	twoFactorService := NewTwoFactorService(nil, userRepository)
-
 	if options.totpSetting != nil && options.totpSetting.SecretKey != "" {
 		aes, err := cryptox.NewAES(options.totpSetting.SecretKey)
 		if err != nil {
 			logger.Warn("failed to init 2fa aes", zap.Error(err))
 		} else {
+			fmt.Println("init 2fa aes")
 			twoFactorService = NewTwoFactorService(aes, userRepository)
 		}
 	}

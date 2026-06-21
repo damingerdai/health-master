@@ -68,6 +68,13 @@ definitions:
       name:
         type: string
     type: object
+  model.Setup2FaResult:
+    properties:
+      qr_code:
+        type: string
+      secret:
+        type: string
+    type: object
   model.StatisticsSummary:
     properties:
       bloodPressureTrend:
@@ -95,6 +102,15 @@ definitions:
     properties:
       success:
         type: boolean
+    type: object
+  model.UpdateTwoFactorRequest:
+    properties:
+      code:
+        type: string
+      enabled:
+        type: boolean
+    required:
+    - code
     type: object
   model.User:
     properties:
@@ -525,6 +541,69 @@ paths:
       summary: get all roles
       tags:
       - roles
+  /api/v1/settings/2fa:
+    get:
+      consumes:
+      - application/json
+      description: Get the current 2FA status. If 2FA is not enabled, an otpauth URL
+        will be generated for enrollment.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.Setup2FaResult'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: Get Two-Factor Authentication setup
+      tags:
+      - settings
+    put:
+      consumes:
+      - application/json
+      description: Enable or disable TOTP-based two-factor authentication for the
+        current user. A valid verification code is required.
+      parameters:
+      - description: Update Two-Factor Authentication
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateTwoFactorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: Enable or disable Two-Factor Authentication
+      tags:
+      - settings
   /api/v1/statistics/summary:
     get:
       consumes:
