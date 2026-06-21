@@ -83,7 +83,8 @@ func (userRepository *UserRepository) FindByUserName(ctx context.Context, userna
 func (userRepository *UserRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
 	statement := "SELECT id, username, first_name, last_name, email, password, gender, two_factor_enabled, two_factor_secret, two_factor_verified_at FROM users WHERE email = $1 AND deleted_at IS NULL LIMIT 1"
 	row := userRepository.db.QueryRow(ctx, statement, email)
-	var id, username, firstname, lastname, remail, password, gender, twoFactorSecret string
+	var id, username, firstname, lastname, remail, password, gender string
+	var twoFactorSecret *string
 	var twoFactorEnabled bool
 	var twoFactorVerfifiedAt *time.Time
 	err := row.Scan(&id, &username, &firstname, &lastname, &remail, &password, &gender, &twoFactorEnabled, &twoFactorSecret, &twoFactorVerfifiedAt)
@@ -103,7 +104,7 @@ func (userRepository *UserRepository) FindByEmail(ctx context.Context, email str
 		Password:            password,
 		Gender:              gender,
 		TwoFactorEnabled:    twoFactorEnabled,
-		TwoFactorSecret:     &twoFactorSecret,
+		TwoFactorSecret:     twoFactorSecret,
 		TwoFactorVerifiedAt: twoFactorVerfifiedAt,
 	}
 	return &user, nil
