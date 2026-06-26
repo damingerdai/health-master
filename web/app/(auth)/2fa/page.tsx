@@ -18,6 +18,9 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { getSession, signIn } from "next-auth/react";
+import { isErrorResponse } from "@/types/response";
+import { verify2FA } from "@/lib/twofactor";
 
 
 export default function Page() {
@@ -33,22 +36,32 @@ export default function Page() {
         try {
             setLoading(true);
             setError("");
+            const session = await getSession();
+            const challengeToken = session?.challengeToken;
 
-            // TODO:
-            // const challengeToken = sessionStorage.getItem("challenge");
-            //
-            // const res = await httpClient.verify2FA({
-            //   challengeToken,
-            //   code,
-            // });
-            //
-            // await signIn("credentials", {
-            //   redirect: false,
-            //   accessToken: res.token.accessToken,
-            // });
+            if (!challengeToken) {
+                throw new Error('challenge token is required')
+            }
+
+            const verify = await verify2FA({
+                challengeToken: challengeToken!,
+                code,
+            });
+
+            console.log("verify", verify)
+
+            if (isErrorResponse(verify)) {
+                throw new Error(verify.message);
+            }
+
+            await signIn("credentials", {
+                redirect: false,
+                accessToken: verify.data.accessToken,
+            });
 
             router.push("/dashboard");
         } catch (err) {
+            console.error(err)
             setError("Invalid verification code.");
             setCode("");
         } finally {

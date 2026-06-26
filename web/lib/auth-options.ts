@@ -38,6 +38,33 @@ declare module "next-auth/jwt" {
   }
 }
 
+async function getUserByAccessToken(accessToken: string): Promise<User | null> {
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+
+    if (isErrorResponse(data)) return null;
+
+    return {
+        id: data.data.id,
+        username: data.data.username,
+        firstName: data.data.firstName,
+        lastName: data.data.lastName,
+        email: data.data.email,
+        gender: data.data.gender,
+        accessToken,
+    };
+}
+
 export const authOptions: AuthOptions = {
   pages: {
     signIn: '/sign-in'
@@ -57,10 +84,42 @@ export const authOptions: AuthOptions = {
         password: {
           label: 'Password',
           type: 'password'
-        }
+        },
+        accessToken: {
+          label: "Access Token",
+          type: "text",
+        },
       },
 
       async authorize(credentials) {
+        if (credentials?.accessToken) {
+
+          const accessToken = credentials.accessToken;
+
+          const userRes = await fetch(
+            `${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          if (!userRes.ok) {
+            return null;
+          }
+
+          const userData = await userRes.json();
+
+          return {
+            id: userData.data.id,
+            username: userData.data.username,
+            firstName: userData.data.firstName,
+            lastName: userData.data.lastName,
+            email: userData.data.email,
+            accessToken,
+          };
+        }
         const { email, password } = credentials || {};
         if (!email || !password) {
           throw new Error('Email and password are required');
@@ -114,64 +173,64 @@ export const authOptions: AuthOptions = {
         } as User;
       }
     }),
-    CredentialsProvider({
-      id: '2fa',
-      name: 'TwoFactor',
-      credentials: {
-        code: {
-          label: 'Code',
-          type: 'text'
-        },
-        challengeToken: {
-          label: 'Challenge Token',
-          type: 'text'
-        }
-      },
-      async authorize(credentials) {
-        const { code, challengeToken } = credentials || {};
-        if (!code || !challengeToken) {
-          throw new Error('Code and challenge token are required');
-        }
-        const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/auth/2fa`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code, challengeToken })
-        });
-        if (!res.ok) {
-          throw new Error('Two-factor authentication failed');
-        }
-        const tokenRes: DataResponse<{ token: AccessToken }> = await res.json();
-        if (isErrorResponse(tokenRes)) {
-          throw new Error(tokenRes.message || 'Two-factor authentication failed');
-        }
-        const { accessToken } = tokenRes.data.token;
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        if (!userRes.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        const userData = await userRes.json();
-        if (isErrorResponse(userData)) {
-          throw new Error(userData.message || 'Failed to fetch user data');
-        }
-        return {
-          id: userData.data.id,
-          username: userData.data.username,
-          firstName: userData.data.firstName,
-          lastName: userData.data.lastName,
-          email: userData.data.email,
+    // CredentialsProvider({
+    //   id: '2fa',
+    //   name: 'TwoFactor',
+    //   credentials: {
+    //     code: {
+    //       label: 'Code',
+    //       type: 'text'
+    //     },
+    //     challengeToken: {
+    //       label: 'Challenge Token',
+    //       type: 'text'
+    //     }
+    //   },
+    //   async authorize(credentials) {
+    //     const { code, challengeToken } = credentials || {};
+    //     if (!code || !challengeToken) {
+    //       throw new Error('Code and challenge token are required');
+    //     }
+    //     const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/auth/2fa`, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify({ code, challengeToken })
+    //     });
+    //     if (!res.ok) {
+    //       throw new Error('Two-factor authentication failed');
+    //     }
+    //     const tokenRes: DataResponse<{ token: AccessToken }> = await res.json();
+    //     if (isErrorResponse(tokenRes)) {
+    //       throw new Error(tokenRes.message || 'Two-factor authentication failed');
+    //     }
+    //     const { accessToken } = tokenRes.data.token;
+    //     const userRes = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
+    //       method: 'GET',
+    //       headers: {
+    //         Authorization: `Bearer ${accessToken}`
+    //       }
+    //     });
+    //     if (!userRes.ok) {
+    //       throw new Error('Failed to fetch user data');
+    //     }
+    //     const userData = await userRes.json();
+    //     if (isErrorResponse(userData)) {
+    //       throw new Error(userData.message || 'Failed to fetch user data');
+    //     }
+    //     return {
+    //       id: userData.data.id,
+    //       username: userData.data.username,
+    //       firstName: userData.data.firstName,
+    //       lastName: userData.data.lastName,
+    //       email: userData.data.email,
 
-          accessToken: accessToken,
-          needTwoFactor: false
-        } as User;
-      }
-    })
+    //       accessToken: accessToken,
+    //       needTwoFactor: false
+    //     } as User;
+    //   }
+    // })
   ],
   callbacks: {
     jwt(params) {
