@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	Id        string     `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
@@ -22,4 +24,41 @@ func (User) TableName() string {
 type FullUser struct {
 	User
 	Role Role `json:"role,omitempty"`
+}
+
+type UpdateUserReq struct {
+	Id        *string `json:"id"`
+	Username  *string `json:"username"`
+	FirstName *string `json:"firstName"`
+	LastName  *string `json:"lastName"`
+	Email     *string `json:"email"`
+	Gender    *string `json:"gender"`
+}
+
+func (req *UpdateUserReq) ToUserModel() *User {
+	if req == nil {
+		return nil
+	}
+
+	user := &User{}
+	if req.Id != nil {
+		user.Id = *req.Id
+	}
+	if req.Username != nil {
+		user.Username = *req.Username
+	}
+	if req.FirstName != nil {
+		user.FirstName = *req.FirstName
+	}
+	if req.LastName != nil {
+		user.LastName = *req.LastName
+	}
+	if req.Email != nil {
+		user.Email = *req.Email
+	}
+	if req.Gender != nil {
+		user.Gender = *req.Gender
+	}
+
+	return user
 }

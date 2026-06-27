@@ -18,11 +18,12 @@ export type ProfileFormState = {
 
 export async function updateProfile(prevState: ProfileFormState, formData: FormData): Promise<ProfileFormState> {
   const session = await getServerSession(authOptions);
-  if (!session || !session.accessToken) {
+  if (!session || !session.accessToken || !session.user) {
     return { success: false, message: "Unauthorized" };
   }
 
   const data = {
+    // id: session.user.id,
     username: formData.get("username") as string,
     firstName: formData.get("firstName") as string,
     lastName: formData.get("lastName") as string,
@@ -47,7 +48,6 @@ export async function updateProfile(prevState: ProfileFormState, formData: FormD
         message: errorData.message || "Failed to update profile" 
       };
     }
-
     revalidatePath("/profile");
     return { success: true, message: "Profile updated successfully" };
   } catch (error) {
