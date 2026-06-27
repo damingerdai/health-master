@@ -1,9 +1,7 @@
 services:
-  pg:
+  postgres:
     image: postgres:18.4-alpine3.24
     container_name: "health-master-pg"
-    ports:
-      - 5432:5432
     volumes:
       - daming-health-master-volume:/var/lib/postgresql/data
     environment:
@@ -14,27 +12,26 @@ services:
       PGTZ: "GMT+8"
     networks:
       - daming-health-master-network
+    restart: always
   pgbouncer:
     image: edoburu/pgbouncer:v1.25.1-p0
-    container_name: pgbouncer
+    container_name: health-master-pgbouncer
     environment:
-      - DATABASE_URL=postgres://postgres:123456@pg:5432/postgres
+      - DATABASE_URL=postgres://postgres:123456@postgres:5432/postgres
       - POOL_MODE=session
       - MAX_DB_CONNECTIONS=100
       - DEFAULT_POOL_SIZE=40
       - AUTH_TYPE=scram-sha-256
-    # volumes:
-    # - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
-    # - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
     networks:
       - daming-health-master-network
     ports:
-      - 6543:5432
+      - 16543:5432
     depends_on:
-      - pg
+      - postgres
   redis:
-    image: redis:8.8-m03-alpine3.24
+    image: redis:8.8.0-alpine3.23
     container_name: "health-master-redis"
+    command: redis-server --appendonly yes --requirepass 123456
     ports:
       - 6379:6379
     restart: unless-stopped
@@ -52,13 +49,24 @@ services:
     container_name: uptime-kuma
     networks:
       - daming-health-master-network
-  # pgweb:
-  #   image: sosedoff/pgweb:0.16.2
-  #   container_name: pgweb
-  #   ports:
-  #     - 8081:8081
-  #   networks:
-  #     - daming-health-master-network
+  pg-backup:
+    image: prodrigestivill/postgres-backup-local:18
+    container_name: pg-backup
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=postgres
+      - BACKUP_NUM_KEEP=7              
+      - BACKUP_FREQUENCY=1d            
+      - TZ=GMT+8
+    volumes:
+      - ./backups:/backups             
+    networks:
+      - daming-health-master-network
+    depends_on:
+      - postgres
+    restart: always
 
 volumes:
   daming-health-master-volume:
