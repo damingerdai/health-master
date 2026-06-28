@@ -82,6 +82,7 @@ func NewRouter() *gin.Engine {
 	}
 
 	auth := r.Group("/api/v1/auth")
+	auth.Use(middleware.RateLimiter(methodLimiters))
 	{
 		auth.POST("/login", api.Login)
 		auth.POST("/login/2fa", api.VerifyLogin)

@@ -74,7 +74,9 @@ func (s *AuthService) VerifyLogin(ctx context.Context, challengeToken string, co
 	if err != nil {
 		return nil, err
 	}
-
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
 	if err := s.TwoFactorService.VerifyCode(ctx, user.Id, code); err != nil {
 		return nil, err
 	}

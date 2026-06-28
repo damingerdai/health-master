@@ -60,6 +60,12 @@ func (s *TwoFactorService) Enable(ctx context.Context, userID string, code strin
 	if err != nil {
 		return err
 	}
+	if user == nil {
+		return errors.New("user not found")
+	}
+	if user == nil {
+		return errors.New("user not found")
+	}
 	if user.TwoFactorSecret == nil {
 		return errors.New("2fa secret not found")
 	}
@@ -86,6 +92,9 @@ func (s *TwoFactorService) Disable(ctx context.Context, userID string, code stri
 	if err != nil {
 		return err
 	}
+	if user == nil {
+		return errors.New("user not found")
+	}
 	if user.TwoFactorSecret == nil {
 		return errors.New("2fa secret not found")
 	}
@@ -103,11 +112,13 @@ func (s *TwoFactorService) Disable(ctx context.Context, userID string, code stri
 }
 
 func (s *TwoFactorService) VerifyCode(ctx context.Context, userID string, code string) error {
+	if s.Aes == nil {
+		return errors.New("2fa is not configured")
+	}
 	user, err := s.UserRepository.Find(ctx, userID)
 	if err != nil {
 		return err
 	}
-
 	if user == nil {
 		return errors.New("user not found")
 	}
