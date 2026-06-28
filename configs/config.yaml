@@ -29,3 +29,6 @@ Smtp:
   Username:
   Password:
   From:
+Totp:
+  SecretKey:
+

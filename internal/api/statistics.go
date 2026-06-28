@@ -1,8 +1,6 @@
 package api
 
 import (
-	"github.com/damingerdai/health-master/global"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
@@ -30,7 +28,7 @@ func GetStatisticsSummary(c *gin.Context) {
 	}
 	userId, _ := userIdInContext.(string)
 
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	summary, err := srv.StatisticsService.GetSummary(c, userId)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ServerError)

@@ -10,6 +10,7 @@ var (
 	UnauthorizedTokenError           = NewError(10000005, "Invalid Token")
 	UnauthorizedTokenTimeout         = NewError(10000006, "Token Expired")
 	UnauthorizedTokenGenerate        = NewError(10000007, "Token Generation Failed")
+	InvalidVerificationCode          = NewError(10000008, "Invalid Verification Code")
 	TooManyRequests                  = NewError(10000009, "Too Many Requests")
 	NotImplemented                   = NewError(10000010, "Not Implemented")
 	FailedToCreatePasswordResetToken = NewError(10000011, "Failed to Create Password Reset Token")

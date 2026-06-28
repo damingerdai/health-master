@@ -14,4 +14,6 @@ var (
 	LoggerSetting *setting.LoggerSettingS
 
 	SmtpSetting *setting.SmtpSettingS
+
+	TotpSetting *setting.TotpSettingS
 )

@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage
 } from './ui/form';
-import { signIn } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Loader2Icon, LockIcon, UserIcon } from 'lucide-react';
@@ -31,9 +31,9 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<'form'>) {
   const router = useRouter();
-  const form = useForm<InputData>({ 
-    resolver: zodResolver(schemas), 
-    defaultValues: { email: '', password: '' } 
+  const form = useForm<InputData>({
+    resolver: zodResolver(schemas),
+    defaultValues: { email: '', password: '' }
   });
 
   const isSubmitting = form.formState.isSubmitting;
@@ -54,9 +54,15 @@ export function LoginForm({
       }
 
       toast.success('Login successful!');
-      router.push('/dashboard');
+      const session = await getSession();
+
+      if (session?.needTwoFactor) {
+        router.push("/2fa");
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err) {
-      toast.error((err as { message: string}).message || 'Something went wrong');
+      toast.error((err as { message: string }).message || 'Something went wrong');
     }
   }
 
@@ -84,10 +90,10 @@ export function LoginForm({
                 <FormControl>
                   <div className="relative">
                     <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      placeholder="admin@example.com" 
-                      className="pl-9" 
-                      {...field} 
+                    <Input
+                      placeholder="admin@example.com"
+                      className="pl-9"
+                      {...field}
                     />
                   </div>
                 </FormControl>
@@ -112,11 +118,11 @@ export function LoginForm({
                 <FormControl>
                   <div className="relative">
                     <LockIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      type="password" 
+                    <Input
+                      type="password"
                       placeholder="Your password"
-                      className="pl-9" 
-                      {...field} 
+                      className="pl-9"
+                      {...field}
                     />
                   </div>
                 </FormControl>

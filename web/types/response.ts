@@ -17,3 +17,9 @@ export type ListResponse<T> =
 export function isErrorResponse(response: any): response is ErrorResponse {
   return 'code' in response && response.code !== 200;
 }
+
+export interface LoginResponse {
+  needTwoFactor: boolean;
+  challengeToken?: string;
+  token?: AccessToken;
+}

@@ -109,6 +109,7 @@ func setupSetting() error {
 	global.RedisSetting = &appSetting.Redis
 	global.LoggerSetting = &appSetting.Logger
 	global.SmtpSetting = &appSetting.Smtp
+	global.TotpSetting = &appSetting.Totp
 
 	return nil
 }

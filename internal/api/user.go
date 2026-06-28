@@ -39,8 +39,8 @@ func CreateUser(c *gin.Context) {
 	db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
 		global.Logger.Info("do create a new user")
 		var err error
-		service := service.New(conn, global.Logger)
-		userService := service.UserService
+		srvs := getTxServices(conn)
+		userService := srvs.UserService
 		fullUser, err := userService.Create(c, &user)
 		if err != nil {
 			global.Logger.Error("fail to create a user: \t" + err.Error())
@@ -74,7 +74,7 @@ func CreateUser(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	res := response.NewResponse(c)
 	id := c.Param("id")
-	services := service.New(global.DBEngine, global.Logger)
+	services := getServices()
 	userService := services.UserService
 
 	user, err := userService.Find(c, id)
@@ -101,7 +101,7 @@ func GetUser(c *gin.Context) {
 // @Router			/api/v1/user/ [get]
 func GetCurrentUser(c *gin.Context) {
 	response := response.NewResponse(c)
-	services := service.New(global.DBEngine, global.Logger)
+	services := getServices()
 	userId := c.GetString("UserId")
 	if userId == "" {
 		var token string
