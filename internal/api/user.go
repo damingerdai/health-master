@@ -171,15 +171,29 @@ func UpdateUser(c *gin.Context) {
 			zap.String("userId", userId),
 			zap.Error(err),
 		)
-		res.ToErrorResponse(errcode.InvalidParams)
+		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
 	if req.Id == nil {
 		req.Id = &userId
 	}
-	user := req.ToUserModel()
 	services := service.New(global.DBEngine, global.Logger)
 	userService := services.UserService
+	user, err := userService.Find(c, userId)
+	if err != nil {
+		global.Logger.Error("fail to find user", zap.String("user", userId), zap.Error(err))
+		res.ToErrorResponse(errcode.ServerError)
+		return
+	}
+	if user == nil {
+		global.Logger.Error("Failed to bind user JSON from request body",
+			zap.String("userId", userId),
+			zap.Error(err),
+		)
+		res.ToErrorResponse(errcode.InvalidParams)
+		return
+	}
+	req.MergeInfo(user)
 	err = userService.Update(c, user)
 	if err != nil {
 		global.Logger.Error("Failed to update user in database",

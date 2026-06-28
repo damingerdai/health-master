@@ -27,7 +27,7 @@ type FullUser struct {
 }
 
 type UpdateUserReq struct {
-	Id        *string `json:"id"`
+	Id        *string `json:"id,omitempty"`
 	Username  *string `json:"username"`
 	FirstName *string `json:"firstName"`
 	LastName  *string `json:"lastName"`
@@ -61,4 +61,29 @@ func (req *UpdateUserReq) ToUserModel() *User {
 	}
 
 	return user
+}
+
+func (req *UpdateUserReq) MergeInfo(user *User) {
+	if req == nil || user == nil {
+		return
+	}
+
+	if req.Id != nil {
+		user.Id = *req.Id
+	}
+	if req.Username != nil {
+		user.Username = *req.Username
+	}
+	if req.FirstName != nil {
+		user.FirstName = *req.FirstName
+	}
+	if req.LastName != nil {
+		user.LastName = *req.LastName
+	}
+	if req.Email != nil {
+		user.Email = *req.Email
+	}
+	if req.Gender != nil {
+		user.Gender = *req.Gender
+	}
 }

@@ -43,6 +43,7 @@ export async function updateProfile(prevState: ProfileFormState, formData: FormD
 
     if (!res.ok) {
       const errorData = await res.json();
+      console.error("Update profile error:", errorData, data);
       return { 
         success: false, 
         message: errorData.message || "Failed to update profile" 
