@@ -34,6 +34,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from '@/types/user';
 import { updateProfile } from './actions/profile';
+import { useSession } from 'next-auth/react';
 
 const profileSchema = z.object({
   username: z.string().min(2, 'Username must be at least 2 characters'),
@@ -51,6 +52,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ user, className }: ProfileFormProps) {
+  const { data: session, update } = useSession();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -74,10 +76,24 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
       const result = await updateProfile({}, formData);
       if (result.success) {
         toast.success(result.message);
+        if (session) {
+          await update({
+            ...session,
+            user: {
+              ...session.user,
+              username: formData.get("username") as string,
+              firstName: formData.get("firstName") as string,
+              lastName: formData.get("lastName") as string,
+              email: formData.get("email") as string,
+              gender: formData.get("gender") as string,
+            }
+          })
+        }
       } else {
         toast.error(result.message);
       }
     } catch (error) {
+      console.error(error)
       toast.error('Something went wrong');
     }
   }

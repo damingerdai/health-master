@@ -10,6 +10,7 @@ import (
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // create a user godoc
@@ -162,22 +163,46 @@ func GetCurrentUser(c *gin.Context) {
 //	@Router			/api/v1/user [put]
 func UpdateUser(c *gin.Context) {
 	res := response.NewResponse(c)
-	var user model.User
-	err := c.ShouldBindJSON(&user)
-	if err != nil {
-		res.ToErrorResponse(errcode.InvalidParams)
-		return
-	}
 	userId := c.GetString("UserId")
-	user.Id = userId
-
-	services := service.New(global.DBEngine, global.Logger)
-	userService := services.UserService
-	err = userService.Update(c, &user)
+	var req model.UpdateUserReq
+	err := c.ShouldBindJSON(&req)
 	if err != nil {
+		global.Logger.Error("Failed to bind user JSON from request body",
+			zap.String("userId", userId),
+			zap.Error(err),
+		)
 		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
-
+	if req.Id == nil {
+		req.Id = &userId
+	}
+	services := service.New(global.DBEngine, global.Logger)
+	userService := services.UserService
+	user, err := userService.Find(c, userId)
+	if err != nil {
+		global.Logger.Error("fail to find user", zap.String("user", userId), zap.Error(err))
+		res.ToErrorResponse(errcode.ServerError)
+		return
+	}
+	if user == nil {
+		global.Logger.Error("Failed to bind user JSON from request body",
+			zap.String("userId", userId),
+			zap.Error(err),
+		)
+		res.ToErrorResponse(errcode.InvalidParams)
+		return
+	}
+	req.MergeInfo(user)
+	err = userService.Update(c, user)
+	if err != nil {
+		global.Logger.Error("Failed to update user in database",
+			zap.String("userId", userId),
+			zap.Error(err),
+		)
+		res.ToErrorResponse(errcode.ServerError)
+		return
+	}
+	global.Logger.Info("User updated successfully", zap.String("userId", userId))
 	res.ToResponse(user)
 }
