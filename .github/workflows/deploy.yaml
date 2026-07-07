@@ -13,33 +13,47 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v4
-      - name: Build docker
-        id: build-docker
-        run: |-
-          docker build . -t health-master:${{ github.sha }} -f github.Dockerfile
-      - name: Image digest
-        run: echo ${{ steps.build-docker.outputs.digest }}
-      - name: Save docker image to tar file
+      - uses: actions/checkout@v7
+  
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build and save docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: github.Dockerfile
+          tags: health-master:${{ github.sha }}
+          outputs: type=docker,dest=health-master.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Compress image tar
         run: |
-          docker save health-master:${{ github.sha }} -o health-master.tar
-          chmod 664 health-master.tar
+          gzip -3 health-master.tar
+          chmod 664 health-master.tar.gz 
+
       - name: copy file via ssh password
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          source: health-master.tar
+          source: health-master.tar.gz
           target: ${{ secrets.SERVER_TARGET_FOLDER_PATHs }}
       - name: deploy by ssh
         uses: appleboy/ssh-action@v1.2.5
+        env:
+          TARGET_PATH: ${{ secrets.SERVER_TARGET_FOLDER_PATHs }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          sripts: |-
-            cd /root/health-master; \
-            docker load -o health-master.tar; \
-            kubectl set image deployment/health-master-api health-master-api=health-master:${{ github.sha }} -n health-master-namespace \
-            kubectl rollout status deployment/health-master-api -n health-master-namespace
+          envs: TARGET_PATH
+          script: |-
+            cd "$TARGET_PATH" && \
+            gunzip -f health-master.tar.gz 
+            # docker load -o health-master.tar && \
+            # rm -f health-master.tar && \
+            # kubectl set image deployment/health-master-api health-master-api=health-master:${{ github.sha }} -n health-master-namespace && \
+            # kubectl rollout status deployment/health-master-api -n health-master-namespace
+          
