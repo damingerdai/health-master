@@ -3,7 +3,7 @@ name: Run Database Migrations
 on:
   push:
     paths:
-      - 'db/migrations/**'
+      - "db/migrations/**"
 
 jobs:
   migrate:
@@ -26,7 +26,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.26.4'
+          go-version: "1.26.5"
 
       - name: Build migration tool
         run: |
@@ -38,3 +38,4 @@ jobs:
           MIGRATE_PATH: "file://./db/migrations"
         run: |
           ./migrate up
+
