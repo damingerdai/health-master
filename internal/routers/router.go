@@ -3,8 +3,10 @@ package routers
 import (
 	"time"
 
+	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/api"
 	"github.com/damingerdai/health-master/internal/middleware"
+	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/limiter"
 	"github.com/gin-gonic/gin"
 	"github.com/penglongli/gin-metrics/ginmetrics"
@@ -22,6 +24,10 @@ var rule = limiter.LimiterBucketRule{
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(rule)
 
 func NewRouter() *gin.Engine {
+	services := service.New(global.DBEngine, global.Logger, service.WithTotpSetting(global.TotpSetting))
+	api.SetServices(services)
+	middleware.SetServices(services)
+
 	r := gin.New()
 	m := ginmetrics.GetMonitor()
 	m.SetMetricPath("/metrics")
@@ -73,6 +79,20 @@ func NewRouter() *gin.Engine {
 		resetPasswordApiV1.POST("/password-resets", api.CreateResetPassword)
 		resetPasswordApiV1.GET("/password-resets/:token", api.VerifyResetToken)
 		resetPasswordApiV1.PUT("/password-resets/:token", api.ResetPassword)
+	}
+
+	auth := r.Group("/api/v1/auth")
+	auth.Use(middleware.RateLimiter(methodLimiters))
+	{
+		auth.POST("/login", api.Login)
+		auth.POST("/login/2fa", api.VerifyLogin)
+	}
+
+	settingsApi := r.Group("/api/v1/settings")
+	settingsApi.Use(middleware.JWT())
+	{
+		settingsApi.GET("/2fa", api.GetTwoFactor)
+		settingsApi.PUT("/2fa", api.UpdateTwoFactor)
 	}
 
 	return r

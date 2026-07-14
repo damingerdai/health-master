@@ -19,6 +19,25 @@ definitions:
           $ref: '#/definitions/model.WeightRecordVO'
         type: array
     type: object
+  model.LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.LoginResponse:
+    properties:
+      challengeToken:
+        type: string
+      needTwoFactor:
+        type: boolean
+      token:
+        $ref: '#/definitions/model.UserToken'
+    type: object
   model.RequestResetInput:
     properties:
       email:
@@ -49,6 +68,13 @@ definitions:
       name:
         type: string
     type: object
+  model.Setup2FaResult:
+    properties:
+      qr_code:
+        type: string
+      secret:
+        type: string
+    type: object
   model.StatisticsSummary:
     properties:
       bloodPressureTrend:
@@ -77,6 +103,15 @@ definitions:
       success:
         type: boolean
     type: object
+  model.UpdateTwoFactorRequest:
+    properties:
+      code:
+        type: string
+      enabled:
+        type: boolean
+    required:
+    - code
+    type: object
   model.User:
     properties:
       createdAt:
@@ -94,6 +129,12 @@ definitions:
       lastName:
         type: string
       password:
+        type: string
+      two_factor_enabled:
+        type: boolean
+      two_factor_secret:
+        type: string
+      two_factor_verified_at:
         type: string
       updatedAt:
         type: string
@@ -222,6 +263,16 @@ definitions:
       expired:
         type: string
     type: object
+  model.VerifyLoginRequest:
+    properties:
+      challengeToken:
+        type: string
+      code:
+        type: string
+    required:
+    - challengeToken
+    - code
+    type: object
   model.WeightRecord:
     properties:
       createdAt:
@@ -271,6 +322,71 @@ info:
   title: health master api
   version: "1.0"
 paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email and password. If 2FA is enabled, a challenge token
+        will be returned.
+      parameters:
+      - description: login request
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: User login
+      tags:
+      - auth
+  /api/v1/auth/login/2fa:
+    post:
+      consumes:
+      - application/json
+      description: Complete login using a challenge token and TOTP verification code.
+      parameters:
+      - description: Verify Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.VerifyLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.UserToken'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Verify Two-Factor Authentication
+      tags:
+      - auth
   /api/v1/height:
     post:
       consumes:
@@ -425,6 +541,69 @@ paths:
       summary: get all roles
       tags:
       - roles
+  /api/v1/settings/2fa:
+    get:
+      consumes:
+      - application/json
+      description: Get the current 2FA status. If 2FA is not enabled, an otpauth URL
+        will be generated for enrollment.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.Setup2FaResult'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: Get Two-Factor Authentication setup
+      tags:
+      - settings
+    put:
+      consumes:
+      - application/json
+      description: Enable or disable TOTP-based two-factor authentication for the
+        current user. A valid verification code is required.
+      parameters:
+      - description: Update Two-Factor Authentication
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateTwoFactorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: Enable or disable Two-Factor Authentication
+      tags:
+      - settings
   /api/v1/statistics/summary:
     get:
       consumes:
@@ -576,6 +755,37 @@ paths:
       security:
       - BearerAuth: []
       summary: create a user
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: update user details
+      parameters:
+      - description: update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: update user
       tags:
       - user
   /api/v1/user-temperature:

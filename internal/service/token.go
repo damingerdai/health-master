@@ -12,7 +12,6 @@ import (
 	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/damingerdai/health-master/pkg/util/tokens"
-	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 )
 
@@ -25,8 +24,69 @@ func NewTokenService(userRepository *repository.UserRepository, tokenRepo *repos
 	return &TokenService{userRepository, tokenRepo}
 }
 
-func (ts *TokenService) CreateToken(ctx context.Context, email string, password string) (*model.UserToken, error) {
+func (ts *TokenService) CreateAccessToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
 	redisService := NewRedisService(global.RedisClient)
+
+	userKey := fmt.Sprintf("token-user-%s", user.Id)
+	result, err := redisService.Get(ctx, userKey)
+	if err == nil {
+		if token, ok := result.(model.UserToken); ok {
+			return &token, nil
+		}
+	}
+
+	now := time.Now()
+	expire := now.Add(global.JwtSetting.Expire)
+
+	token, err := tokens.CreateToken(
+		global.JwtSetting.GetJwtSecret(),
+		user.Id,
+		global.JwtSetting.Issuer,
+		expire,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	userToken := model.UserToken{
+		AccessToken: *token,
+		Expired:     expire,
+	}
+
+	redisService.SaveNX(
+		ctx,
+		userKey,
+		userToken,
+		global.JwtSetting.Expire.Abs()-5*time.Second,
+	)
+
+	return &userToken, nil
+}
+
+func (ts *TokenService) CreateChallengeToken(
+	ctx context.Context,
+	user *model.User,
+) (*model.UserToken, error) {
+
+	expire := time.Now().Add(5 * time.Minute)
+
+	token, err := tokens.CreateToken(
+		global.JwtSetting.GetJwtSecret(),
+		user.Id,
+		global.JwtSetting.Issuer,
+		expire,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.UserToken{
+		AccessToken: *token,
+		Expired:     expire,
+	}, nil
+}
+
+func (ts *TokenService) CreateToken(ctx context.Context, email string, password string) (*model.UserToken, error) {
 	user, err := ts.userRepository.FindByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -43,35 +103,27 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 		return nil, errors.New("email or password error")
 	}
 	global.Logger.Info("founded user", zap.String("email", email), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
-	var userKey = fmt.Sprintf("token-user-%s", user.Id)
-	result, err := redisService.Get(ctx, userKey)
-	if err == redis.Nil {
-		return ts.doCreateToken(ctx, user)
-	}
-	if err != nil {
-		return nil, err
-	}
-	if r, ok := result.(model.UserToken); ok {
-		return &r, nil
-	}
-
-	return ts.doCreateToken(ctx, user)
+	return ts.CreateAccessToken(ctx, user)
 }
 
-func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
-	nowTime := time.Now()
-	expireTime := nowTime.Add(global.JwtSetting.Expire)
-	redisService := NewRedisService(global.RedisClient)
-	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime)
-	if err != nil {
-		return nil, err
-	}
-	userKey := fmt.Sprintf("token-user-%s", user.Id)
-	userToken := model.UserToken{AccessToken: *token, Expired: expireTime}
-	redisService.SaveNX(ctx, userKey, userToken, global.JwtSetting.Expire.Abs()-5*time.Second)
+// func (ts *TokenService) DoCreateToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
+// 	return ts.doCreateToken(ctx, user)
+// }
 
-	return &userToken, nil
-}
+// func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
+// 	nowTime := time.Now()
+// 	expireTime := nowTime.Add(global.JwtSetting.Expire)
+// 	redisService := NewRedisService(global.RedisClient)
+// 	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	userKey := fmt.Sprintf("token-user-%s", user.Id)
+// 	userToken := model.UserToken{AccessToken: *token, Expired: expireTime}
+// 	redisService.SaveNX(ctx, userKey, userToken, global.JwtSetting.Expire.Abs()-5*time.Second)
+
+// 	return &userToken, nil
+// }
 
 func (ts *TokenService) CreateTmpToken(ctx context.Context, user *model.User, expireTime time.Time) (*model.UserToken, error) {
 	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime)

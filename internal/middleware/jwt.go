@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/damingerdai/health-master/global"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
@@ -40,7 +39,7 @@ func JWT() gin.HandlerFunc {
 		if token == "" {
 			ecode = errcode.NotFoundAuthorization
 		} else {
-			srv := service.New(global.DBEngine, global.Logger)
+			srv := getServices()
 			tokenService := srv.TokenService
 			claims, err := tokenService.ParseToken(token)
 			if err != nil {

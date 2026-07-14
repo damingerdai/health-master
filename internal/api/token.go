@@ -80,7 +80,7 @@ func ParseToken(c *gin.Context) {
 	if token == "" {
 		res.ToErrorResponse(errcode.NotFoundAuthorization)
 	}
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	tokenService := srv.TokenService
 	userService := srv.UserService
 	claims, err := tokenService.ParseToken(token[7:])
@@ -129,7 +129,7 @@ func GetTmpToken(c *gin.Context) {
 	}
 	token = strings.TrimPrefix(token, "Bearer ")
 
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	tokenService := srv.TokenService
 	userService := srv.UserService
 	claims, err := tokenService.ParseToken(token)

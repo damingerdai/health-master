@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -33,7 +32,7 @@ func CreateUserHeight(c *gin.Context) {
 		res.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
-	srvs := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	userHeightService := srvs.UserHeightService
 	userHeigthVo, err := userHeightService.Create(c, &userHeight)
 	if err != nil {

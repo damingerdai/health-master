@@ -1,8 +1,6 @@
 package api
 
 import (
-	"github.com/damingerdai/health-master/global"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -22,7 +20,7 @@ import (
 //	@Router			/api/v1/roles [get]
 func ListRoles(c *gin.Context) {
 	res := response.NewResponse(c)
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	roleService := srv.RoleService
 
 	roles, err := roleService.List(c)

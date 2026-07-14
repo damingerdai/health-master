@@ -6,7 +6,6 @@ import (
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
@@ -37,8 +36,8 @@ func CreateUsersTemperatures(c *gin.Context) {
 	}
 
 	err := db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
-		service := service.New(conn, global.Logger)
-		user, err := service.UserService.Find(c, userTemperature.UserId)
+		srvs := getTxServices(conn)
+		user, err := srvs.UserService.Find(c, userTemperature.UserId)
 		if err != nil {
 			return err
 		}
@@ -46,7 +45,7 @@ func CreateUsersTemperatures(c *gin.Context) {
 			return errors.New("no user")
 		}
 
-		err = service.UserTemperatureService.Create(c, &userTemperature)
+		err = srvs.UserTemperatureService.Create(c, &userTemperature)
 		if err != nil {
 			return err
 		}
@@ -79,8 +78,8 @@ func GetUsersTemperatures(c *gin.Context) {
 	resp := response.NewResponse(c)
 	var userTemperature *model.UserTemperature
 	err := db.NewTransaction(c, global.DBEngine, func(conn db.Connection) error {
-		service := service.New(conn, global.Logger)
-		ut, err := service.UserTemperatureService.Find(c, id)
+		srvs := getTxServices(conn)
+		ut, err := srvs.UserTemperatureService.Find(c, id)
 		if err != nil {
 			return err
 		}
@@ -109,7 +108,7 @@ func GetUsersTemperatures(c *gin.Context) {
 //	@Router			/api/v1/user-temperatures [get]
 func ListUsersTemperatures(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	userId := c.Query("userId")
 	if userId == "" {
 		userIdInContext, exists := c.Get(contants.UserContext)
@@ -123,7 +122,7 @@ func ListUsersTemperatures(c *gin.Context) {
 			return
 		}
 	}
-	uts, err := service.UserTemperatureService.List(c, userId)
+	uts, err := srvs.UserTemperatureService.List(c, userId)
 	if err != nil {
 		resp.ToErrorResponse(errcode.ListUserTemperatureError)
 	} else {

@@ -6,7 +6,6 @@ import (
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -35,7 +34,7 @@ func AddWeightRecord(c *gin.Context) {
 		resp.ToErrorResponse(errcode.InvalidParams.WithDetails(err.Error()))
 		return
 	}
-	srv := service.New(global.DBEngine, global.Logger)
+	srv := getServices()
 	err := srv.WeightRecordService.Create(c, &weightRecord)
 	if err != nil {
 		fmt.Print("fail to create weight record: ", err)
@@ -65,7 +64,7 @@ func AddWeightRecord(c *gin.Context) {
 //	@Router			/api/v1/weight-records [get]
 func ListWeightRecords(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	var userId = c.Query("userId")
 	if len(userId) == 0 {
 		var (
@@ -84,7 +83,7 @@ func ListWeightRecords(c *gin.Context) {
 			resp.ToErrorResponse(errcode.NotFoundAuthorization)
 			return
 		}
-		userId, err = service.UserService.GetUserIdByAuthorization(c, token)
+		userId, err = srvs.UserService.GetUserIdByAuthorization(c, token)
 		if err != nil {
 			global.Logger.Error("fail to list a single user weight records", zap.Error(err))
 			resp.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
@@ -100,7 +99,7 @@ func ListWeightRecords(c *gin.Context) {
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "5")
 	global.Logger.Debug("list a single user weight records", zap.String("UserId", userId), zap.String("Page", page), zap.String("Limit", limit))
-	weightRecordService := service.WeightRecordService
+	weightRecordService := srvs.WeightRecordService
 	res, err := weightRecordService.PagingQueryByUserId(c, userId, limit, page)
 	if err != nil {
 		global.Logger.Error("fail to list a single user weight records", zap.Error(err))
@@ -125,9 +124,9 @@ func ListWeightRecords(c *gin.Context) {
 //	@Router			/api/v1/weight-record/{id} [delete]
 func DeleteWeightRecord(c *gin.Context) {
 	resp := response.NewResponse(c)
-	service := service.New(global.DBEngine, global.Logger)
+	srvs := getServices()
 	id := c.Params.ByName("id")
-	err := service.WeightRecordService.DeleteWeightRecord(c, id)
+	err := srvs.WeightRecordService.DeleteWeightRecord(c, id)
 	if err != nil {
 		global.Logger.Info("fail to delete weight record", zap.String("WeightRecordId", id), zap.Error(err))
 		resp.ToErrorResponseWithError(errcode.DeleteDeleteWeightRecordError, err)

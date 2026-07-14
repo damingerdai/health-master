@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { DataResponse, isErrorResponse, TokenResponse } from '@/types/response';
 import { User } from '@/types/user';
+import { Verify2FARequest } from '@/types/request';
+import { AccessToken } from '@/types/token';
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST,
@@ -28,6 +30,9 @@ export class HttpClient {
     }
   }
 
+  /**
+   * @deprecated
+   */
   public async login(
     email: string,
     password: string
@@ -73,6 +78,16 @@ export class HttpClient {
       throw err;
     }
   }
+
+  public async verify2FA(
+  req: Verify2FARequest
+): Promise<DataResponse<AccessToken>> {
+  return this.request({
+    method: "POST",
+    url: "/api/v1/auth/login/2fa",
+    data: req,
+  });
+}
 }
 
 export const httpClient = new HttpClient(client);

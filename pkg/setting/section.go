@@ -53,6 +53,10 @@ type SmtpSettingS struct {
 	From     string
 }
 
+type TotpSettingS struct {
+	SecretKey string
+}
+
 type Settings struct {
 	Server   ServerSettingS
 	Database DatabaseSettingS
@@ -60,6 +64,7 @@ type Settings struct {
 	Redis    RedisSettingS
 	Logger   LoggerSettingS
 	Smtp     SmtpSettingS
+	Totp     TotpSettingS
 }
 
 func (s *Setting) ReadSection(key string, value any) error {

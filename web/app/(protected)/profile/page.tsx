@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth-options";
 import { getCurrentUser } from "@/components/actions/user";
 import { ProfileForm } from "@/components/profile-form";
 import { redirect } from "next/navigation";
+import { SecurityCard } from "@/components/security-card";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -24,6 +25,8 @@ export default async function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto p-6 md:p-10">
       <ProfileForm user={user} />
+
+      <SecurityCard twoFactorEnabled={user.twoFactorEnabled} />
     </div>
   );
 }
