@@ -30,5 +30,4 @@ Smtp:
   Password:
   From:
 Totp:
-  SecretKey:
-
+  Secretkey: EU64Y9V8E2KHRIXX359P3VTNBCBIOXS0

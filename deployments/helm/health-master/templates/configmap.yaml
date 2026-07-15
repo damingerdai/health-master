@@ -36,3 +36,5 @@ data:
       Username: {{ .Values.smtp.username | quote }}
       Password: {{ .Values.smtp.password | quote }}
       From: {{ .Values.smtp.from | quote }}
+    Totp:
+      Secretkey: {{ .Values.totp.secretkey | quote }}

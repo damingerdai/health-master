@@ -49,6 +49,9 @@ smtp:
   password: health-master-password
   from: health-master@gmail.com
 
+totp:
+  secretkey: EU64Y9V8E2KHRIXX359P3VTNBCBIOXS0
+
 # Frontend configuration
 web:
   enabled: false # Set to true to deploy the frontend
