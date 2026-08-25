@@ -1,8 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import * as LabelPrimitive from '@radix-ui/react-label';
-import { Slot } from '@radix-ui/react-slot';
 import {
   Controller,
   FormProvider,
@@ -15,6 +13,10 @@ import {
 
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+
+function Slot({ children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+  return React.isValidElement(children) ? React.cloneElement(children, { ...props, ...(children.props as object) }) : null;
+}
 
 const Form = FormProvider;
 
@@ -90,7 +92,7 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
 function FormLabel({
   className,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+}: React.ComponentProps<'label'>) {
   const { error, formItemId } = useFormField();
 
   return (
@@ -104,7 +106,7 @@ function FormLabel({
   );
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+function FormControl({ ...props }: React.ComponentProps<'div'>) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
