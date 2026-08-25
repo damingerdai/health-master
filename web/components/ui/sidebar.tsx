@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
 import { cva, VariantProps } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
 
@@ -24,6 +23,10 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+
+function Slot({ children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+  return React.isValidElement(children) ? React.cloneElement(children, { ...props, ...(children.props as object) }) : null;
+}
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

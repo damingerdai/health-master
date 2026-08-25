@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
 import { ChevronRight, MoreHorizontal } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+
+function Slot({ children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+  return React.isValidElement(children) ? React.cloneElement(children, { ...props, ...(children.props as object) }) : null;
+}
 
 function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
   return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />;
