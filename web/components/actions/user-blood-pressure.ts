@@ -13,7 +13,7 @@ export const getUserBloodPressures = async (query?: string) => {
     }
 
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user-blood-pressures${query ?? ''}`, {
+        const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/user-blood-pressures${query ?? ''}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${accessToken}`

@@ -32,7 +32,7 @@ export async function updateProfile(prevState: ProfileFormState, formData: FormD
   };
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
+    const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -40,7 +40,7 @@ declare module "next-auth/jwt" {
 
 async function getUserByAccessToken(accessToken: string): Promise<User | null> {
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`,
+        `${process.env.BACKEND_HOST}/api/v1/user`,
         {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -97,7 +97,7 @@ export const authOptions: AuthOptions = {
           const accessToken = credentials.accessToken;
 
           const userRes = await fetch(
-            `${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`,
+            `${process.env.BACKEND_HOST}/api/v1/user`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -124,7 +124,7 @@ export const authOptions: AuthOptions = {
         if (!email || !password) {
           throw new Error('Email and password are required');
         }
-        const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/auth/login`, {
+        const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export const authOptions: AuthOptions = {
         }
         console.log('tokenRes', tokenRes.data);
         const { accessToken } = tokenData.token;
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
+        const userRes = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -191,7 +191,7 @@ export const authOptions: AuthOptions = {
     //     if (!code || !challengeToken) {
     //       throw new Error('Code and challenge token are required');
     //     }
-    //     const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/auth/2fa`, {
+    //     const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/auth/2fa`, {
     //       method: 'POST',
     //       headers: {
     //         'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ export const authOptions: AuthOptions = {
     //       throw new Error(tokenRes.message || 'Two-factor authentication failed');
     //     }
     //     const { accessToken } = tokenRes.data.token;
-    //     const userRes = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
+    //     const userRes = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
     //       method: 'GET',
     //       headers: {
     //         Authorization: `Bearer ${accessToken}`

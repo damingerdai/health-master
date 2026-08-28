@@ -2,7 +2,7 @@
 
 export async function forgetPassword(email: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/password-resets`, {
+    const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/password-resets`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

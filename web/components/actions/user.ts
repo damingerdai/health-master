@@ -2,7 +2,7 @@
 
 export async function getCurrentUser(accessToken: string) {
   try {
-     const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/user`, {
+     const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`

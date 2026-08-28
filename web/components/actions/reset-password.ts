@@ -8,7 +8,7 @@ export async function resetPassword(params: {
     password: string;
 }) {
     const { token, email, password } = params;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/password-resets/${token}`, {
+    const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/password-resets/${token}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

@@ -12,7 +12,7 @@ export async function getStatisticsSummary() {
   }
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST}/api/v1/statistics/summary`, {
+    const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/statistics/summary`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`

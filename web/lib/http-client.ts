@@ -5,7 +5,7 @@ import { Verify2FARequest } from '@/types/request';
 import { AccessToken } from '@/types/token';
 
 const client = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_REACT_APP_BACKEND_HOST,
+  baseURL: process.env.BACKEND_HOST,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
