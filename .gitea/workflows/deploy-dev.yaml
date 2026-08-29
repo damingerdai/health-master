@@ -20,8 +20,9 @@ jobs:
       - name: Configure Docker daemon for insecure HTTP registry
         run: |
           set -eu
+          sudo mkdir -p /etc/docker
           echo "{ \"insecure-registries\": [\"${{ env.REGISTRY }}\"] }" | sudo tee /etc/docker/daemon.json
-          sudo systemctl restart docker
+          sudo systemctl restart docker || sudo service docker restart || true
           sudo docker info | grep -A2 Insecure
 
       - name: Set up Docker Buildx
