@@ -44,8 +44,8 @@
     "@tailwindcss/postcss": "^4",
     "@types/cookie": "^0.6.0",
     "@types/node": "^20",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
     "prettier": "^3.7.4",
@@ -54,7 +54,7 @@
     "typescript": "5.9.3"
   },
   "overrides": {
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7"
   }
 }
