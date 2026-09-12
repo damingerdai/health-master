@@ -49,6 +49,7 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<InputData>({
     resolver: zodResolver(schemas),
@@ -199,9 +200,18 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
+                 <div className="relative">
                 <FormControl>
-                  <Input {...field} type="password" />
+                  <Input {...field} type={showConfirmPassword ? 'text' : 'password'} className="pr-10" />
                 </FormControl>
+                <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                  </div>
                 <FormMessage />
               </FormItem>
             )}

@@ -1,6 +1,7 @@
 'use client';
 
 import { z } from 'zod';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +18,7 @@ import {
 import { getSession, signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { Loader2Icon, LockIcon, UserIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Loader2Icon, LockIcon, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 
 const schemas = z.object({
@@ -31,6 +32,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<'form'>) {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<InputData>({
     resolver: zodResolver(schemas),
     defaultValues: { email: '', password: '' }
@@ -115,17 +117,36 @@ export function LoginForm({
                     Forgot password?
                   </Link>
                 </div>
-                <FormControl>
-                  <div className="relative">
-                    <LockIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="password"
-                      placeholder="Your password"
-                      className="pl-9"
-                      {...field}
+                <div className="flex items-center gap-2">
+                  <div className="relative min-w-0 flex-1">
+                    <LockIcon
+                      aria-hidden="true"
+                      className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                     />
+                    <FormControl>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        placeholder="Your password"
+                        className="pl-9"
+                        {...field}
+                      />
+                    </FormControl>
                   </div>
-                </FormControl>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowPassword((visible) => !visible)}
+                  >
+                    {showPassword ? (
+                      <EyeOffIcon aria-hidden="true" />
+                    ) : (
+                      <EyeIcon aria-hidden="true" />
+                    )}
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
