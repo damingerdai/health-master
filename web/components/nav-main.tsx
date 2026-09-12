@@ -29,15 +29,16 @@ export function NavMain({
       <SidebarGroupLabel className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
         Platform
       </SidebarGroupLabel>
-      <SidebarGroupContent className="mt-1">
-        <SidebarMenu>
+      <SidebarGroupContent className="mt-2">
+        <SidebarMenu className="gap-2">
           {items.map((item) => {
             const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
 
             return (
-              <SidebarMenuItem key={item.title}>
+              <SidebarMenuItem key={item.title} className='p-1'>
                 <SidebarMenuButton
                   asChild
+                  size="lg"
                   tooltip={item.title}
                   isActive={isActive}
                   className={cn(
