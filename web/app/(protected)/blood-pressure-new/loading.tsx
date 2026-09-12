@@ -24,7 +24,6 @@ export default function Loading() {
 
           <div className="rounded-3xl border bg-white p-6 shadow-sm md:p-10 dark:bg-zinc-900">
             <div className="mx-auto max-w-sm space-y-8">
-              
               <div className="space-y-4">
                 <Skeleton className="h-4 w-20" />
                 <div className="grid grid-cols-2 gap-4">

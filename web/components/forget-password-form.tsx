@@ -22,7 +22,7 @@ import { forgetPassword } from './actions/forget-password';
 
 // Schema focusing on email validation
 const forgetPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address')
 });
 
 type ForgetPasswordData = z.infer<typeof forgetPasswordSchema>;
@@ -35,7 +35,7 @@ export function ForgetPasswordForm({
     email: ''
   };
 
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(forgetPasswordSchema),
@@ -51,12 +51,17 @@ export function ForgetPasswordForm({
           try {
             await forgetPassword(data.email);
             toast.success('Check your email', {
-              description: 'We have sent a password reset link to your email address.',
+              description:
+                'We have sent a password reset link to your email address.',
               position: 'top-right'
             });
-            router.push(`/forget-password/success?email=${encodeURIComponent(data.email)}`);
+            router.push(
+              `/forget-password/success?email=${encodeURIComponent(data.email)}`
+            );
           } catch (err) {
-            const message = (err as Record<'message', string>).message ?? 'Something went wrong';
+            const message =
+              (err as Record<'message', string>).message ??
+              'Something went wrong';
             toast.error(message, {
               position: 'top-right'
             });
@@ -66,7 +71,8 @@ export function ForgetPasswordForm({
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="text-2xl font-bold">Forgot password?</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            No worries! Enter your email below and we&apos;ll send you a reset link.
+            No worries! Enter your email below and we&apos;ll send you a reset
+            link.
           </p>
         </div>
 

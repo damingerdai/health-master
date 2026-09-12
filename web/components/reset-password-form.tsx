@@ -20,14 +20,16 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { resetPassword } from './actions/reset-password';
 
 // Schema with validation for email, password, and confirmation matching
-const resetPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const resetPasswordSchema = z
+  .object({
+    email: z.string().email('Please enter a valid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string()
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword']
+  });
 
 type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 
@@ -37,7 +39,7 @@ export function ResetPasswordForm({
 }: React.ComponentProps<'form'>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Extract token from URL: reset-password?token=...
   const token = searchParams.get('token');
 
@@ -53,7 +55,7 @@ export function ResetPasswordForm({
   const onSubmit = async (data: ResetPasswordData) => {
     if (!token) {
       toast.error('Invalid request', {
-        description: 'Reset token is missing. Please request a new link.',
+        description: 'Reset token is missing. Please request a new link.'
       });
       return;
     }
@@ -66,13 +68,15 @@ export function ResetPasswordForm({
       });
 
       toast.success('Password updated', {
-        description: 'Your password has been reset successfully. Please log in.',
+        description:
+          'Your password has been reset successfully. Please log in.',
         position: 'top-right'
       });
 
       router.push('/login');
     } catch (err) {
-      const message = (err as Record<'message', string>).message ?? 'Something went wrong';
+      const message =
+        (err as Record<'message', string>).message ?? 'Something went wrong';
       toast.error(message, {
         position: 'top-right'
       });

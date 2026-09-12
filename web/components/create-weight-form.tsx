@@ -18,7 +18,13 @@ import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
-import { Calendar as CalendarIcon, Clock, Loader2, Save, Scale } from 'lucide-react';
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Loader2,
+  Save,
+  Scale
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { request } from '@/lib/request';
@@ -65,12 +71,12 @@ export function CreateWeightForm({
             const [hours, minutes] = logTime.split(':').map(Number);
             const logDate = new Date(data.logDate);
             logDate.setHours(hours, minutes, 0, 0);
-            
+
             const value = {
               weight: data.weight,
               logDate
             };
-            
+
             try {
               await request({
                 method: 'POST',
@@ -102,12 +108,21 @@ export function CreateWeightForm({
               name="weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs uppercase tracking-wider font-bold">Body Weight</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-wider font-bold">
+                    Body Weight
+                  </FormLabel>
                   <div className="relative">
                     <FormControl>
-                      <Input type="number" step="0.1" className="pr-12 text-lg font-semibold h-12" {...field} />
+                      <Input
+                        type="number"
+                        step="0.1"
+                        className="pr-12 text-lg font-semibold h-12"
+                        {...field}
+                      />
                     </FormControl>
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">KG</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">
+                      KG
+                    </span>
                   </div>
                   <FormMessage />
                 </FormItem>
@@ -127,9 +142,16 @@ export function CreateWeightForm({
                       <FormControl>
                         <Button
                           variant="outline"
-                          className={cn("pl-3 text-left font-normal h-10", !field.value && "text-muted-foreground")}
+                          className={cn(
+                            'pl-3 text-left font-normal h-10',
+                            !field.value && 'text-muted-foreground'
+                          )}
                         >
-                          {field.value ? format(field.value, 'MMM dd') : <span>Pick date</span>}
+                          {field.value ? (
+                            format(field.value, 'MMM dd')
+                          ) : (
+                            <span>Pick date</span>
+                          )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -139,7 +161,9 @@ export function CreateWeightForm({
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={date => date > new Date() || date < new Date('1900-01-01')}
+                        disabled={date =>
+                          date > new Date() || date < new Date('1900-01-01')
+                        }
                       />
                     </PopoverContent>
                   </Popover>
@@ -155,7 +179,11 @@ export function CreateWeightForm({
                   <FormLabel>Time</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input type="time" className="h-10 pl-3 pr-8" {...field} />
+                      <Input
+                        type="time"
+                        className="h-10 pl-3 pr-8"
+                        {...field}
+                      />
                       <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50" />
                     </div>
                   </FormControl>
@@ -169,10 +197,10 @@ export function CreateWeightForm({
             type="submit"
             disabled={isPending}
             className={cn(
-              "w-full h-12 text-base font-semibold shadow-lg transition-all",
+              'w-full h-12 text-base font-semibold shadow-lg transition-all',
               isPending
-                ? "shadow-none opacity-80 cursor-not-allowed"
-                : "shadow-primary/20 hover:translate-y-[-1px] active:translate-y-[0px]"
+                ? 'shadow-none opacity-80 cursor-not-allowed'
+                : 'shadow-primary/20 hover:translate-y-[-1px] active:translate-y-[0px]'
             )}
           >
             {isPending ? (

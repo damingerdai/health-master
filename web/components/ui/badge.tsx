@@ -3,8 +3,13 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
-function Slot({ children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
-  return React.isValidElement(children) ? React.cloneElement(children, { ...props, ...(children.props as object) }) : null;
+function Slot({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+  return React.isValidElement(children)
+    ? React.cloneElement(children, { ...props, ...(children.props as object) })
+    : null;
 }
 
 const badgeVariants = cva(

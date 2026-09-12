@@ -24,12 +24,14 @@ function ToggleGroup({
   onValueChange,
   children,
   ...props
-}: Omit<React.ComponentProps<typeof ToggleGroupPrimitive>, 'value' | 'onValueChange' | 'multiple'> & {
+}: Omit<
+  React.ComponentProps<typeof ToggleGroupPrimitive>,
+  'value' | 'onValueChange' | 'multiple'
+> & {
   type?: 'single' | 'multiple';
   value?: string | readonly string[];
   onValueChange?: (value: string) => void;
-} &
-  VariantProps<typeof toggleVariants>) {
+} & VariantProps<typeof toggleVariants>) {
   return (
     <ToggleGroupPrimitive
       data-slot="toggle-group"
@@ -37,7 +39,11 @@ function ToggleGroup({
       data-size={size}
       multiple={type === 'multiple'}
       value={value == null ? undefined : Array.isArray(value) ? value : [value]}
-      onValueChange={values => onValueChange?.(type === 'multiple' ? values.join(',') : values[0] ?? '')}
+      onValueChange={values =>
+        onValueChange?.(
+          type === 'multiple' ? values.join(',') : (values[0] ?? '')
+        )
+      }
       className={cn(
         'group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs',
         className

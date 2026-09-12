@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
 export async function getCurrentUser(accessToken: string) {
   try {
-     const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
+    const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -20,4 +20,4 @@ export async function getCurrentUser(accessToken: string) {
     console.error('getCurrentUser error:', err);
     return null;
   }
-}   
+}

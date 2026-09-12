@@ -23,12 +23,12 @@ export default function Layout({
       </div>
       <div className="bg-muted relative hidden lg:block">
         <Image
-          src="https://picsum.photos/1000/1500?random=2" 
+          src="https://picsum.photos/1000/1500?random=2"
           alt="Health Master Background"
-          fill  
-          priority  
+          fill
+          priority
           className="object-cover dark:brightness-[0.2] dark:grayscale"
-          sizes="(max-width: 1024px) 0vw, 50vw"  
+          sizes="(max-width: 1024px) 0vw, 50vw"
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
-import { StatisticsCards } from "@/components/statistics-cards";
-import { HealthCharts } from "@/components/health-charts";
-import { getStatisticsSummary } from "@/components/actions/statistics";
+import { StatisticsCards } from '@/components/statistics-cards';
+import { HealthCharts } from '@/components/health-charts';
+import { getStatisticsSummary } from '@/components/actions/statistics';
 
 export default async function Page() {
   const summary = await getStatisticsSummary();
@@ -8,7 +8,9 @@ export default async function Page() {
   if (!summary) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
-        <p className="text-muted-foreground text-lg">Failed to load statistics. Please try again later.</p>
+        <p className="text-muted-foreground text-lg">
+          Failed to load statistics. Please try again later.
+        </p>
       </div>
     );
   }

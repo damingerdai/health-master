@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from 'lucide-react';
 
 interface SecurityItemProps {
   icon: React.ReactNode;
@@ -13,7 +13,7 @@ export function SecurityItem({
   title,
   description,
   badge,
-  action,
+  action
 }: SecurityItemProps) {
   return (
     <div className="flex items-center justify-between gap-6 px-6 py-5">
@@ -26,15 +26,11 @@ export function SecurityItem({
             {badge}
           </div>
 
-          <p className="text-sm text-muted-foreground">
-            {description}
-          </p>
+          <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>
 
-      {action ?? (
-        <ChevronRight className="h-5 w-5 text-muted-foreground" />
-      )}
+      {action ?? <ChevronRight className="h-5 w-5 text-muted-foreground" />}
     </div>
   );
 }

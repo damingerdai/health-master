@@ -10,7 +10,10 @@ function Checkbox({
   className,
   checked,
   ...props
-}: Omit<React.ComponentProps<typeof CheckboxPrimitive.Checkbox.Root>, 'checked'> & { checked?: boolean | 'indeterminate' }) {
+}: Omit<
+  React.ComponentProps<typeof CheckboxPrimitive.Checkbox.Root>,
+  'checked'
+> & { checked?: boolean | 'indeterminate' }) {
   return (
     <CheckboxPrimitive.Checkbox.Root
       data-slot="checkbox"

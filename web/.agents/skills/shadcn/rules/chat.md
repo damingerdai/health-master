@@ -37,7 +37,7 @@ track visibility, and jump to it. `MessageScrollerButton` sits inside
 // Hand-rolled scroll container with manual stick-to-bottom logic.
 <div ref={scrollRef} onScroll={handleScroll} className="flex-1 overflow-y-auto">
   <div className="flex flex-col gap-6 p-4">
-    {messages.map((m) => (
+    {messages.map(m => (
       <ChatMessage key={m.id} message={m} />
     ))}
   </div>
@@ -51,13 +51,13 @@ track visibility, and jump to it. `MessageScrollerButton` sits inside
   <MessageScroller>
     <MessageScrollerViewport>
       <MessageScrollerContent>
-        {messages.map((message) => (
+        {messages.map(message => (
           <MessageScrollerItem
             key={message.id}
             messageId={message.id}
-            scrollAnchor={message.role === "user"}
+            scrollAnchor={message.role === 'user'}
           >
-            <Message align={message.role === "user" ? "end" : "start"}>
+            <Message align={message.role === 'user' ? 'end' : 'start'}>
               {/* ...message content... */}
             </Message>
           </MessageScrollerItem>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-    return (
+  return (
     <div className="flex flex-1 flex-col bg-slate-50/50 dark:bg-zinc-950">
       <header className="sticky top-0 z-10 flex w-full items-center justify-between border-b bg-white/80 backdrop-blur-md px-4 py-4 md:px-8 dark:bg-zinc-900/80">
         <div className="flex flex-col gap-1">
@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             Track and manage your temperature levels daily.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button asChild size="sm" className="shadow-sm">
             <Link href="/temperature-new" className="flex items-center gap-2">
@@ -27,14 +27,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="@container/main flex-1 p-4 md:p-8">
         <div className="mx-auto max-w-7xl space-y-6">
-          
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-             {/* 占位：后续可以传入快捷统计组件 */}
+            {/* 占位：后续可以传入快捷统计组件 */}
           </section>
 
-         <div className="@container/main">
-             {children}
-          </div>
+          <div className="@container/main">{children}</div>
         </div>
       </main>
     </div>

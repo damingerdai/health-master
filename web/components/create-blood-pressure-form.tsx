@@ -15,7 +15,14 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Activity, Calendar as CalendarIcon, Clock, Heart, Loader2, Save } from 'lucide-react';
+import {
+  Activity,
+  Calendar as CalendarIcon,
+  Clock,
+  Heart,
+  Loader2,
+  Save
+} from 'lucide-react';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { request } from '@/lib/request';
@@ -79,13 +86,15 @@ export function CreateBloodPressureForm({
             } catch (error) {
               console.error('Error creating blood pressure record:', error);
               toast.error(
-                typeof error === 'object' && error !== null && 'message' in error
+                typeof error === 'object' &&
+                  error !== null &&
+                  'message' in error
                   ? (error as { message?: string }).message
                   : 'Failed to create blood pressure record'
               );
             }
             router.push('/blood-pressure'); // Redirect to dashboard after submission
-          })
+          });
         })}
       >
         <div className="grid gap-8">
@@ -101,12 +110,20 @@ export function CreateBloodPressureForm({
                 name="systolic"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-wider font-bold">Systolic</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-wider font-bold">
+                      Systolic
+                    </FormLabel>
                     <div className="relative">
                       <FormControl>
-                        <Input type="number" className="pr-12 text-lg font-semibold h-12" {...field} />
+                        <Input
+                          type="number"
+                          className="pr-12 text-lg font-semibold h-12"
+                          {...field}
+                        />
                       </FormControl>
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">mmHg</span>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">
+                        mmHg
+                      </span>
                     </div>
                     <FormMessage />
                   </FormItem>
@@ -117,12 +134,20 @@ export function CreateBloodPressureForm({
                 name="diastolic"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-wider font-bold">Diastolic</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-wider font-bold">
+                      Diastolic
+                    </FormLabel>
                     <div className="relative">
                       <FormControl>
-                        <Input type="number" className="pr-12 text-lg font-semibold h-12" {...field} />
+                        <Input
+                          type="number"
+                          className="pr-12 text-lg font-semibold h-12"
+                          {...field}
+                        />
                       </FormControl>
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">mmHg</span>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">
+                        mmHg
+                      </span>
                     </div>
                     <FormMessage />
                   </FormItem>
@@ -143,9 +168,16 @@ export function CreateBloodPressureForm({
                 <FormItem>
                   <div className="relative">
                     <FormControl>
-                      <Input type="number" className="pr-12 h-12" placeholder="70" {...field} />
+                      <Input
+                        type="number"
+                        className="pr-12 h-12"
+                        placeholder="70"
+                        {...field}
+                      />
                     </FormControl>
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">BPM</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-muted-foreground">
+                      BPM
+                    </span>
                   </div>
                   <FormMessage />
                 </FormItem>
@@ -165,9 +197,16 @@ export function CreateBloodPressureForm({
                       <FormControl>
                         <Button
                           variant="outline"
-                          className={cn("pl-3 text-left font-normal h-10", !field.value && "text-muted-foreground")}
+                          className={cn(
+                            'pl-3 text-left font-normal h-10',
+                            !field.value && 'text-muted-foreground'
+                          )}
                         >
-                          {field.value ? format(field.value, 'MMM dd') : <span>Pick date</span>}
+                          {field.value ? (
+                            format(field.value, 'MMM dd')
+                          ) : (
+                            <span>Pick date</span>
+                          )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -177,7 +216,9 @@ export function CreateBloodPressureForm({
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={date => date > new Date() || date < new Date('1900-01-01')}
+                        disabled={date =>
+                          date > new Date() || date < new Date('1900-01-01')
+                        }
                       />
                     </PopoverContent>
                   </Popover>
@@ -193,7 +234,11 @@ export function CreateBloodPressureForm({
                   <FormLabel>Time</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input type="time" className="h-10 pl-3 pr-8" {...field} />
+                      <Input
+                        type="time"
+                        className="h-10 pl-3 pr-8"
+                        {...field}
+                      />
                       <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50" />
                     </div>
                   </FormControl>
@@ -207,10 +252,10 @@ export function CreateBloodPressureForm({
             type="submit"
             disabled={isPending}
             className={cn(
-              "w-full h-12 text-base font-semibold shadow-lg transition-all",
+              'w-full h-12 text-base font-semibold shadow-lg transition-all',
               isPending
-                ? "shadow-none opacity-80 cursor-not-allowed"
-                : "shadow-primary/20 hover:translate-y-[-1px] active:translate-y-[0px]"
+                ? 'shadow-none opacity-80 cursor-not-allowed'
+                : 'shadow-primary/20 hover:translate-y-[-1px] active:translate-y-[0px]'
             )}
           >
             {isPending ? (

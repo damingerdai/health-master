@@ -14,10 +14,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             Track and manage your blood pressure levels daily.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button asChild size="sm" className="shadow-sm">
-            <Link href="/blood-pressure-new" className="flex items-center gap-2">
+            <Link
+              href="/blood-pressure-new"
+              className="flex items-center gap-2"
+            >
               <PlusIcon className="h-4 w-4" />
               <span>New Record</span>
             </Link>
@@ -27,14 +30,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="@container/main flex-1 p-4 md:p-8">
         <div className="mx-auto max-w-7xl space-y-6">
-          
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-             {/* 占位：后续可以传入快捷统计组件 */}
+            {/* 占位：后续可以传入快捷统计组件 */}
           </section>
 
-         <div className="@container/main">
-             {children}
-          </div>
+          <div className="@container/main">{children}</div>
         </div>
       </main>
     </div>

@@ -1,15 +1,15 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-options";
-import { getCurrentUser } from "@/components/actions/user";
-import { ProfileForm } from "@/components/profile-form";
-import { redirect } from "next/navigation";
-import { SecurityCard } from "@/components/security-card";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
+import { getCurrentUser } from '@/components/actions/user';
+import { ProfileForm } from '@/components/profile-form';
+import { redirect } from 'next/navigation';
+import { SecurityCard } from '@/components/security-card';
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.accessToken) {
-    redirect("/sign-in");
+    redirect('/sign-in');
   }
 
   const user = await getCurrentUser(session.accessToken);

@@ -35,7 +35,10 @@ const schemas = z
     password: z
       .string()
       .min(8, 'At least 8 characters')
-      .regex(/^(?![0-9]+$)(?![a-zA-Z]+$)/, 'Must include both letters and numbers'),
+      .regex(
+        /^(?![0-9]+$)(?![a-zA-Z]+$)/,
+        'Must include both letters and numbers'
+      ),
     confirmPassword: z.string().min(1, 'Please confirm your password')
   })
   .refine(data => data.password === data.confirmPassword, {
@@ -45,11 +48,14 @@ const schemas = z
 
 type InputData = z.infer<typeof schemas>;
 
-export function RegistryForm({ className, ...props }: React.ComponentProps<'form'>) {
+export function RegistryForm({
+  className,
+  ...props
+}: React.ComponentProps<'form'>) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<InputData>({
     resolver: zodResolver(schemas),
@@ -75,7 +81,9 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
       toast.success('Welcome! Account created.');
       router.push('/sign-in');
     } catch (err) {
-      toast.error((err as { message: string}).message || 'Registration failed');
+      toast.error(
+        (err as { message: string }).message || 'Registration failed'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -89,8 +97,12 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="text-center">
-          <h1 className="text-2xl font-bold tracking-tight">Create an account</h1>
-          <p className="text-muted-foreground text-sm">Enter your details to get started</p>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Create an account
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Enter your details to get started
+          </p>
         </div>
 
         <div className="grid gap-4">
@@ -100,7 +112,9 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Username</FormLabel>
-                <FormControl><Input placeholder="johndoe" {...field} /></FormControl>
+                <FormControl>
+                  <Input placeholder="johndoe" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -112,7 +126,9 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
-                <FormControl><Input placeholder="m@example.com" type="email" {...field} /></FormControl>
+                <FormControl>
+                  <Input placeholder="m@example.com" type="email" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -124,7 +140,9 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
-                  <FormControl><Input placeholder="John" {...field} /></FormControl>
+                  <FormControl>
+                    <Input placeholder="John" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -135,7 +153,9 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last Name</FormLabel>
-                  <FormControl><Input placeholder="Doe" {...field} /></FormControl>
+                  <FormControl>
+                    <Input placeholder="Doe" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -159,9 +179,16 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
                       { val: 'F', label: 'Female' },
                       { val: 'U', label: 'Other' }
                     ].map(item => (
-                      <FormItem key={item.val} className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value={item.val} /></FormControl>
-                        <FormLabel className="font-normal cursor-pointer">{item.label}</FormLabel>
+                      <FormItem
+                        key={item.val}
+                        className="flex items-center space-x-2 space-y-0"
+                      >
+                        <FormControl>
+                          <RadioGroupItem value={item.val} />
+                        </FormControl>
+                        <FormLabel className="font-normal cursor-pointer">
+                          {item.label}
+                        </FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>
@@ -179,7 +206,11 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
                 <FormLabel>Password</FormLabel>
                 <div className="relative">
                   <FormControl>
-                    <Input {...field} type={showPassword ? 'text' : 'password'} className="pr-10" />
+                    <Input
+                      {...field}
+                      type={showPassword ? 'text' : 'password'}
+                      className="pr-10"
+                    />
                   </FormControl>
                   <button
                     type="button"
@@ -200,18 +231,26 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
-                 <div className="relative">
-                <FormControl>
-                  <Input {...field} type={showConfirmPassword ? 'text' : 'password'} className="pr-10" />
-                </FormControl>
-                <button
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      className="pr-10"
+                    />
+                  </FormControl>
+                  <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
-                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showConfirmPassword ? (
+                      <EyeOff size={16} />
+                    ) : (
+                      <Eye size={16} />
+                    )}
                   </button>
-                  </div>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -225,7 +264,10 @@ export function RegistryForm({ className, ...props }: React.ComponentProps<'form
 
         <div className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link href="/sign-in" className="text-primary hover:underline underline-offset-4">
+          <Link
+            href="/sign-in"
+            className="text-primary hover:underline underline-offset-4"
+          >
             Sign in
           </Link>
         </div>

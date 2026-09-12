@@ -24,8 +24,13 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 
-function Slot({ children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
-  return React.isValidElement(children) ? React.cloneElement(children, { ...props, ...(children.props as object) }) : null;
+function Slot({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+  return React.isValidElement(children)
+    ? React.cloneElement(children, { ...props, ...(children.props as object) })
+    : null;
 }
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';

@@ -6,10 +6,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
-      },
-    ],
-  },
+        hostname: 'picsum.photos'
+      }
+    ]
+  }
 };
 
 export default nextConfig;

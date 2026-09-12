@@ -18,21 +18,33 @@ import Link from 'next/link';
 import { HeartPulse } from 'lucide-react';
 
 interface BloodPressureTableProps {
-  bloodPressures: UserBloodPressures
+  bloodPressures: UserBloodPressures;
 }
 
-export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({ bloodPressures }) => {
+export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({
+  bloodPressures
+}) => {
   const getStatus = (sys: number, dia: number) => {
-    if (sys >= 140 || dia >= 90) return { label: 'High', color: 'text-red-600 bg-red-50 border-red-200' };
-    if (sys < 90 || dia < 60) return { label: 'Low', color: 'text-blue-600 bg-blue-50 border-blue-200' };
-    return { label: 'Normal', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' };
+    if (sys >= 140 || dia >= 90)
+      return { label: 'High', color: 'text-red-600 bg-red-50 border-red-200' };
+    if (sys < 90 || dia < 60)
+      return {
+        label: 'Low',
+        color: 'text-blue-600 bg-blue-50 border-blue-200'
+      };
+    return {
+      label: 'Normal',
+      color: 'text-emerald-600 bg-emerald-50 border-emerald-200'
+    };
   };
 
   return (
     <Table>
       <TableHeader className="bg-slate-50/50 dark:bg-zinc-800/40">
         <TableRow className="hover:bg-transparent border-b">
-          <TableHead className="w-[120px] py-5 pl-8 font-semibold uppercase tracking-wider text-[11px]">Index</TableHead>
+          <TableHead className="w-[120px] py-5 pl-8 font-semibold uppercase tracking-wider text-[11px]">
+            Index
+          </TableHead>
           <TableHead className="py-5">Health Status</TableHead>
           <TableHead className="py-5 text-center">Systolic</TableHead>
           <TableHead className="py-5 text-center">Diastolic</TableHead>
@@ -47,11 +59,16 @@ export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({ bloodPre
                 <div className="relative">
                   <div className="absolute -inset-4 rounded-full bg-rose-100/50 dark:bg-rose-900/10 animate-pulse" />
                   <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800">
-                    <HeartPulse className="h-10 w-10 text-rose-500" strokeWidth={1.5} />
+                    <HeartPulse
+                      className="h-10 w-10 text-rose-500"
+                      strokeWidth={1.5}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2 max-w-[280px] mx-auto">
-                  <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">No readings found</h3>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+                    No readings found
+                  </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Start tracking to monitor your health trends.
                   </p>
@@ -64,7 +81,10 @@ export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({ bloodPre
           </TableRow>
         ) : (
           bloodPressures.map((item, index) => {
-            const status = getStatus(item.systolicBloodPressure, item.diastolicBloodPressure);
+            const status = getStatus(
+              item.systolicBloodPressure,
+              item.diastolicBloodPressure
+            );
             const isSysHigh = item.systolicBloodPressure >= 140;
             const isDiaHigh = item.diastolicBloodPressure >= 90;
             return (
@@ -74,32 +94,50 @@ export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({ bloodPre
                 </TableCell>
 
                 <TableCell className="py-6">
-                  <Badge variant="secondary" className={cn("rounded-full border px-2.5 py-0.5 text-[11px] font-bold shadow-sm", status.color)}>
+                  <Badge
+                    variant="secondary"
+                    className={cn(
+                      'rounded-full border px-2.5 py-0.5 text-[11px] font-bold shadow-sm',
+                      status.color
+                    )}
+                  >
                     {status.label}
                   </Badge>
                 </TableCell>
 
                 <TableCell className="py-6 text-center">
                   <div className="inline-flex flex-col items-center">
-                    <span className={cn(
-                      "text-lg font-bold tracking-tight transition-colors",
-                      isSysHigh ? "text-red-600 dark:text-red-400" : "text-slate-700 dark:text-slate-200"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-lg font-bold tracking-tight transition-colors',
+                        isSysHigh
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-slate-700 dark:text-slate-200'
+                      )}
+                    >
                       {item.systolicBloodPressure}
                     </span>
-                    <span className="text-[10px] text-muted-foreground font-normal uppercase">Systolic</span>
+                    <span className="text-[10px] text-muted-foreground font-normal uppercase">
+                      Systolic
+                    </span>
                   </div>
                 </TableCell>
 
                 <TableCell className="py-6 text-center">
                   <div className="inline-flex flex-col items-center">
-                    <span className={cn(
-                      "text-lg font-bold tracking-tight transition-colors",
-                      isDiaHigh ? "text-red-600 dark:text-red-400" : "text-slate-700 dark:text-slate-200"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-lg font-bold tracking-tight transition-colors',
+                        isDiaHigh
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-slate-700 dark:text-slate-200'
+                      )}
+                    >
                       {item.diastolicBloodPressure}
                     </span>
-                    <span className="text-[10px] text-muted-foreground font-normal uppercase">Diastolic</span>
+                    <span className="text-[10px] text-muted-foreground font-normal uppercase">
+                      Diastolic
+                    </span>
                   </div>
                 </TableCell>
 
@@ -109,7 +147,6 @@ export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({ bloodPre
                     : 'Unknown'}
                 </TableCell>
               </TableRow>
-
             );
           })
         )}

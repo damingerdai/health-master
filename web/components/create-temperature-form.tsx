@@ -20,33 +20,43 @@ import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
-import { Calendar as CalendarIcon, Clock, Loader2, Save, Thermometer, MessageSquare } from 'lucide-react';
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Loader2,
+  Save,
+  Thermometer,
+  MessageSquare
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { request } from '@/lib/request';
 
-const schemas = z.object({
-  temperature: z.coerce.number().min(30).max(113),
-  unit: z.enum(['C', 'F']),
-  note: z.string().max(500).optional(),
-  logDate: z.date({
-    required_error: 'Log date is required'
-  }),
-  logTime: z.string().optional()
-}).refine(
-  data => {
-    if (data.unit === 'C') {
-      return data.temperature >= 30 && data.temperature <= 45;
-    } else if (data.unit === 'F') {
-      return data.temperature >= 86 && data.temperature <= 113;
+const schemas = z
+  .object({
+    temperature: z.coerce.number().min(30).max(113),
+    unit: z.enum(['C', 'F']),
+    note: z.string().max(500).optional(),
+    logDate: z.date({
+      required_error: 'Log date is required'
+    }),
+    logTime: z.string().optional()
+  })
+  .refine(
+    data => {
+      if (data.unit === 'C') {
+        return data.temperature >= 30 && data.temperature <= 45;
+      } else if (data.unit === 'F') {
+        return data.temperature >= 86 && data.temperature <= 113;
+      }
+      return false;
+    },
+    {
+      message:
+        'Temperature must be between 30-45°C or 86-113°F depending on the unit',
+      path: ['temperature']
     }
-    return false;
-  },
-  {
-    message: 'Temperature must be between 30-45°C or 86-113°F depending on the unit',
-    path: ['temperature']
-  }
-);
+  );
 
 type InputData = z.infer<typeof schemas>;
 
@@ -81,14 +91,14 @@ export function CreateTemperatureForm({
             const [hours, minutes] = logTime.split(':').map(Number);
             const recordDate = new Date(data.logDate);
             recordDate.setHours(hours, minutes, 0, 0);
-            
+
             const value = {
               temperature: data.temperature,
               unit: data.unit,
               note: data.note,
               recordDate
             };
-            
+
             try {
               await request({
                 method: 'POST',
@@ -121,10 +131,17 @@ export function CreateTemperatureForm({
                 name="temperature"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-wider font-bold">Temperature</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-wider font-bold">
+                      Temperature
+                    </FormLabel>
                     <div className="relative">
                       <FormControl>
-                        <Input type="number" step="0.1" className="pr-12 text-lg font-semibold h-12" {...field} />
+                        <Input
+                          type="number"
+                          step="0.1"
+                          className="pr-12 text-lg font-semibold h-12"
+                          {...field}
+                        />
                       </FormControl>
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
                         °{form.watch('unit')}
@@ -140,7 +157,9 @@ export function CreateTemperatureForm({
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-wider font-bold">Unit</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-wider font-bold">
+                      Unit
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
@@ -148,12 +167,20 @@ export function CreateTemperatureForm({
                         className="flex h-12 items-center gap-4 bg-slate-50 dark:bg-zinc-800/50 rounded-lg px-4 border"
                       >
                         <FormItem className="flex items-center space-x-2 space-y-0">
-                          <FormControl><RadioGroupItem value="C" /></FormControl>
-                          <FormLabel className="font-medium cursor-pointer text-sm">Celsius (°C)</FormLabel>
+                          <FormControl>
+                            <RadioGroupItem value="C" />
+                          </FormControl>
+                          <FormLabel className="font-medium cursor-pointer text-sm">
+                            Celsius (°C)
+                          </FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-2 space-y-0">
-                          <FormControl><RadioGroupItem value="F" /></FormControl>
-                          <FormLabel className="font-medium cursor-pointer text-sm">Fahrenheit (°F)</FormLabel>
+                          <FormControl>
+                            <RadioGroupItem value="F" />
+                          </FormControl>
+                          <FormLabel className="font-medium cursor-pointer text-sm">
+                            Fahrenheit (°F)
+                          </FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -175,10 +202,10 @@ export function CreateTemperatureForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Feeling sick, after exercise, etc." 
-                      className="resize-none min-h-[100px]" 
-                      {...field} 
+                    <Textarea
+                      placeholder="Feeling sick, after exercise, etc."
+                      className="resize-none min-h-[100px]"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -199,9 +226,16 @@ export function CreateTemperatureForm({
                       <FormControl>
                         <Button
                           variant="outline"
-                          className={cn("pl-3 text-left font-normal h-10", !field.value && "text-muted-foreground")}
+                          className={cn(
+                            'pl-3 text-left font-normal h-10',
+                            !field.value && 'text-muted-foreground'
+                          )}
                         >
-                          {field.value ? format(field.value, 'MMM dd') : <span>Pick date</span>}
+                          {field.value ? (
+                            format(field.value, 'MMM dd')
+                          ) : (
+                            <span>Pick date</span>
+                          )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -211,7 +245,9 @@ export function CreateTemperatureForm({
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={date => date > new Date() || date < new Date('1900-01-01')}
+                        disabled={date =>
+                          date > new Date() || date < new Date('1900-01-01')
+                        }
                       />
                     </PopoverContent>
                   </Popover>
@@ -227,7 +263,11 @@ export function CreateTemperatureForm({
                   <FormLabel>Time</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input type="time" className="h-10 pl-3 pr-8" {...field} />
+                      <Input
+                        type="time"
+                        className="h-10 pl-3 pr-8"
+                        {...field}
+                      />
                       <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50" />
                     </div>
                   </FormControl>
@@ -241,10 +281,10 @@ export function CreateTemperatureForm({
             type="submit"
             disabled={isPending}
             className={cn(
-              "w-full h-12 text-base font-semibold shadow-lg transition-all",
+              'w-full h-12 text-base font-semibold shadow-lg transition-all',
               isPending
-                ? "shadow-none opacity-80 cursor-not-allowed"
-                : "shadow-primary/20 hover:translate-y-[-1px] active:translate-y-[0px]"
+                ? 'shadow-none opacity-80 cursor-not-allowed'
+                : 'shadow-primary/20 hover:translate-y-[-1px] active:translate-y-[0px]'
             )}
           >
             {isPending ? (

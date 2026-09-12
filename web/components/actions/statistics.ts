@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-options";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
 
 export async function getStatisticsSummary() {
   const session = await getServerSession(authOptions);
@@ -12,13 +12,16 @@ export async function getStatisticsSummary() {
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/statistics/summary`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      next: { revalidate: 60 } // Revalidate every minute
-    });
+    const res = await fetch(
+      `${process.env.BACKEND_HOST}/api/v1/statistics/summary`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        next: { revalidate: 60 } // Revalidate every minute
+      }
+    );
 
     if (!res.ok) {
       console.error('getStatisticsSummary failed:', res.statusText);

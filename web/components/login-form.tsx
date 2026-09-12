@@ -18,7 +18,13 @@ import {
 import { getSession, signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { EyeIcon, EyeOffIcon, Loader2Icon, LockIcon, UserIcon } from 'lucide-react';
+import {
+  EyeIcon,
+  EyeOffIcon,
+  Loader2Icon,
+  LockIcon,
+  UserIcon
+} from 'lucide-react';
 import Link from 'next/link';
 
 const schemas = z.object({
@@ -50,7 +56,7 @@ export function LoginForm({
 
       if (!res?.ok) {
         toast.error('Login failed', {
-          description: res?.error || 'Please check your credentials',
+          description: res?.error || 'Please check your credentials'
         });
         return;
       }
@@ -59,12 +65,14 @@ export function LoginForm({
       const session = await getSession();
 
       if (session?.needTwoFactor) {
-        router.push("/2fa");
+        router.push('/2fa');
       } else {
         router.push('/dashboard');
       }
     } catch (err) {
-      toast.error((err as { message: string }).message || 'Something went wrong');
+      toast.error(
+        (err as { message: string }).message || 'Something went wrong'
+      );
     }
   }
 
@@ -137,8 +145,10 @@ export function LoginForm({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    onClick={() => setShowPassword((visible) => !visible)}
+                    aria-label={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
+                    onClick={() => setShowPassword(visible => !visible)}
                   >
                     {showPassword ? (
                       <EyeOffIcon aria-hidden="true" />
@@ -152,11 +162,7 @@ export function LoginForm({
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full mt-2"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
@@ -179,7 +185,10 @@ export function LoginForm({
 
         <div className="text-center text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/sign-up" className="text-primary font-medium underline-offset-4 hover:underline">
+          <Link
+            href="/sign-up"
+            className="text-primary font-medium underline-offset-4 hover:underline"
+          >
             Sign up
           </Link>
         </div>

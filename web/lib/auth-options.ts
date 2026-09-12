@@ -27,7 +27,7 @@ declare module 'next-auth' {
   }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
     user?: User;
 
@@ -39,30 +39,27 @@ declare module "next-auth/jwt" {
 }
 
 async function getUserByAccessToken(accessToken: string): Promise<User | null> {
-    const res = await fetch(
-        `${process.env.BACKEND_HOST}/api/v1/user`,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        }
-    );
+  const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
 
-    if (!res.ok) return null;
+  if (!res.ok) return null;
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (isErrorResponse(data)) return null;
+  if (isErrorResponse(data)) return null;
 
-    return {
-        id: data.data.id,
-        username: data.data.username,
-        firstName: data.data.firstName,
-        lastName: data.data.lastName,
-        email: data.data.email,
-        gender: data.data.gender,
-        accessToken,
-    };
+  return {
+    id: data.data.id,
+    username: data.data.username,
+    firstName: data.data.firstName,
+    lastName: data.data.lastName,
+    email: data.data.email,
+    gender: data.data.gender,
+    accessToken
+  };
 }
 
 export const authOptions: AuthOptions = {
@@ -86,22 +83,21 @@ export const authOptions: AuthOptions = {
           type: 'password'
         },
         accessToken: {
-          label: "Access Token",
-          type: "text",
-        },
+          label: 'Access Token',
+          type: 'text'
+        }
       },
 
       async authorize(credentials) {
         if (credentials?.accessToken) {
-
           const accessToken = credentials.accessToken;
 
           const userRes = await fetch(
             `${process.env.BACKEND_HOST}/api/v1/user`,
             {
               headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
+                Authorization: `Bearer ${accessToken}`
+              }
             }
           );
 
@@ -117,24 +113,30 @@ export const authOptions: AuthOptions = {
             firstName: userData.data.firstName,
             lastName: userData.data.lastName,
             email: userData.data.email,
-            accessToken,
+            accessToken
           };
         }
         const { email, password } = credentials || {};
         if (!email || !password) {
           throw new Error('Email and password are required');
         }
-        const res = await fetch(`${process.env.BACKEND_HOST}/api/v1/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password })
-        });
+        const res = await fetch(
+          `${process.env.BACKEND_HOST}/api/v1/auth/login`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          }
+        );
         if (!res.ok) {
           throw new Error('Login failed');
         }
-        const tokenRes: DataResponse<{ needTwoFactor: true, challengeToken: string } | { needTwoFactor: false, token: AccessToken }> = await res.json();
+        const tokenRes: DataResponse<
+          | { needTwoFactor: true; challengeToken: string }
+          | { needTwoFactor: false; token: AccessToken }
+        > = await res.json();
         if (isErrorResponse(tokenRes)) {
           throw new Error(tokenRes.message || 'Login failed');
         }
@@ -172,7 +174,7 @@ export const authOptions: AuthOptions = {
           needTwoFactor: false
         } as User;
       }
-    }),
+    })
     // CredentialsProvider({
     //   id: '2fa',
     //   name: 'TwoFactor',

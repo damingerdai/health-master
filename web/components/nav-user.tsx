@@ -6,7 +6,7 @@ import {
   //IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconUserCircle,
+  IconUserCircle
   // IconNotification,
   // IconUserCircle
 } from '@tabler/icons-react';
@@ -28,15 +28,17 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 
-export function NavUser({
-  user
-}: {
+interface NavUserProps {
   user: {
     name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     avatar: string;
   };
-}) {
+}
+
+export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
 
   return (
@@ -50,7 +52,10 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.firstName[0]}
+                  {user.lastName[0]}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>

@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-
 export default function Loading() {
   return (
-    <div className='space-y-8'>
+    <div className="space-y-8">
       <Card className="border-none shadow-none bg-transparent">
         <CardHeader className="px-0 pt-0">
           <div className="flex items-center gap-4">

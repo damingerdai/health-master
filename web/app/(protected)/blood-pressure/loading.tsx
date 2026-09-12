@@ -30,11 +30,14 @@ export default function Loading() {
 
           <div className="divide-y divide-slate-50 dark:divide-zinc-800">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="grid grid-cols-5 gap-4 px-8 py-6 items-center">
+              <div
+                key={i}
+                className="grid grid-cols-5 gap-4 px-8 py-6 items-center"
+              >
                 <Skeleton className="h-4 w-10" />
-              
+
                 <Skeleton className="h-6 w-20 rounded-full" />
-                
+
                 <div className="flex flex-col items-center gap-2">
                   <Skeleton className="h-6 w-12" />
                   <Skeleton className="h-3 w-8" />

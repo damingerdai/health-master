@@ -1,6 +1,6 @@
-import { UserBloodPressure } from "./user-blood-pressure";
-import { WeightRecord } from "./weight-record";
-import { UserTemperature } from "./user-temperature";
+import { UserBloodPressure } from './user-blood-pressure';
+import { WeightRecord } from './weight-record';
+import { UserTemperature } from './user-temperature';
 
 export interface StatisticsSummary {
   latestBloodPressure: UserBloodPressure | null;

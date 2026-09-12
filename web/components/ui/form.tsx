@@ -14,8 +14,13 @@ import {
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 
-function Slot({ children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
-  return React.isValidElement(children) ? React.cloneElement(children, { ...props, ...(children.props as object) }) : null;
+function Slot({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+  return React.isValidElement(children)
+    ? React.cloneElement(children, { ...props, ...(children.props as object) })
+    : null;
 }
 
 const Form = FormProvider;
@@ -89,10 +94,7 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function FormLabel({
-  className,
-  ...props
-}: React.ComponentProps<'label'>) {
+function FormLabel({ className, ...props }: React.ComponentProps<'label'>) {
   const { error, formItemId } = useFormField();
 
   return (

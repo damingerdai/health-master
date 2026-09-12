@@ -80,14 +80,14 @@ export class HttpClient {
   }
 
   public async verify2FA(
-  req: Verify2FARequest
-): Promise<DataResponse<AccessToken>> {
-  return this.request({
-    method: "POST",
-    url: "/api/v1/auth/login/2fa",
-    data: req,
-  });
-}
+    req: Verify2FARequest
+  ): Promise<DataResponse<AccessToken>> {
+    return this.request({
+      method: 'POST',
+      url: '/api/v1/auth/login/2fa',
+      data: req
+    });
+  }
 }
 
 export const httpClient = new HttpClient(client);

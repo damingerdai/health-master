@@ -31,28 +31,33 @@ export function NavMain({
       </SidebarGroupLabel>
       <SidebarGroupContent className="mt-2">
         <SidebarMenu className="gap-2">
-          {items.map((item) => {
-            const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
+          {items.map(item => {
+            const isActive =
+              pathname === item.url || pathname?.startsWith(`${item.url}/`);
 
             return (
-              <SidebarMenuItem key={item.title} className='p-1'>
+              <SidebarMenuItem key={item.title} className="p-1">
                 <SidebarMenuButton
                   asChild
                   size="lg"
                   tooltip={item.title}
                   isActive={isActive}
                   className={cn(
-                    "relative transition-all duration-200 hover:bg-accent/50",
-                    isActive ? "font-medium text-primary bg-primary/5 shadow-sm" : "text-muted-foreground hover:text-foreground"
+                    'relative transition-all duration-200 hover:bg-accent/50',
+                    isActive
+                      ? 'font-medium text-primary bg-primary/5 shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
                   <Link href={item.url} className="flex items-center gap-3">
                     {item.icon && (
-                      <item.icon 
+                      <item.icon
                         className={cn(
-                          "h-4 w-4 shrink-0 transition-transform duration-200",
-                          isActive ? "scale-110 text-primary" : "group-hover:scale-110"
-                        )} 
+                          'h-4 w-4 shrink-0 transition-transform duration-200',
+                          isActive
+                            ? 'scale-110 text-primary'
+                            : 'group-hover:scale-110'
+                        )}
                       />
                     )}
                     <span className="truncate">{item.title}</span>

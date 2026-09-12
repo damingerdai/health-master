@@ -15,33 +15,35 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from '@/types/user';
 import { updateProfile } from './actions/profile';
 import { useSession } from 'next-auth/react';
+import { useMemo } from 'react';
+import { advancedGravatar } from '@/lib/gravatar';
 
 const profileSchema = z.object({
   username: z.string().min(2, 'Username must be at least 2 characters'),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
-  gender: z.string().min(1, 'Gender is required'),
+  gender: z.string().min(1, 'Gender is required')
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -53,6 +55,17 @@ interface ProfileFormProps {
 
 export function ProfileForm({ user, className }: ProfileFormProps) {
   const { data: session, update } = useSession();
+
+  const avatar = useMemo(() => {
+    if (!user) {
+      return '/avatars/shadcn.jpg';
+    }
+    if (user.email) {
+      return advancedGravatar(user.email);
+    }
+
+    return '/avatars/shadcn.jpg';
+  }, [user]);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -60,8 +73,8 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       email: user.email || '',
-      gender: user.gender || '',
-    },
+      gender: user.gender || ''
+    }
   });
 
   const isSubmitting = form.formState.isSubmitting;
@@ -81,19 +94,19 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
             ...session,
             user: {
               ...session.user,
-              username: formData.get("username") as string,
-              firstName: formData.get("firstName") as string,
-              lastName: formData.get("lastName") as string,
-              email: formData.get("email") as string,
-              gender: formData.get("gender") as string,
+              username: formData.get('username') as string,
+              firstName: formData.get('firstName') as string,
+              lastName: formData.get('lastName') as string,
+              email: formData.get('email') as string,
+              gender: formData.get('gender') as string
             }
-          })
+          });
         }
       } else {
         toast.error(result.message);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast.error('Something went wrong');
     }
   }
@@ -104,7 +117,7 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
         <CardHeader className="px-0 pt-0">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20 border">
-              <AvatarImage src="" alt={user.username} />
+              <AvatarImage src={avatar} alt={user.username} />
               <AvatarFallback className="bg-muted text-lg">
                 {user.firstName[0]}
                 {user.lastName[0]}

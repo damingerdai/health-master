@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-options";
+import { revalidatePath } from 'next/cache';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
 
 export type ProfileFormState = {
   success?: boolean;
@@ -16,19 +16,22 @@ export type ProfileFormState = {
   };
 };
 
-export async function updateProfile(prevState: ProfileFormState, formData: FormData): Promise<ProfileFormState> {
+export async function updateProfile(
+  prevState: ProfileFormState,
+  formData: FormData
+): Promise<ProfileFormState> {
   const session = await getServerSession(authOptions);
   if (!session || !session.accessToken || !session.user) {
-    return { success: false, message: "Unauthorized" };
+    return { success: false, message: 'Unauthorized' };
   }
 
   const data = {
     // id: session.user.id,
-    username: formData.get("username") as string,
-    firstName: formData.get("firstName") as string,
-    lastName: formData.get("lastName") as string,
-    email: formData.get("email") as string,
-    gender: formData.get("gender") as string,
+    username: formData.get('username') as string,
+    firstName: formData.get('firstName') as string,
+    lastName: formData.get('lastName') as string,
+    email: formData.get('email') as string,
+    gender: formData.get('gender') as string
   };
 
   try {
@@ -43,16 +46,16 @@ export async function updateProfile(prevState: ProfileFormState, formData: FormD
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.error("Update profile error:", errorData, data);
-      return { 
-        success: false, 
-        message: errorData.message || "Failed to update profile" 
+      console.error('Update profile error:', errorData, data);
+      return {
+        success: false,
+        message: errorData.message || 'Failed to update profile'
       };
     }
-    revalidatePath("/profile");
-    return { success: true, message: "Profile updated successfully" };
+    revalidatePath('/profile');
+    return { success: true, message: 'Profile updated successfully' };
   } catch (error) {
-    console.error("Update profile error:", error);
-    return { success: false, message: "Something went wrong" };
+    console.error('Update profile error:', error);
+    return { success: false, message: 'Something went wrong' };
   }
 }

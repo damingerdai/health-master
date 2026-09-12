@@ -16,7 +16,7 @@ prefer these shapes.
 - The base registry adds `cn-<comp>-content-logical` (and for tooltip also
   `cn-tooltip-arrow-logical`) companion classes next to the existing
   `cn-<comp>-content` hooks on popover, tooltip, hover-card, dropdown,
-  context-menu, select, menubar popups. Add them when the source uses cn-*
+  context-menu, select, menubar popups. Add them when the source uses cn-\*
   hooks; skip for plain-Tailwind projects.
 
 ## Button
@@ -32,8 +32,8 @@ non-button polymorphic components (breadcrumb link, marker).
 ```tsx
 <TooltipPrimitive.Arrow
   className={cn(
-    "cn-tooltip-arrow cn-tooltip-arrow-logical",
-    "data-[side=bottom]:top-1 data-[side=left]:right-[-13px] data-[side=left]:top-1/2! data-[side=left]:-translate-y-1/2 data-[side=right]:left-[-13px] data-[side=right]:top-1/2! data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5",
+    'cn-tooltip-arrow cn-tooltip-arrow-logical',
+    'data-[side=bottom]:top-1 data-[side=left]:right-[-13px] data-[side=left]:top-1/2! data-[side=left]:-translate-y-1/2 data-[side=right]:left-[-13px] data-[side=right]:top-1/2! data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5',
     className
   )}
 />
@@ -55,10 +55,10 @@ function DropdownMenuSubContent(props) {
       alignOffset={-3}
       side="right"
       sideOffset={0}
-      className={cn("w-auto", props.className)}
+      className={cn('w-auto', props.className)}
       {...props}
     />
-  )
+  );
 }
 ```
 
@@ -70,10 +70,11 @@ styling) rather than composing. When a golden pair exists, copy the golden
 shape; this example is the fallback.
 
 DANGER — do not confuse SubContent defaults with main-Content defaults. The
-values above are ONLY for the *submenu* wrappers (DropdownMenuSubContent /
+values above are ONLY for the _submenu_ wrappers (DropdownMenuSubContent /
 ContextMenuSubContent). The MAIN ContextMenuContent (the pointer-anchored
 right-click menu) keeps its own positioning — do NOT apply
 `side="right"`/`alignOffset` to it, or every right-click menu mispositions.
+
 - ContextMenu SUBContent defaults: `align="start" alignOffset={4} side="right" sideOffset={0}`.
 - DropdownMenu SUBContent defaults: `align="start" alignOffset={-3} side="right" sideOffset={0}`.
 - Main Content (either): keep the wrapper's existing align/sideOffset; do not add a side.
@@ -93,8 +94,8 @@ class existed; the open styling was previously data-[state=open]).
 - Drop the radix `position` prop entirely; expose `alignItemWithTrigger`
   (default true) picked from Positioner.Props, `sideOffset = 4`.
 - Item anatomy: `ItemText` FIRST with `cn-select-item-text shrink-0
-  whitespace-nowrap`, then `ItemIndicator render={<span
-  className="cn-select-item-indicator" />}`.
+whitespace-nowrap`, then `ItemIndicator render={<span
+className="cn-select-item-indicator" />}`.
 - Scroll arrows get `top-0 w-full` / `bottom-0 w-full`; List has no classes.
 
 ## Accordion animation placement

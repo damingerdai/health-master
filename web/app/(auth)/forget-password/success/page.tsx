@@ -2,7 +2,11 @@ import { Button } from '@/components/ui/button';
 import { MailCheck, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function Page({ searchParams }: { searchParams: { email?: string } }) {
+export default async function Page({
+  searchParams
+}: {
+  searchParams: { email?: string };
+}) {
   const currentSearchParams = await searchParams;
   const email = currentSearchParams.email || 'your email address';
 
@@ -13,7 +17,9 @@ export default async function Page({ searchParams }: { searchParams: { email?: s
       </div>
 
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold italic tracking-tight text-foreground">Check your email</h1>
+        <h1 className="text-2xl font-bold italic tracking-tight text-foreground">
+          Check your email
+        </h1>
         <p className="text-muted-foreground text-sm text-balance leading-relaxed">
           We&apos;ve sent a password reset link to <br />
           <span className="font-semibold text-foreground underline decoration-primary/30 decoration-2 underline-offset-4">
@@ -23,7 +29,10 @@ export default async function Page({ searchParams }: { searchParams: { email?: s
       </div>
 
       <div className="grid gap-3 w-full max-w-sm">
-        <Button asChild className="w-full shadow-sm hover:shadow-md transition-all">
+        <Button
+          asChild
+          className="w-full shadow-sm hover:shadow-md transition-all"
+        >
           <Link href="https://mail.google.com" target="_blank">
             Open your email
           </Link>
@@ -31,7 +40,11 @@ export default async function Page({ searchParams }: { searchParams: { email?: s
 
         <p className="text-xs text-muted-foreground mt-2">
           Didn&apos;t receive the email? Check your spam folder or
-          <Link href="/forget-password" title="Try again" className="ml-1 text-primary hover:underline font-medium">
+          <Link
+            href="/forget-password"
+            title="Try again"
+            className="ml-1 text-primary hover:underline font-medium"
+          >
             try again
           </Link>
         </p>
