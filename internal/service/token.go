@@ -71,7 +71,7 @@ func (ts *TokenService) CreateChallengeToken(
 	expire := time.Now().Add(5 * time.Minute)
 
 	token, err := tokens.CreateToken(
-		global.JwtSetting.GetJwtSecret(),
+		[]byte(string(global.JwtSetting.GetJwtSecret())+":2fa-challenge"),
 		user.Id,
 		global.JwtSetting.Issuer,
 		expire,
@@ -84,6 +84,11 @@ func (ts *TokenService) CreateChallengeToken(
 		AccessToken: *token,
 		Expired:     expire,
 	}, nil
+}
+
+// Challenge tokens use a separate signing domain and cannot authorize API requests.
+func (ts *TokenService) ParseChallengeToken(token string) (*model.Claims, error) {
+	return tokens.ParseToken(token, []byte(string(global.JwtSetting.GetJwtSecret())+":2fa-challenge"))
 }
 
 func (ts *TokenService) CreateToken(ctx context.Context, email string, password string) (*model.UserToken, error) {
@@ -103,6 +108,9 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 		return nil, errors.New("email or password error")
 	}
 	global.Logger.Info("founded user", zap.String("email", email), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
+	if user.TwoFactorEnabled {
+		return nil, errors.New("two-factor authentication required; use auth/login")
+	}
 	return ts.CreateAccessToken(ctx, user)
 }
 

@@ -1,8 +1,10 @@
 package api
 
 import (
+	"errors"
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
+	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -23,6 +25,7 @@ import (
 //
 //	@Router			/api/v1/settings/2fa [get]
 func GetTwoFactor(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
 	res := response.NewResponse(c)
 	userId := c.GetString("UserId")
 	if userId == "" {
@@ -66,6 +69,7 @@ func GetTwoFactor(c *gin.Context) {
 //
 //	@Router			/api/v1/settings/2fa [put]
 func UpdateTwoFactor(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
 	res := response.NewResponse(c)
 	userId := c.GetString("UserId")
 	if userId == "" {
@@ -80,22 +84,19 @@ func UpdateTwoFactor(c *gin.Context) {
 	}
 	ctx := c.Request.Context()
 	srv := getServices()
-	if req.Enabled == true {
-		err := srv.TwoFactorService.Enable(ctx, userId, req.Code)
-		if err != nil {
-			res.ToErrorResponse(errcode.ServerError)
-			return
-		}
-		res.ToResponse(gin.H{"code": 200})
-		return
+	var err error
+	if req.Enabled {
+		err = srv.TwoFactorService.Enable(ctx, userId, req.Code)
 	} else {
-		err := srv.TwoFactorService.Disable(ctx, userId, req.Code)
-		if err != nil {
+		err = srv.TwoFactorService.Disable(ctx, userId, req.Code)
+	}
+	if err != nil {
+		if errors.Is(err, service.ErrInvalidTwoFactorCode) {
+			res.ToErrorResponse(errcode.InvalidVerificationCode)
+		} else {
 			res.ToErrorResponse(errcode.ServerError)
-			return
 		}
-		res.ToResponse(gin.H{"code": 200})
 		return
 	}
-
+	res.ToResponse(gin.H{"code": 200})
 }

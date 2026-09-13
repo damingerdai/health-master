@@ -65,7 +65,7 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 }
 
 func (s *AuthService) VerifyLogin(ctx context.Context, challengeToken string, code string) (*model.UserToken, error) {
-	claims, err := s.TokenService.ParseToken(challengeToken)
+	claims, err := s.TokenService.ParseChallengeToken(challengeToken)
 	if err != nil {
 		return nil, err
 	}

@@ -1,8 +1,10 @@
 package model
 
 type Setup2FaResult struct {
-	Secret string `json:"secret"`
-	QRCode string `json:"qr_code"`
+	Enabled     bool   `json:"enabled"`
+	Secret      string `json:"secret,omitempty"`
+	QRCode      string `json:"qr_code,omitempty"`
+	QRCodeImage string `json:"qr_code_image,omitempty"`
 }
 
 type TwoFactorSetupResponse struct {
