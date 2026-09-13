@@ -1502,7 +1502,13 @@ const docTemplate = `{
         "model.Setup2FaResult": {
             "type": "object",
             "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
                 "qr_code": {
+                    "type": "string"
+                },
+                "qr_code_image": {
                     "type": "string"
                 },
                 "secret": {
@@ -1603,9 +1609,6 @@ const docTemplate = `{
                 },
                 "two_factor_enabled": {
                     "type": "boolean"
-                },
-                "two_factor_secret": {
-                    "type": "string"
                 },
                 "two_factor_verified_at": {
                     "type": "string"

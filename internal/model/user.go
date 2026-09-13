@@ -14,7 +14,7 @@ type User struct {
 	Gender    string `json:"gender" binding:"required"`
 
 	TwoFactorEnabled    bool       `json:"two_factor_enabled"`
-	TwoFactorSecret     *string    `json:"two_factor_secret"`
+	TwoFactorSecret     *string    `json:"-"`
 	TwoFactorVerifiedAt *time.Time `json:"two_factor_verified_at"`
 
 	CreatedAt *time.Time `json:"createdAt,omitempty"`

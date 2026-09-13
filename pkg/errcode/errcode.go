@@ -40,6 +40,8 @@ func (e *Error) Error() string {
 
 func (e *Error) StatusCode() int {
 	switch e.Code() {
+	case InvalidVerificationCode.Code():
+		fallthrough
 	case InvalidParams.Code():
 		fallthrough
 	case InvalidOrExpiredToken.Code():

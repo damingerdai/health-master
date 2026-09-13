@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/damingerdai/health-master/global"
@@ -136,28 +137,40 @@ func (userRepository *UserRepository) SaveTwoFactorSecret(ctx context.Context, u
 	statement := `
 		UPDATE users
 	  SET two_factor_secret = $1, updated_at = NOW() 
-	  WHERE id = $2 AND deleted_at IS NULL
+	  WHERE id = $2 AND deleted_at IS NULL AND two_factor_enabled = FALSE AND two_factor_secret IS NULL
 	`
 	_, err := userRepository.db.Exec(ctx, statement, twoFactorySecert, userID)
 	return err
 }
 
-func (userRepository *UserRepository) EnableTwoFactor(ctx context.Context, userID string) error {
+func (userRepository *UserRepository) EnableTwoFactor(ctx context.Context, userID string, expectedSecret string) error {
 	statement := `
 		UPDATE users
 		SET two_factor_enabled = TRUE, two_factor_verified_at = NOW(), updated_at = NOW()
-	  WHERE id = $1 AND deleted_at IS NULL
+	  WHERE id = $1 AND deleted_at IS NULL AND two_factor_secret = $2
 	`
-	_, err := userRepository.db.Exec(ctx, statement, userID)
-	return err
+	result, err := userRepository.db.Exec(ctx, statement, userID, expectedSecret)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() != 1 {
+		return errors.New("two-factor setup changed; reload and retry")
+	}
+	return nil
 }
 
-func (userRepository *UserRepository) DisableTwoFactor(ctx context.Context, userID string) error {
+func (userRepository *UserRepository) DisableTwoFactor(ctx context.Context, userID string, expectedSecret string) error {
 	statement := `
 		UPDATE users
 		SET two_factor_enabled = FALSE, two_factor_secret = null, two_factor_verified_at = null, updated_at = NOW()
-		WHERE id = $1 AND deleted_at IS NULL
+		WHERE id = $1 AND deleted_at IS NULL AND two_factor_secret = $2
 	`
-	_, err := userRepository.db.Exec(ctx, statement, userID)
-	return err
+	result, err := userRepository.db.Exec(ctx, statement, userID, expectedSecret)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() != 1 {
+		return errors.New("two-factor setup changed; reload and retry")
+	}
+	return nil
 }

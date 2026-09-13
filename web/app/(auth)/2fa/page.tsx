@@ -46,19 +46,21 @@ export default function Page() {
         challengeToken: challengeToken!,
         code
       });
-
-      console.log('verify', verify);
-
+      console.log('verify', verify)
       if (isErrorResponse(verify)) {
         throw new Error(verify.message);
       }
 
-      await signIn('credentials', {
+      const result = await signIn('credentials', {
         redirect: false,
         accessToken: verify.data.accessToken
       });
 
+      if (!result?.ok || result.error) {
+        throw new Error('Failed to complete sign in');
+      }
       router.push('/dashboard');
+      router.refresh();
     } catch (err) {
       console.error(err);
       setError('Invalid verification code.');
@@ -89,6 +91,9 @@ export default function Page() {
         <div className="flex justify-center">
           <InputOTP
             maxLength={6}
+            pattern="^[0-9]*$"
+            aria-label="Verification code"
+            disabled={loading}
             value={code}
             onChange={value => {
               setCode(value);

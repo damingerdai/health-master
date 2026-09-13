@@ -54,6 +54,7 @@ type SmtpSettingS struct {
 }
 
 type TotpSettingS struct {
+	Issuer    string
 	SecretKey string
 }
 

@@ -148,7 +148,6 @@ export const authOptions: AuthOptions = {
             challengeToken: tokenData.challengeToken
           } as User;
         }
-        console.log('tokenRes', tokenRes.data);
         const { accessToken } = tokenData.token;
         const userRes = await fetch(`${process.env.BACKEND_HOST}/api/v1/user`, {
           method: 'GET',
@@ -255,7 +254,6 @@ export const authOptions: AuthOptions = {
       return session;
     },
     async signIn({ user, account, profile, email, credentials }) {
-      console.log('signIn', { user, account, profile, email, credentials });
       return true;
     }
   }
