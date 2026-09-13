@@ -2,6 +2,8 @@ package api
 
 import (
 	"errors"
+	"time"
+
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/service"
@@ -91,6 +93,14 @@ func UpdateTwoFactor(c *gin.Context) {
 		err = srv.TwoFactorService.Disable(ctx, userId, req.Code)
 	}
 	if err != nil {
+		if global.Logger != nil {
+			fields := []zap.Field{zap.String("user_id", userId), zap.Bool("enabled", req.Enabled), zap.Time("server_time_utc", time.Now().UTC()), zap.Error(err)}
+			if errors.Is(err, service.ErrInvalidTwoFactorCode) {
+				global.Logger.Warn("two-factor verification rejected", fields...)
+			} else {
+				global.Logger.Error("failed to update two-factor authentication", fields...)
+			}
+		}
 		if errors.Is(err, service.ErrInvalidTwoFactorCode) {
 			res.ToErrorResponse(errcode.InvalidVerificationCode)
 		} else {

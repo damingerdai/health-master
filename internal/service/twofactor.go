@@ -8,10 +8,12 @@ import (
 	"errors"
 	"image/png"
 
+	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/cryptox"
 	"github.com/pquerna/otp/totp"
+	"go.uber.org/zap"
 )
 
 var ErrInvalidTwoFactorCode = errors.New("invalid verification code")
@@ -119,17 +121,21 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 
 func (s *TwoFactorService) Enable(ctx context.Context, userID string, code string) error {
 	if s.Aes == nil {
+		global.Logger.Error("2fa is not configured")
 		return errors.New("2fa is not configured")
 	}
 
 	user, err := s.UserRepository.Find(ctx, userID)
 	if err != nil {
+		global.Logger.Error("fail to get user", zap.Error(err))
 		return err
 	}
 	if user == nil {
+		global.Logger.Error("user not found")
 		return errors.New("user not found")
 	}
 	if user.TwoFactorSecret == nil {
+		global.Logger.Error("2fa secret not found")
 		return errors.New("2fa secret not found")
 	}
 

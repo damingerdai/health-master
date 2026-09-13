@@ -29,10 +29,26 @@ async function request<T>(
       }
     );
     if (!response.ok) {
+      const failure = await response.json().catch(() => null);
+      console.error('Two-factor request failed', {
+        method,
+        status: response.status,
+        code: failure?.code
+      });
+      if (failure?.code === 10000008) {
+        return {
+          error: body?.enabled
+            ? 'The code does not match. Refresh this page and add the current QR code to your authenticator app again. Check that your device time is set automatically.'
+            : 'The code does not match. Use the current code from your linked authenticator and check that your device time is set automatically.'
+        };
+      }
+      if (response.status === 401) {
+        return { error: 'Your session has expired. Please sign in again.' };
+      }
       return {
         error:
-          response.status === 400 || response.status === 401
-            ? 'Verification failed. Check your code and session, then try again.'
+          response.status === 400
+            ? 'Enter a valid 6-digit verification code.'
             : 'Unable to update two-factor authentication. Please try again.'
       };
     }
