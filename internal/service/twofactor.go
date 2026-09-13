@@ -3,15 +3,14 @@ package service
 import (
 	"bytes"
 	"context"
+	"encoding/base32"
 	"encoding/base64"
 	"errors"
 	"image/png"
-	"net/url"
 
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/cryptox"
-	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -27,12 +26,17 @@ type twoFactorRepository interface {
 type TwoFactorService struct {
 	Aes            *cryptox.AES
 	UserRepository twoFactorRepository
+	Issuer         string
 }
 
-func NewTwoFactorService(aes *cryptox.AES, userRepostiory *repository.UserRepository) *TwoFactorService {
+func NewTwoFactorService(aes *cryptox.AES, userRepostiory *repository.UserRepository, issuer string) *TwoFactorService {
+	if issuer == "" {
+		issuer = "HealthMaster" // fallback
+	}
 	return &TwoFactorService{
 		Aes:            aes,
 		UserRepository: userRepostiory,
+		Issuer:         issuer,
 	}
 }
 
@@ -51,8 +55,12 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 	if user.TwoFactorEnabled {
 		return &model.Setup2FaResult{Enabled: true}, nil
 	}
+	issuer := s.Issuer
+	if issuer == "" {
+		issuer = "HealthMaster"
+	}
 	if user.TwoFactorSecret == nil {
-		key, err := totp.Generate(totp.GenerateOpts{Issuer: "HealthMaster", AccountName: email})
+		key, err := totp.Generate(totp.GenerateOpts{Issuer: issuer, AccountName: email})
 		if err != nil {
 			return nil, err
 		}
@@ -82,10 +90,15 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 	if err != nil {
 		return nil, err
 	}
-	uri := url.URL{Scheme: "otpauth", Host: "totp", Path: "/HealthMaster:" + email}
-	query := url.Values{"secret": {secret}, "issuer": {"HealthMaster"}, "algorithm": {"SHA1"}, "digits": {"6"}, "period": {"30"}}
-	uri.RawQuery = query.Encode()
-	key, err := otp.NewKeyFromURL(uri.String())
+	rawSecret, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(secret)
+	if err != nil {
+		return nil, err
+	}
+	key, err := totp.Generate(totp.GenerateOpts{
+		Issuer:      issuer,
+		AccountName: email,
+		Secret:      rawSecret,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +110,11 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 	if err := png.Encode(&buf, img); err != nil {
 		return nil, err
 	}
-	return &model.Setup2FaResult{Secret: secret, QRCode: key.URL(), QRCodeImage: "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())}, nil
+	return &model.Setup2FaResult{
+		Secret:      secret,
+		QRCode:      key.URL(),
+		QRCodeImage: "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes()),
+	}, nil
 }
 
 func (s *TwoFactorService) Enable(ctx context.Context, userID string, code string) error {

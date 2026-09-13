@@ -9,6 +9,7 @@ import (
 
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/pkg/cryptox"
+	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -63,7 +64,14 @@ func TestTwoFactorEnrollmentLifecycle(t *testing.T) {
 	if again.Secret != setup.Secret || repo.saves != 1 {
 		t.Fatal("refresh rotated enrollment secret")
 	}
-	code, err := totp.GenerateCode(setup.Secret, time.Now())
+	qrKey, err := otp.NewKeyFromURL(setup.QRCode)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if qrKey.Secret() != setup.Secret {
+		t.Fatal("QR code and manual setup key use different secrets")
+	}
+	code, err := totp.GenerateCode(qrKey.Secret(), time.Now())
 	if err != nil {
 		t.Fatal(err)
 	}

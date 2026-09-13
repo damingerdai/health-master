@@ -30,4 +30,5 @@ Smtp:
   Password:
   From:
 Totp:
+  Issuer: HealthMaster
   Secretkey: EU64Y9V8E2KHRIXX359P3VTNBCBIOXS0
