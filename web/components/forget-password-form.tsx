@@ -111,7 +111,7 @@ export function ForgetPasswordForm({
 
         <div className="text-center text-sm">
           <Link
-            href="/login"
+            href="/sign-in"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
           >
             <ArrowLeft className="h-4 w-4" />
