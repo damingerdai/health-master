@@ -1,12 +1,9 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"encoding/base32"
-	"encoding/base64"
 	"errors"
-	"image/png"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
@@ -104,18 +101,10 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 	if err != nil {
 		return nil, err
 	}
-	img, err := key.Image(256, 256)
-	if err != nil {
-		return nil, err
-	}
-	var buf bytes.Buffer
-	if err := png.Encode(&buf, img); err != nil {
-		return nil, err
-	}
+
 	return &model.Setup2FaResult{
-		Secret:      secret,
-		QRCode:      key.URL(),
-		QRCodeImage: "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes()),
+		Secret: secret,
+		QRCode: key.URL(),
 	}, nil
 }
 

@@ -1508,9 +1508,6 @@ const docTemplate = `{
                 "qr_code": {
                     "type": "string"
                 },
-                "qr_code_image": {
-                    "type": "string"
-                },
                 "secret": {
                     "type": "string"
                 }
