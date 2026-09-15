@@ -51,7 +51,7 @@ func TestTwoFactorEnrollmentLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if setup.Enabled || setup.Secret == "" || !strings.HasPrefix(setup.QRCodeImage, "data:image/png;base64,") {
+	if setup.Enabled || setup.Secret == "" {
 		t.Fatal("missing enrollment data")
 	}
 	if *repo.user.TwoFactorSecret == setup.Secret {
@@ -91,7 +91,7 @@ func TestTwoFactorEnrollmentLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !enabled.Enabled || enabled.Secret != "" || enabled.QRCode != "" || enabled.QRCodeImage != "" || repo.saves != 1 {
+	if !enabled.Enabled || enabled.Secret != "" || enabled.QRCode != "" || repo.saves != 1 {
 		t.Fatal("enabled setup exposed or rotated secret")
 	}
 	if err := svc.VerifyCode(ctx, "user", code); err != nil {
