@@ -115,7 +115,7 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
   return (
     <div className={cn('space-y-8', className)}>
       <Card className="border-none shadow-none bg-transparent">
-        <CardHeader className="px-0 pt-0">
+        <CardHeader >
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20 border">
               <AvatarImage src={avatar} alt={user.username} />
@@ -134,7 +134,7 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="px-0">
+        <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
@@ -254,7 +254,7 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="rounded-none px-8 font-light tracking-widest uppercase transition-all hover:bg-primary/90"
+                  className="px-8 font-light tracking-widest uppercase transition-all hover:bg-primary/90"
                 >
                   {isSubmitting ? (
                     <>
