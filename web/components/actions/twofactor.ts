@@ -75,6 +75,9 @@ export async function updateTwoFactor(
     return { error: 'Enter a 6-digit verification code.' };
   }
   const result = await request<{ code: number }>('PUT', { enabled, code });
-  if (!result.error) revalidatePath('/profile');
+  if (!result.error) {
+    revalidatePath('/profile');
+    revalidatePath('/settings/2fa');
+  }
   return result;
 }
