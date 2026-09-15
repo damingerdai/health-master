@@ -138,24 +138,26 @@ export function CreateWeightForm({
                 <FormItem className="flex flex-col">
                   <FormLabel>Date</FormLabel>
                   <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            'pl-3 text-left font-normal h-10',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, 'MMM dd')
-                          ) : (
-                            <span>Pick date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
+                    <FormControl>
+                      <PopoverTrigger
+                        render={
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              'pl-3 text-left font-normal h-10',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          />
+                        }
+                      >
+                        {field.value ? (
+                          format(field.value, 'MMM dd')
+                        ) : (
+                          <span>Pick date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </PopoverTrigger>
+                    </FormControl>
                     <PopoverContent className="w-auto p-0" align="end">
                       <Calendar
                         mode="single"

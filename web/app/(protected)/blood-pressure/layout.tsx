@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AppBreadcrumb } from '@/components/app-breadcrumb';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
 
@@ -16,15 +16,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button asChild size="sm" className="shadow-sm">
-            <Link
-              href="/blood-pressure-new"
-              className="flex items-center gap-2"
-            >
-              <PlusIcon className="h-4 w-4" />
-              <span>New Record</span>
-            </Link>
-          </Button>
+          <Link
+            href="/blood-pressure-new"
+            className={buttonVariants({
+              size: 'sm',
+              className: 'shadow-sm flex items-center gap-2'
+            })}
+          >
+            <PlusIcon className="h-4 w-4" />
+            <span>New Record</span>
+          </Link>
         </div>
       </header>
 

@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SecurityItem } from './security-item';
 
@@ -42,11 +42,9 @@ export function SecurityCard({ twoFactorEnabled }: SecurityCardProps) {
             </Badge>
           }
           action={
-            <Button asChild>
-              <Link href="/settings/2fa">
-                {twoFactorEnabled ? 'Manage' : 'Enable'}
-              </Link>
-            </Button>
+            <Link href="/settings/2fa" className={buttonVariants({})}>
+              {twoFactorEnabled ? 'Manage' : 'Enable'}
+            </Link>
           }
         />
 

@@ -16,7 +16,7 @@ import { request } from '@/lib/request';
 import { formatDate } from 'date-fns';
 import { Skeleton } from './ui/skeleton';
 import { Badge } from './ui/badge';
-import { Button } from './ui/button';
+import { buttonVariants } from './ui/button';
 import Link from 'next/link';
 import { Thermometer } from 'lucide-react';
 
@@ -116,14 +116,16 @@ export const UserTemperatureRecords: React.FC = () => {
                         Start tracking to monitor your health trends.
                       </p>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="mt-2"
+                    <Link
+                      href="/temperature-new"
+                      className={buttonVariants({
+                        variant: 'outline',
+                        size: 'sm',
+                        className: 'mt-2'
+                      })}
                     >
-                      <Link href="/temperature-new">Add Your First Record</Link>
-                    </Button>
+                      Add Your First Record
+                    </Link>
                   </div>
                 </TableCell>
               </TableRow>

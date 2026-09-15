@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { MailCheck, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function Page({
   searchParams
 }: {
-  searchParams: { email?: string };
+  searchParams: Promise<{ email?: string }>;
 }) {
   const currentSearchParams = await searchParams;
   const email = currentSearchParams.email || 'your email address';
@@ -29,14 +29,15 @@ export default async function Page({
       </div>
 
       <div className="grid gap-3 w-full max-w-sm">
-        <Button
-          asChild
-          className="w-full shadow-sm hover:shadow-md transition-all"
+        <Link
+          href="https://mail.google.com"
+          target="_blank"
+          className={buttonVariants({
+            className: 'w-full shadow-sm hover:shadow-md transition-all'
+          })}
         >
-          <Link href="https://mail.google.com" target="_blank">
-            Open your email
-          </Link>
-        </Button>
+          Open your email
+        </Link>
 
         <p className="text-xs text-muted-foreground mt-2">
           Didn&apos;t receive the email? Check your spam folder or

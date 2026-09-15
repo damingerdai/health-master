@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { ArrowLeft, HeartPulse } from 'lucide-react';
 import Link from 'next/link';
 
@@ -6,17 +6,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-1 flex-col bg-[#f8fafc] dark:bg-zinc-950 min-h-screen">
       <div className="mx-auto w-full max-w-2xl px-4 pt-8 md:px-0">
-        <Button
-          variant="ghost"
-          size="sm"
-          asChild
-          className="-ml-2 text-muted-foreground hover:text-foreground"
+        <Link
+          href="/blood-pressure"
+          className={buttonVariants({
+            variant: 'ghost',
+            size: 'sm',
+            className: [
+              '-ml-2 text-muted-foreground hover:text-foreground',
+              'flex items-center gap-2'
+            ].join(' ')
+          })}
         >
-          <Link href="/blood-pressure" className="flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Blood Pressure Records</span>
-          </Link>
-        </Button>
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back to Blood Pressure Records</span>
+        </Link>
       </div>
 
       <main className="flex flex-1 items-start justify-center p-4 md:p-10">

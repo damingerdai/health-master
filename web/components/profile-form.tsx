@@ -20,6 +20,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue
@@ -223,6 +224,11 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
                         Gender
                       </FormLabel>
                       <Select
+                        items={[
+                          { value: 'M', label: 'Male' },
+                          { value: 'F', label: 'Female' },
+                          { value: 'O', label: 'Other' }
+                        ]}
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
@@ -232,9 +238,11 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="M">Male</SelectItem>
-                          <SelectItem value="F">Female</SelectItem>
-                          <SelectItem value="O">Other</SelectItem>
+                          <SelectGroup>
+                            <SelectItem value="M">Male</SelectItem>
+                            <SelectItem value="F">Female</SelectItem>
+                            <SelectItem value="O">Other</SelectItem>
+                          </SelectGroup>
                         </SelectContent>
                       </Select>
                       <FormMessage />

@@ -38,7 +38,9 @@ export function NavMain({
             return (
               <SidebarMenuItem key={item.title} className="p-1">
                 <SidebarMenuButton
-                  asChild
+                  render={
+                    <Link href={item.url} className="flex items-center gap-3" />
+                  }
                   size="lg"
                   tooltip={item.title}
                   isActive={isActive}
@@ -49,22 +51,20 @@ export function NavMain({
                       : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
-                  <Link href={item.url} className="flex items-center gap-3">
-                    {item.icon && (
-                      <item.icon
-                        className={cn(
-                          'h-4 w-4 shrink-0 transition-transform duration-200',
-                          isActive
-                            ? 'scale-110 text-primary'
-                            : 'group-hover:scale-110'
-                        )}
-                      />
-                    )}
-                    <span className="truncate">{item.title}</span>
-                    {isActive && (
-                      <span className="absolute left-0 h-4 w-1 rounded-r-full bg-primary" />
-                    )}
-                  </Link>
+                  {item.icon && (
+                    <item.icon
+                      className={cn(
+                        'h-4 w-4 shrink-0 transition-transform duration-200',
+                        isActive
+                          ? 'scale-110 text-primary'
+                          : 'group-hover:scale-110'
+                      )}
+                    />
+                  )}
+                  <span className="truncate">{item.title}</span>
+                  {isActive && (
+                    <span className="absolute left-0 h-4 w-1 rounded-r-full bg-primary" />
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             );

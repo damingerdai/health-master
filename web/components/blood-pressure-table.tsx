@@ -13,7 +13,7 @@ import {
 import { UserBloodPressures } from '@/types/user-blood-pressure';
 import { formatDate } from 'date-fns';
 import { Badge } from './ui/badge';
-import { Button } from './ui/button';
+import { buttonVariants } from './ui/button';
 import Link from 'next/link';
 import { HeartPulse } from 'lucide-react';
 
@@ -73,9 +73,16 @@ export const BloodPressureTable: React.FC<BloodPressureTableProps> = ({
                     Start tracking to monitor your health trends.
                   </p>
                 </div>
-                <Button variant="outline" size="sm" asChild className="mt-2">
-                  <Link href="/blood-pressure-new">Add Your First Record</Link>
-                </Button>
+                <Link
+                  href="/blood-pressure-new"
+                  className={buttonVariants({
+                    variant: 'outline',
+                    size: 'sm',
+                    className: 'mt-2'
+                  })}
+                >
+                  Add Your First Record
+                </Link>
               </div>
             </TableCell>
           </TableRow>
