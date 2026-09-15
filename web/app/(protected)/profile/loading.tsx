@@ -6,7 +6,7 @@ export default function Loading() {
   return (
     <div className="max-w-4xl mx-auto p-6 md:p-10">
       <Card className="border-none shadow-none bg-transparent">
-        <CardHeader className="px-0 pt-0">
+        <CardHeader>
           <div className="flex items-center gap-4">
             <Skeleton className="size-20 shrink-0 rounded-full" />
             <div className="min-w-0 flex-1">
@@ -41,7 +41,7 @@ export default function Loading() {
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-5 w-64 max-w-full" />
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index}>
               {index > 0 && <Separator />}

@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { TwoFactorSetup } from '@/types/twofactor';
@@ -12,13 +12,10 @@ export function SetupView({ setup }: { setup: TwoFactorSetup }) {
         Scan this QR code with your authenticator app, then enter its 6-digit
         code below.
       </p>
-      {setup.qr_code_image && (
-        <Image
-          src={setup.qr_code_image}
-          alt="Authenticator setup QR code"
-          width={256}
-          height={256}
-          unoptimized
+      {setup.qr_code && (
+        <QRCodeSVG
+          value={setup.qr_code}
+          size={256}
           className="max-w-full self-center"
         />
       )}

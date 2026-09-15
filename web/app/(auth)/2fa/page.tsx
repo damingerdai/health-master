@@ -46,7 +46,7 @@ export default function Page() {
         challengeToken: challengeToken!,
         code
       });
-      console.log('verify', verify)
+      console.log('verify', verify);
       if (isErrorResponse(verify)) {
         throw new Error(verify.message);
       }

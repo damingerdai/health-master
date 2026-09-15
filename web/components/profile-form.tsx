@@ -115,7 +115,7 @@ export function ProfileForm({ user, className }: ProfileFormProps) {
   return (
     <div className={cn('space-y-8', className)}>
       <Card className="border-none shadow-none bg-transparent">
-        <CardHeader >
+        <CardHeader>
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20 border">
               <AvatarImage src={avatar} alt={user.username} />
