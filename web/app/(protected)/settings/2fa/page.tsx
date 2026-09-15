@@ -10,7 +10,7 @@ export default async function TwoFactorPage() {
   if (!session?.accessToken) redirect('/sign-in');
 
   return (
-    <div className="container max-w-2xl p-6 md:p-8">
+   <div className="max-w-4xl mx-auto p-6 md:p-10">
       <div className="flex flex-col gap-6">
         <Link
           href="/profile"
