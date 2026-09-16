@@ -16,7 +16,7 @@ updates:
       - "go"
       - "dependencies"
     open-pull-requests-limit: 10
-  - package-ecosystem: "npm"
+  - package-ecosystem: "bun"
     directory: "/web"
     schedule:
       interval: "weekly"
