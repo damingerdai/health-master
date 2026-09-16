@@ -14,7 +14,7 @@ services:
       - daming-health-master-network
     restart: always
   pgbouncer:
-    image: edoburu/pgbouncer:v1.25.1-p0
+    image: edoburu/pgbouncer:v1.25.2-p0
     container_name: health-master-pgbouncer
     environment:
       - DATABASE_URL=postgres://postgres:123456@postgres:5432/postgres
