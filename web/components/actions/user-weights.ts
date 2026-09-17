@@ -1,10 +1,10 @@
 'use server';
 
 import { authOptions } from '@/lib/auth-options';
-import { UserTemperatures } from '@/types/user-temperature';
+import { WeightRecords } from '@/types/weight-record';
 import { getServerSession } from 'next-auth';
 
-export const getUserTemperatures = async (query?: string) => {
+export const getUserWeights = async (query?: string) => {
   const session = await getServerSession(authOptions);
   const accessToken = session?.accessToken;
 
@@ -14,7 +14,7 @@ export const getUserTemperatures = async (query?: string) => {
 
   try {
     const res = await fetch(
-      `${process.env.BACKEND_HOST}/api/v1/user-temperatures${query ?? ''}`,
+      `${process.env.BACKEND_HOST}/api/v1/weight-records${query ?? ''}`,
       {
         method: 'GET',
         headers: {
@@ -25,14 +25,14 @@ export const getUserTemperatures = async (query?: string) => {
     );
 
     if (!res.ok) {
-      console.error('getUserTemperature failed:', res.statusText);
+      console.error('getUserWeights failed:', res.statusText);
       return [];
     }
 
     const resp = await res.json();
-    return resp.data as UserTemperatures;
+    return resp.data.data as WeightRecords;
   } catch (err) {
-    console.error('getUserTemperature error:', err);
+    console.error('getUserWeights error:', err);
     return null;
   }
-};
+}
