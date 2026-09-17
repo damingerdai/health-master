@@ -73,7 +73,7 @@ export function ResetPasswordForm({
         position: 'top-right'
       });
 
-      router.push('/login');
+      router.push('/sign-in');
     } catch (err) {
       const message =
         (err as Record<'message', string>).message ?? 'Something went wrong';
