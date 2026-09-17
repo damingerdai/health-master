@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 ## Commands
 
@@ -54,12 +54,12 @@ go build -o migrate ./cmd/migrate.go
 
 ```bash
 cd web
-npm install
-npm run dev      # dev server at http://localhost:3000
-npm run build
-npm run lint
-npm run prettier
-npm run prettier:fix
+bun install
+bun run dev      # dev server at http://localhost:3000
+bun run build
+bun run lint
+bun run prettier
+bun run prettier:fix
 ```
 
 ### Local Infrastructure

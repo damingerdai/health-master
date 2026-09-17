@@ -13,32 +13,23 @@ env:
 
 jobs:
   front:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [24.x]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Use Nodejs ${{ matrix.node-version }}
-        uses: actions/setup-node@v7
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get npm cache directory path
-        id: npm-cache-dir-path
-        run: echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v6
-        id: npm-cache
+          bun-version: 1.4.2
+      - name: Cache Bun dependencies
+        uses: actions/cache@v6
+        id: bun-cache
         with:
-          path: |
-            ${{ steps.npm-cache-dir-path.outputs.dir }}
-            ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }} # 更改为 package-lock.json
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('web/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            ${{ runner.os }}-bun-
       - name: Install, Lint And Build
-        run: cd web && npm ci --force && npm run lint && npm run build
+        run: cd web && bun install --frozen-lockfile && bun run lint && bun run build
   end:
     runs-on: ${{ matrix.os }}
     needs: [front]
