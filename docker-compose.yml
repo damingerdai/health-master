@@ -67,13 +67,30 @@ services:
     depends_on:
       - postgres
     restart: always
-
+  mailpit:
+    image: axllent/mailpit:v1.30.1
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - daming-health-master-mailpit-volume:/data
+    ports:
+      - "18025:8025"
+      - "11025:1025"
+    environment:
+      TZ: Asia/Shanghai
+      MP_MAX_MESSAGES: "5000"
+      MP_DATABASE: /data/mailpit.db
+      MP_UI_AUTH: "admin:12345"
+      MP_SMTP_AUTH: "admin:12345"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
 volumes:
   daming-health-master-volume:
     external: true
   daming-health-master-redis-volume:
     external: true
   daming-health-master-kuma-volume:
+    external: true
+  daming-health-master-mailpit-volume:
     external: true
 networks:
   daming-health-master-network:
