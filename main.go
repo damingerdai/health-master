@@ -14,6 +14,7 @@ import (
 	"github.com/damingerdai/health-master/internal/db"
 	"github.com/damingerdai/health-master/internal/logger"
 	"github.com/damingerdai/health-master/internal/mail"
+	"github.com/damingerdai/health-master/internal/observability"
 	"github.com/damingerdai/health-master/internal/routers"
 	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
@@ -65,6 +66,13 @@ func init() {
 // @name						Authorization
 // @description				Type "Bearer" followed by a space and JWT token.
 func main() {
+	shutdownTracer, err := observability.InitTracer(*global.JaegerSetting)
+	if err != nil {
+		global.Logger.Error(fmt.Sprintf("init jaeger tracer: %s", err.Error()))
+		os.Exit(-1)
+	}
+	defer shutdownTracer()
+
 	router := routers.NewRouter()
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", global.ServerSetting.HttpPort),
@@ -73,6 +81,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 	defer global.Logger.Sync()
+
 	app, err := server.New(s, "release")
 	if err != nil {
 		global.Logger.Error(fmt.Sprintf("run server: %s", err.Error()))
@@ -110,6 +119,7 @@ func setupSetting() error {
 	global.LoggerSetting = &appSetting.Logger
 	global.SmtpSetting = &appSetting.Smtp
 	global.TotpSetting = &appSetting.Totp
+	global.JaegerSetting = &appSetting.Jaeger
 
 	return nil
 }

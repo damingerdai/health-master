@@ -7,3 +7,5 @@ export interface WeightRecord {
   weight: number;
   recordDate: Date;
 }
+
+export type WeightRecords = WeightRecord[];

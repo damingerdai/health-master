@@ -32,3 +32,8 @@ Smtp:
 Totp:
   Issuer: HealthMaster
   Secretkey: EU64Y9V8E2KHRIXX359P3VTNBCBIOXS0
+Jaeger:
+  Enabled: false
+  Endpoint: localhost:4318
+  ServiceName: health-master
+  Insecure: true

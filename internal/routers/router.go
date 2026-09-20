@@ -12,6 +12,7 @@ import (
 	"github.com/penglongli/gin-metrics/ginmetrics"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 var rule = limiter.LimiterBucketRule{
@@ -24,11 +25,18 @@ var rule = limiter.LimiterBucketRule{
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(rule)
 
 func NewRouter() *gin.Engine {
-	services := service.New(global.DBEngine, global.Logger, service.WithTotpSetting(global.TotpSetting))
+	services := service.New(
+		global.DBEngine,
+		service.WithLogger(global.Logger),
+		service.WithTotpSetting(global.TotpSetting),
+	)
 	api.SetServices(services)
 	middleware.SetServices(services)
 
 	r := gin.New()
+	if global.JaegerSetting != nil && global.JaegerSetting.Enabled {
+		r.Use(otelgin.Middleware(global.JaegerSetting.ServiceName))
+	}
 	m := ginmetrics.GetMonitor()
 	m.SetMetricPath("/metrics")
 	m.SetSlowTime(10)

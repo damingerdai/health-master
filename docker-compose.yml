@@ -83,6 +83,14 @@ services:
       MP_UI_AUTH: "admin:12345"
       MP_SMTP_AUTH: "admin:12345"
       MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+  jaeger:
+    image: jaegertracing/jaeger:2.21.0
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
 volumes:
   daming-health-master-volume:
     external: true

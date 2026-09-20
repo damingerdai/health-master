@@ -17,9 +17,9 @@ func getServices() *service.Services {
 		return appServices
 	}
 
-	return service.New(global.DBEngine, global.Logger, service.WithTotpSetting(global.TotpSetting))
+	return service.New(global.DBEngine, service.WithLogger(global.Logger), service.WithTotpSetting(global.TotpSetting))
 }
 
 func getTxServices(conn db.Connection) *service.Services {
-	return service.New(conn, global.Logger, service.WithTotpSetting(global.TotpSetting))
+	return service.New(conn, service.WithLogger(global.Logger), service.WithTotpSetting(global.TotpSetting))
 }

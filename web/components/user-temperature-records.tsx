@@ -20,9 +20,9 @@ interface UserTemperatureRecordsProps {
   userTemperatures: UserTemperatures;
 }
 
-export const UserTemperatureRecords = ({ userTemperatures }: UserTemperatureRecordsProps) => {
-  
-
+export const UserTemperatureRecords = ({
+  userTemperatures
+}: UserTemperatureRecordsProps) => {
   const getTemperatureStatus = (temp: number, unit: string) => {
     const isCelsius = unit === 'C';
     const feverThreshold = isCelsius ? 38.0 : 100.4;
@@ -91,10 +91,7 @@ export const UserTemperatureRecords = ({ userTemperatures }: UserTemperatureReco
             </TableRow>
           ) : (
             userTemperatures?.map((item, index) => {
-              const status = getTemperatureStatus(
-                item.temperature,
-                item.unit
-              );
+              const status = getTemperatureStatus(item.temperature, item.unit);
               const isFever =
                 (item.unit === 'C' && item.temperature >= 38.0) ||
                 (item.unit === 'F' && item.temperature >= 100.4);
@@ -137,9 +134,9 @@ export const UserTemperatureRecords = ({ userTemperatures }: UserTemperatureReco
                   <TableCell className="py-6 text-right pr-8 text-sm text-muted-foreground">
                     {item.recordDate
                       ? formatDate(
-                        new Date(item.recordDate),
-                        'yyyy-MM-dd HH:mm'
-                      )
+                          new Date(item.recordDate),
+                          'yyyy-MM-dd HH:mm'
+                        )
                       : 'Unknown'}
                   </TableCell>
                 </TableRow>
@@ -149,6 +146,5 @@ export const UserTemperatureRecords = ({ userTemperatures }: UserTemperatureReco
         </TableBody>
       </Table>
     </div>
-
   );
 };

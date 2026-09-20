@@ -4,7 +4,7 @@ The shadcn wrapper NAMES survive a radix -> base-ui migration, but these props
 change or disappear at CALL SITES in app code. Sweep every consumer for this
 list after migrating the wrappers. All entries verified against
 @base-ui/react@1.6.0 type definitions during real migrations; when in doubt,
-check node*modules/@base-ui/react/\**/\_.d.ts, never guess.
+check node\*modules/@base-ui/react/\*\*/\_.d.ts, never guess.
 
 ## Universal
 

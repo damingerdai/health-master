@@ -58,6 +58,13 @@ type TotpSettingS struct {
 	SecretKey string
 }
 
+type JaegerSettingS struct {
+	Enabled     bool
+	Endpoint    string
+	ServiceName string
+	Insecure    bool
+}
+
 type Settings struct {
 	Server   ServerSettingS
 	Database DatabaseSettingS
@@ -66,6 +73,7 @@ type Settings struct {
 	Logger   LoggerSettingS
 	Smtp     SmtpSettingS
 	Totp     TotpSettingS
+	Jaeger   JaegerSettingS
 }
 
 func (s *Setting) ReadSection(key string, value any) error {

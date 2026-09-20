@@ -3,7 +3,7 @@ import { BloodPressureTable } from '@/components/blood-pressure-table';
 
 export default async function Page() {
   const bloodPressures = await getUserBloodPressures();
-  
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-2">
