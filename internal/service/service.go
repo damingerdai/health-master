@@ -13,6 +13,7 @@ type NewOption func(*newOptions)
 type newOptions struct {
 	totpSetting   *setting.TotpSettingS
 	loggerSetting *setting.LoggerSettingS
+	logger        *zap.Logger
 }
 
 func WithTotpSetting(totpSetting *setting.TotpSettingS) NewOption {
@@ -24,6 +25,14 @@ func WithTotpSetting(totpSetting *setting.TotpSettingS) NewOption {
 func WithLoggerSetting(loggerSetting *setting.LoggerSettingS) NewOption {
 	return func(o *newOptions) {
 		o.loggerSetting = loggerSetting
+	}
+}
+
+func WithLogger(logger *zap.Logger) NewOption {
+	return func(o *newOptions) {
+		if logger != nil {
+			o.logger = logger
+		}
 	}
 }
 
@@ -43,13 +52,14 @@ type Services struct {
 	TwoFactorService         *TwoFactorService
 }
 
-func New(db db.Connection, logger *zap.Logger, opts ...NewOption) *Services {
-	options := &newOptions{}
+func New(db db.Connection, opts ...NewOption) *Services {
+	options := &newOptions{logger: zap.NewNop()}
 	for _, opt := range opts {
 		if opt != nil {
 			opt(options)
 		}
 	}
+	logger := options.logger
 	var (
 		aes    *cryptox.AES
 		issuer string

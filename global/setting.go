@@ -16,4 +16,6 @@ var (
 	SmtpSetting *setting.SmtpSettingS
 
 	TotpSetting *setting.TotpSettingS
+
+	JaegerSetting *setting.JaegerSettingS
 )

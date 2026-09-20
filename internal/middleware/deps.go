@@ -16,5 +16,5 @@ func getServices() *service.Services {
 		return appServices
 	}
 
-	return service.New(global.DBEngine, global.Logger, service.WithTotpSetting(global.TotpSetting))
+	return service.New(global.DBEngine, service.WithLogger(global.Logger), service.WithTotpSetting(global.TotpSetting))
 }

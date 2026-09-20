@@ -2,7 +2,10 @@ package observability
 
 import (
 	"context"
+	"errors"
+	"strings"
 
+	"github.com/damingerdai/health-master/pkg/setting"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -10,15 +13,29 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func InitTracer() func() {
+func InitTracer(config setting.JaegerSettingS) (func(), error) {
+	if !config.Enabled {
+		return func() {}, nil
+	}
+
+	endpoint := strings.TrimSpace(config.Endpoint)
+	if endpoint == "" {
+		return nil, errors.New("jaeger endpoint is required when jaeger is enabled")
+	}
+	serviceName := strings.TrimSpace(config.ServiceName)
+	if serviceName == "" {
+		return nil, errors.New("jaeger service name is required when jaeger is enabled")
+	}
+
 	ctx := context.Background()
 
-	exporter, err := otlptracehttp.New(ctx,
-		otlptracehttp.WithEndpoint("localhost:4318"),
-		otlptracehttp.WithInsecure(),
-	)
+	options := []otlptracehttp.Option{otlptracehttp.WithEndpoint(endpoint)}
+	if config.Insecure {
+		options = append(options, otlptracehttp.WithInsecure())
+	}
+	exporter, err := otlptracehttp.New(ctx, options...)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	tp := sdktrace.NewTracerProvider(
@@ -26,7 +43,7 @@ func InitTracer() func() {
 		sdktrace.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
-				semconv.ServiceName("health-master"),
+				semconv.ServiceName(serviceName),
 			),
 		),
 	)
@@ -35,5 +52,5 @@ func InitTracer() func() {
 
 	return func() {
 		_ = tp.Shutdown(ctx)
-	}
+	}, nil
 }

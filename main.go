@@ -66,6 +66,13 @@ func init() {
 // @name						Authorization
 // @description				Type "Bearer" followed by a space and JWT token.
 func main() {
+	shutdownTracer, err := observability.InitTracer(*global.JaegerSetting)
+	if err != nil {
+		global.Logger.Error(fmt.Sprintf("init jaeger tracer: %s", err.Error()))
+		os.Exit(-1)
+	}
+	defer shutdownTracer()
+
 	router := routers.NewRouter()
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%s", global.ServerSetting.HttpPort),
@@ -74,9 +81,6 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 	defer global.Logger.Sync()
-
-	shutdownTracer := observability.InitTracer()
-	defer shutdownTracer()
 
 	app, err := server.New(s, "release")
 	if err != nil {
@@ -115,6 +119,7 @@ func setupSetting() error {
 	global.LoggerSetting = &appSetting.Logger
 	global.SmtpSetting = &appSetting.Smtp
 	global.TotpSetting = &appSetting.Totp
+	global.JaegerSetting = &appSetting.Jaeger
 
 	return nil
 }

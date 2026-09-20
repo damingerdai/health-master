@@ -177,7 +177,7 @@ func UpdateUser(c *gin.Context) {
 	if req.Id == nil {
 		req.Id = &userId
 	}
-	services := service.New(global.DBEngine, global.Logger)
+	services := service.New(global.DBEngine, service.WithLogger(global.Logger))
 	userService := services.UserService
 	user, err := userService.Find(c, userId)
 	if err != nil {
