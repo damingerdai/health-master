@@ -5,7 +5,7 @@ go 1.27.0
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-mail/mail/v2 v2.3.0
-	github.com/golang-jwt/jwt/v5 v5.2.2
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx-gofrs-uuid v0.0.0-20230224015001-1d428863c2e2
