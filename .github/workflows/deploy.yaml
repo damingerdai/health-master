@@ -21,7 +21,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: damingerdai/health-master-api
+  IMAGE_NAME: damingerdai/health-master
 
 jobs:
   deploy:
