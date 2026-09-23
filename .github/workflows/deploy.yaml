@@ -1,59 +1,94 @@
-name: damingerdai health health deploy
+name: Build and publish health-master
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      registry:
+        description: Registry to publish to
+        type: choice
+        default: both
+        options:
+          - both
+          - ghcr
+          - dockerhub
+      publish_latest:
+        description: Also publish the latest tag
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: damingerdai/health-master
 
 jobs:
   deploy:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-  
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Generate image tags
+        id: tags
+        shell: bash
+        env:
+          REGISTRY: ${{ inputs.registry }}
+          PUBLISH_LATEST: ${{ inputs.publish_latest }}
+        run: |
+          case "$REGISTRY" in
+            both) registries=(ghcr.io docker.io) ;;
+            ghcr) registries=(ghcr.io) ;;
+            dockerhub) registries=(docker.io) ;;
+            *) echo "Unsupported registry: $REGISTRY" >&2; exit 1 ;;
+          esac
+          {
+            echo 'tags<<EOF'
+            for registry in "${registries[@]}"; do
+              echo "${registry}/${IMAGE_NAME}:${GITHUB_SHA}"
+              echo "${registry}/${IMAGE_NAME}:${GITHUB_SHA:0:7}"
+              if [[ "$PUBLISH_LATEST" == 'true' ]]; then
+                echo "${registry}/${IMAGE_NAME}:latest"
+              fi
+            done
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry
+        if: inputs.registry == 'both' || inputs.registry == 'ghcr'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub
+        if: inputs.registry == 'both' || inputs.registry == 'dockerhub'
+        uses: docker/login-action@v4
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm64
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-      - name: Build and save docker image
+
+      - name: Build and push multi-platform image
         uses: docker/build-push-action@v7
         with:
           context: .
           file: github.Dockerfile
-          tags: health-master:${{ github.sha }}
-          outputs: type=docker,dest=health-master.tar
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Compress image tar
-        run: |
-          gzip -3 health-master.tar
-          chmod 664 health-master.tar.gz 
-
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          source: health-master.tar.gz
-          target: ${{ secrets.SERVER_TARGET_FOLDER_PATHs }}
-      - name: deploy by ssh
-        uses: appleboy/ssh-action@v1.2.5
-        env:
-          TARGET_PATH: ${{ secrets.SERVER_TARGET_FOLDER_PATHs }}
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          envs: TARGET_PATH
-          script: |-
-            cd "$TARGET_PATH" && \
-            gunzip -f health-master.tar.gz 
-            # docker load -o health-master.tar && \
-            # rm -f health-master.tar && \
-            # kubectl set image deployment/health-master-api health-master-api=health-master:${{ github.sha }} -n health-master-namespace && \
-            # kubectl rollout status deployment/health-master-api -n health-master-namespace
-          
