@@ -17,7 +17,7 @@ require (
 	github.com/penglongli/gin-metrics v0.1.13
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/otp v1.5.0
-	github.com/redis/go-redis/v9 v9.3.0
+	github.com/redis/go-redis/v9 v9.22.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.17.0
 	github.com/swaggo/files v1.0.1
@@ -113,7 +113,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.46.0 // indirect
 	go.opentelemetry.io/otel/trace v1.46.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.11.0 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/arch v0.25.0 // indirect
