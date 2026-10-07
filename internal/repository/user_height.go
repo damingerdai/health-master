@@ -55,3 +55,41 @@ func (repos *UserHeightRepository) List(ctx context.Context, userId string) ([]*
 
 	return res, nil
 }
+
+func (repos *UserHeightRepository) PagingQueryByUserId(ctx context.Context, userId string, page, limit int) ([]*model.UserHeight, error) {
+	statement := `
+		SELECT id, user_id, height, record_date
+		FROM user_heights
+		WHERE user_id = $1
+		ORDER BY record_date DESC
+		LIMIT $2 OFFSET $3
+	`
+	rows, err := repos.db.Query(ctx, statement, userId, limit, limit*(page-1))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var res []*model.UserHeight
+	for rows.Next() {
+		var h model.UserHeight
+		err := rows.Scan(&h.Id, &h.UserId, &h.Height, &h.RecordDate)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, &h)
+	}
+
+	return res, nil
+}
+
+func (repos *UserHeightRepository) Count(ctx context.Context, userId string) (int64, error) {
+	var num int64
+	statement := "SELECT COUNT(id) FROM user_heights WHERE user_id = $1 AND deleted_at IS NULL"
+	row := repos.db.QueryRow(ctx, statement, userId)
+	err := row.Scan(&num)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
+}

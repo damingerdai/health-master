@@ -3,8 +3,8 @@ package util
 import "testing"
 
 func TestMaskEmail(t *testing.T) {
-	tests := []struct{
-		in string
+	tests := []struct {
+		in   string
 		want string
 	}{
 		{"damingerdai@gmail.com", "d*********i@gmail.com"},

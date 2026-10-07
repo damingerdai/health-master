@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strconv"
 
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
@@ -38,4 +40,43 @@ func (heightService *UserHeightService) Create(ctx context.Context, height *mode
 		User:       user,
 	}
 	return uhv, nil
+}
+
+func (heightService *UserHeightService) PagingQueryByUserId(ctx context.Context, userId, limit, page string) (*model.ListResponse[model.UserHeightVO], error) {
+	if len(userId) == 0 {
+		return nil, errors.New("userId is required")
+	}
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return nil, fmt.Errorf("%s", fmt.Sprintf("page %s should be integer", page))
+	}
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		return nil, fmt.Errorf("%s", fmt.Sprintf("limit %s should be integer", limit))
+	}
+	user, err := heightService.userRespository.Find(ctx, userId)
+	if err != nil {
+		return nil, fmt.Errorf("fail to find user which user id %s", userId)
+	}
+	records, err := heightService.userHeightRepository.PagingQueryByUserId(ctx, userId, pageInt, limitInt)
+	if err != nil {
+		return nil, err
+	}
+	count, err := heightService.userHeightRepository.Count(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &model.ListResponse[model.UserHeightVO]{
+		Data:  make([]model.UserHeightVO, 0, len(records)),
+		Count: count,
+	}
+	for _, record := range records {
+		resp.Data = append(resp.Data, model.UserHeightVO{
+			UserHeight: *record,
+			User:       user,
+		})
+	}
+
+	return resp, nil
 }

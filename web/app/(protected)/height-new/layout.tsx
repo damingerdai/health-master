@@ -1,5 +1,5 @@
 import { buttonVariants } from '@/components/ui/button';
-import { ArrowLeft, Scale } from 'lucide-react';
+import { ArrowLeft, Ruler } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-1 flex-col bg-[#f8fafc] dark:bg-zinc-950 min-h-screen">
       <div className="mx-auto w-full max-w-2xl px-4 pt-8 md:px-0">
         <Link
-          href="/blood-pressure"
+          href="/height"
           className={buttonVariants({
             variant: 'ghost',
             size: 'sm',
@@ -18,22 +18,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           })}
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Weight Records</span>
+          <span>Back to Height Records</span>
         </Link>
       </div>
 
       <main className="flex flex-1 items-start justify-center p-4 md:p-10">
         <div className="w-full max-w-xl">
           <div className="mb-8 flex flex-col items-center text-center space-y-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-900/20 shadow-sm">
-              <Scale className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-900/20 shadow-sm">
+              <Ruler className="h-7 w-7 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="space-y-1">
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                Log Weight
+                Log Height
               </h1>
               <p className="text-sm text-muted-foreground">
-                Track your body weight to monitor your fitness journey.
+                Record your height measurements to track your growth over time.
               </p>
             </div>
           </div>
@@ -47,8 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <span className="font-semibold text-slate-700 dark:text-slate-300">
                     💡 Health Tip:
                   </span>{' '}
-                  For the most accurate result, sit quietly for 5 minutes before
-                  taking your measurement.
+                  For consistent measurements, stand straight with your shoulders back and measure at the same time of day.
                 </p>
               </div>
             </div>

@@ -10,6 +10,15 @@ definitions:
           $ref: '#/definitions/model.UserBloodPressure'
         type: array
     type: object
+  model.ListResponse-model_UserHeightVO:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.UserHeightVO'
+        type: array
+    type: object
   model.ListResponse-model_WeightRecordVO:
     properties:
       count:
@@ -417,6 +426,55 @@ paths:
       security:
       - BearerAuth: []
       summary: create a user height record
+      tags:
+      - user_height
+  /api/v1/heights:
+    get:
+      consumes:
+      - application/json
+      description: get paginated height records for a user. If userId is not provided,
+        the user is resolved from the access token.
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Number of records per page
+        in: query
+        name: limit
+        type: integer
+      - description: Access token (alternative to Authorization header)
+        in: query
+        name: accessToken
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.ListResponse-model_UserHeightVO'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: list user height records
       tags:
       - user_height
   /api/v1/password-resets:

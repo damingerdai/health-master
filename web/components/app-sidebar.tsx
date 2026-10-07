@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { IconInnerShadowTop, IconLoader3 } from '@tabler/icons-react';
-import { LayoutDashboard, Activity, Scale, Thermometer } from 'lucide-react';
+import { LayoutDashboard, Activity, Scale, Thermometer, Ruler } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import {
@@ -55,6 +55,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: 'Temperature',
       url: '/temperature',
       icon: Thermometer
+    },
+    {
+      title: 'Height',
+      url: '/height',
+      icon: Ruler
     }
   ];
 
