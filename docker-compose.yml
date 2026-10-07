@@ -68,7 +68,7 @@ services:
       - postgres
     restart: always
   mailpit:
-    image: axllent/mailpit:v1.31.3
+    image: axllent/mailpit:v1.31.4
     container_name: mailpit
     restart: unless-stopped
     volumes:
