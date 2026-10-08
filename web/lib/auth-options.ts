@@ -131,7 +131,12 @@ export const authOptions: AuthOptions = {
           }
         );
         if (!res.ok) {
-          throw new Error('Login failed');
+          const failure = await res.json().catch(() => null);
+          const message =
+            typeof failure?.message === 'string' && failure.message.trim()
+              ? failure.message
+              : 'Login failed. Please try again.';
+          throw new Error(message);
         }
         const tokenRes: DataResponse<
           | { needTwoFactor: true; challengeToken: string }

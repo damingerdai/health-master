@@ -10,6 +10,7 @@ import (
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/contants"
+	"github.com/damingerdai/health-master/pkg/pwd"
 	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/damingerdai/health-master/pkg/util/tokens"
 	"go.uber.org/zap"
@@ -102,12 +103,9 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 		}
 		return nil, errors.New("user not found")
 	}
-	global.Logger.Info("founded user", zap.String("email", email), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
-	if user.Password != util.GetMd5Hash(password) {
-		global.Logger.Error("email or password error", zap.String("email", email), zap.String("password", password), zap.String("hashedPassword", util.GetMd5Hash(password)))
-		return nil, errors.New("email or password error")
+	if err := pwd.Authenticate(password, user.Password); err != nil {
+		return nil, err
 	}
-	global.Logger.Info("founded user", zap.String("email", email), zap.String("userId", user.Id), zap.String("hashedPassword", user.Password))
 	if user.TwoFactorEnabled {
 		return nil, errors.New("two-factor authentication required; use auth/login")
 	}

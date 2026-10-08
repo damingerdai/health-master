@@ -10,7 +10,7 @@ import (
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
-	"github.com/damingerdai/health-master/pkg/util"
+	"github.com/damingerdai/health-master/pkg/pwd"
 	"go.uber.org/zap"
 )
 
@@ -45,7 +45,7 @@ func NewUserService(
 
 func (userService *UserService) Create(ctx context.Context, user *model.User) (*model.FullUser, error) {
 	existUser, err := userService.userRepository.FindByEmail(ctx, user.Email)
-	global.Logger.Info("check if user email already exists", zap.String("email", user.Username), zap.Any("existUser", existUser), zap.Error(err))
+	global.Logger.Info("check if user email already exists", zap.String("email", user.Username), zap.Error(err))
 	if err != nil {
 		// userService.logger.Error("fail to create user", zap.Error(err))
 		global.Logger.Error("fail to create user", zap.Error(err))
@@ -55,7 +55,11 @@ func (userService *UserService) Create(ctx context.Context, user *model.User) (*
 		userService.logger.Error("email already exists", zap.String("email", user.Username))
 		return nil, errcode.CreateDuplicateEmailError
 	}
-	user.Password = util.GetMd5Hash(user.Password)
+	hashPassword, err := pwd.HashPassword(user.Password, nil)
+	if err != nil {
+		return nil, err
+	}
+	user.Password = hashPassword
 	now := time.Now()
 	user.CreatedAt = &now
 	user.UpdatedAt = &now
@@ -122,8 +126,6 @@ func (userService *UserService) Update(ctx context.Context, user *model.User) er
 }
 
 func (userService *UserService) ResetPassword(ctx context.Context, email string, rawToken string, newPassword string) (user *model.User, err error) {
-	hashedPassword := util.GetMd5Hash(newPassword)
-
 	tokenRecord, err := userService.tokenRecordRepository.ConsumeToken(ctx, rawToken, contants.TokenCategoryPasswordReset)
 	if err != nil {
 		global.Logger.Error("fail to consume token", zap.String("rawToken", rawToken), zap.Error(err))
@@ -141,6 +143,10 @@ func (userService *UserService) ResetPassword(ctx context.Context, email string,
 	if tokenRecord.UserID.String() != user.Id {
 		global.Logger.Error("token user id not match user id", zap.String("tokenUserId", tokenRecord.UserID.String()), zap.String("userId", user.Id))
 		return nil, fmt.Errorf("invalid or expired token")
+	}
+	hashedPassword, err := pwd.HashPassword(newPassword, nil)
+	if err != nil {
+		return nil, fmt.Errorf("hash new password: %w", err)
 	}
 	user.Password = hashedPassword
 	err = userService.userRepository.UpdatePassword(ctx, user.Id, user.Password)

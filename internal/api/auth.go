@@ -1,6 +1,8 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
@@ -41,7 +43,13 @@ func Login(c *gin.Context) {
 
 	if err != nil {
 		global.Logger.Error("login failed", zap.Error(err))
-		res.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		if errors.Is(err, errcode.ErrLegacyPasswordResetRequired) {
+			res.ToErrorResponse(errcode.ErrLegacyPasswordResetRequired)
+		} else if errors.Is(err, errcode.ErrInvalidCredentials) || errors.Is(err, errcode.UnauthorizedAuthNotExist) {
+			res.ToErrorResponse(errcode.ErrInvalidCredentials)
+		} else {
+			res.ToErrorResponse(errcode.ServerError)
+		}
 		return
 	}
 
