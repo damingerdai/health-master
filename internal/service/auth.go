@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
-	"github.com/damingerdai/health-master/pkg/util"
+	"github.com/damingerdai/health-master/pkg/errcode"
+	"github.com/damingerdai/health-master/pkg/pwd"
 )
 
 type AuthService struct {
@@ -34,10 +34,11 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 	}
 
 	if user == nil {
-		return nil, errors.New("user not found")
+		return nil, errcode.UnauthorizedAuthNotExist
 	}
-	if user.Password != util.GetMd5Hash(password) {
-		return nil, errors.New("email or password error")
+	err = pwd.Authenticate(password, user.Password)
+	if err != nil {
+		return nil, err
 	}
 
 	if !user.TwoFactorEnabled {
@@ -75,7 +76,7 @@ func (s *AuthService) VerifyLogin(ctx context.Context, challengeToken string, co
 		return nil, err
 	}
 	if user == nil {
-		return nil, errors.New("user not found")
+		return nil, errcode.UnauthorizedAuthNotExist
 	}
 	if err := s.TwoFactorService.VerifyCode(ctx, user.Id, code); err != nil {
 		return nil, err

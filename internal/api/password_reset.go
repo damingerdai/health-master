@@ -40,7 +40,7 @@ func CreateResetPassword(c *gin.Context) {
 	resetPasswordToken, err := tokenService.CreatePasswordResetToken(c, input.Email)
 	if err != nil {
 		global.Logger.Error("fail to create password reset token", zap.Error(err))
-		res.ToErrorResponse(errcode.FailedToCreatePasswordResetToken)
+		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
 	// Here you would typically send the reset link via email to the user.
@@ -49,7 +49,7 @@ func CreateResetPassword(c *gin.Context) {
 	targetEmail := input.Email
 	targetToken := resetPasswordToken
 	go sendResetPasswordEmail(targetEmail, targetToken)
-	res.ToResponse(errcode.PasswordResetEmailSent)
+	res.ToResponse(gin.H{"message": "If the email exists, a password reset link has been sent."})
 }
 
 func sendResetPasswordEmail(email, token string) {
@@ -101,7 +101,7 @@ func VerifyResetToken(c *gin.Context) {
 
 	email, err := tokenService.VerifyPasswordResetToken(c, token)
 	if err != nil {
-		res.ToErrorResponse(errcode.InvalidOrExpiredToken)
+		res.ToErrorResponse(errcode.InvalidParams.WithDetails("Invalid or expired password reset token"))
 		return
 	}
 	res.ToResponse(gin.H{"email": email})
@@ -127,11 +127,11 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 	if input.ConfirmPassword == "" {
-		res.ToErrorResponse(errcode.ConfirmPasswordCannotBeEmpty)
+		res.ToErrorResponse(errcode.InvalidParams.WithDetails("Confirm password cannot be empty"))
 		return
 	}
 	if input.Password != input.ConfirmPassword {
-		res.ToErrorResponse(errcode.PasswordsDoNotMatch)
+		res.ToErrorResponse(errcode.InvalidParams.WithDetails("Passwords do not match"))
 		return
 	}
 	token := c.Param("token")
@@ -141,9 +141,9 @@ func ResetPassword(c *gin.Context) {
 	_, err = userService.ResetPassword(c.Request.Context(), input.Email, token, input.Password)
 	if err != nil {
 		global.Logger.Error("Failed to reset password", zap.Error(err))
-		res.ToErrorResponse(errcode.FailedToResetPassword)
+		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
 
-	res.ToResponse(errcode.PasswordResetSuccessfully)
+	res.ToResponse(nil)
 }

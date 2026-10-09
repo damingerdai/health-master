@@ -49,7 +49,11 @@ func CreateToken(c *gin.Context) {
 	userToken, err := tokenService.CreateToken(c, email, password)
 	if err != nil {
 		global.Logger.Error("fail to create token", zap.Error(err))
-		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		if errors.Is(err, errcode.ErrLegacyPasswordResetRequired) {
+			response.ToErrorResponse(errcode.ErrLegacyPasswordResetRequired)
+		} else {
+			response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		}
 		return
 	}
 	response.ToTokenResponse(userToken)

@@ -40,40 +40,18 @@ func (e *Error) Error() string {
 
 func (e *Error) StatusCode() int {
 	switch e.Code() {
-	case InvalidVerificationCode.Code():
-		fallthrough
-	case InvalidParams.Code():
-		fallthrough
-	case InvalidOrExpiredToken.Code():
-		fallthrough
-	case ConfirmPasswordCannotBeEmpty.Code():
-		fallthrough
-	case PasswordsDoNotMatch.Code():
+	case InvalidVerificationCode.Code(), InvalidParams.Code():
 		return http.StatusBadRequest
-	case UnauthorizedAuthNotExist.Code():
-		fallthrough
-	case UnauthorizedTokenError.Code():
-		fallthrough
-	case UnauthorizedTokenGenerate.Code():
-		fallthrough
-	case UnauthorizedTokenTimeout.Code():
+	case ErrLegacyPasswordResetRequired.Code(), ErrInvalidCredentials.Code(),
+		UnauthorizedAuthNotExist.Code(), UnauthorizedTokenError.Code(),
+		UnauthorizedTokenGenerate.Code(), UnauthorizedTokenTimeout.Code():
 		return http.StatusUnauthorized
 	case TooManyRequests.Code():
 		return http.StatusTooManyRequests
 	case NotFound.Code():
 		return http.StatusNotFound
-	case PasswordResetEmailSent.Code():
-		return http.StatusAccepted
 	case Success.Code():
-		fallthrough
-	case PasswordResetSuccessfully.Code():
 		return http.StatusOK
-	case ServerError.Code():
-		fallthrough
-	case FailedToCreatePasswordResetToken.Code():
-		fallthrough
-	case FailedToResetPassword.Code():
-		return http.StatusInternalServerError
 	}
 
 	return http.StatusInternalServerError
