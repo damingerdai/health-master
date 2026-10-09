@@ -51,6 +51,22 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(json.loads((self.root / "docs/swagger.json").read_text())["info"]["version"], "1.2.3")
         self.assertEqual(json.loads((self.root / "web/package.json").read_text())["version"], "1.2.3")
 
+    def test_validate_only_does_not_change_files(self):
+        result = subprocess.check_output(
+            ["python3", str(ROOT / "scripts/prepare-release.py"), "--validate-only", "1.2.3"],
+            cwd=self.root, text=True,
+        )
+        self.assertEqual(result.strip(), "v1.2.3")
+        self.assertEqual(self.git("status", "--porcelain"), "")
+
+    def test_validate_rejects_existing_and_older_tags(self):
+        self.git("tag", "v1.10.0")
+        for value in ["1.10.0", "1.9.0"]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                release.validate(value, self.root)
+        self.assertEqual(release.validate("1.11.0", self.root), "v1.11.0")
+        self.assertEqual(self.git("status", "--porcelain"), "")
+
     def test_existing_and_older_versions_fail_without_changes(self):
         self.git("tag", "v1.10.0")
         for value in ["1.10.0", "1.9.0"]:

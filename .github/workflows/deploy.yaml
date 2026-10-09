@@ -1,11 +1,6 @@
 name: Build and publish health-master
 
 on:
-  workflow_call:
-    inputs:
-      release_tag:
-        required: true
-        type: string
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
@@ -31,7 +26,7 @@ permissions:
 env:
   IMAGE_NAME: damingerdai/health-master
   REGISTRY: ${{ inputs.registry || 'both' }}
-  PUBLISH_LATEST: ${{ github.event_name == 'push' || inputs.release_tag != '' || inputs.publish_latest }}
+  PUBLISH_LATEST: ${{ github.event_name == 'push' || inputs.publish_latest }}
 
 jobs:
   deploy:
@@ -40,17 +35,15 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.release_tag || github.ref }}
+          ref: ${{ github.ref }}
 
       - name: Generate image tags
         id: tags
         shell: bash
-        env:
-          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           version=''
-          if [[ -n "$RELEASE_TAG" || "$GITHUB_EVENT_NAME" == 'push' ]]; then
-            version="${RELEASE_TAG:-$GITHUB_REF_NAME}"
+          if [[ "$GITHUB_REF_TYPE" == 'tag' ]]; then
+            version="$GITHUB_REF_NAME"
             if [[ ! "$version" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
               echo "Expected a version tag in vx.y.z format: $version" >&2
               exit 1

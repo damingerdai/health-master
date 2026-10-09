@@ -223,13 +223,13 @@ It publishes to `ghcr.io/damingerdai/health-master` and/or
 
 | Trigger | Registries | Image tags |
 | --- | --- | --- |
-| Manual workflow run | Choose GHCR, Docker Hub, or both | Full commit SHA, seven-character SHA, optional `latest` |
+| Manual workflow run | Choose GHCR, Docker Hub, or both | Full commit SHA, seven-character SHA, version when run on a tag, optional `latest` |
 | Push a `vx.y.z` Git tag | Both | Version tag, full SHA, short SHA, `latest` |
-| Release workflow | Both | Version tag, full SHA, short SHA, `latest` |
 
-Manual image publishing does not create a Git tag or a version image tag.
-Pushing a Git tag directly publishes images but does not synchronize source
-versions or create a GitHub Release; use the release workflow for those steps.
+Manual image publishing does not create a Git tag. Running it on an existing
+version tag also publishes that version image tag. Pushing a version tag triggers
+image publishing automatically. Neither workflow updates source versions or
+creates a GitHub Release.
 The image publishing workflow currently publishes only the Go backend.
 Frontend image definitions are available in `web/Dockerfile` and `web/Containerfile`.
 
@@ -250,54 +250,41 @@ A missing `v` prefix is added automatically. Versions must use the stable
 The version must be greater than every existing stable release tag.
 Existing tags are rejected.
 
-The [release workflow](.github/workflows/release.yaml) runs in this order:
+The [release workflow](.github/workflows/release.yaml) validates the version,
+creates an annotated tag on the checked-out `main` commit, and pushes only that tag.
+The tag push independently triggers [deploy.yaml](.github/workflows/deploy.yaml).
 
 ```text
-prepare-release → publish-images → release
+release.yaml → push version tag → deploy.yaml → publish images
 ```
 
-1. **Prepare:** synchronize the Go version constant, Swagger annotations and
-   generated documents, and `web/package.json`. Generate release notes with
-   conventional-changelog, prepend them to `CHANGELOG.md`, and save the notes
-   as an artifact. Commit as `chore(release): vX.Y.Z`, create an annotated tag,
-   and atomically push the commit and tag to GitHub.
-2. **Publish images:** build and push the versioned backend images using the
-   reusable image publishing workflow.
-3. **Publish Release:** download the saved notes and create the GitHub Release
-   only after image publishing succeeds.
-
-The release version is stored without `v` in application files and with `v`
-in Git tags and versioned image tags. The Go API logs its version at startup.
-
-### Changelog conventions
-
-Release notes use the Conventional Commits preset. The first release reads the
-full commit history; later releases include changes since the previous version.
-Features, fixes, performance improvements, and breaking changes appear in the notes.
-
-Example commit messages:
-
-```text
-feat(auth): add passkey support
-fix: handle empty blood pressure records
-perf: reduce statistics query time
-feat!: change the API response format
-```
-
-Breaking changes can also be described with a `BREAKING CHANGE:` footer in the
-commit body. Routine `chore` and `ci` commits are normally omitted from release notes.
+Release does not create commits, update version files or `CHANGELOG.md`, or create
+a GitHub Release. Update application versions and changelog through the normal
+review process before tagging if they need to match the release. The existing
+`python3 scripts/prepare-release.py <version>` helper remains available for preparing
+version file changes locally; the workflow uses its read-only `--validate-only` mode.
 
 ### Permissions and recovery
 
-The workflow uses the built-in `GITHUB_TOKEN`. Repository rules must allow it to
-write release commits to `main`, create tags and Releases, and publish packages.
-Docker Hub publishing requires the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`
-repository secrets.
+Tag pushes use a personal access token (PAT): pushes made with the default
+`GITHUB_TOKEN` do not trigger the downstream push workflow.
 
-Tags pushed with `GITHUB_TOKEN` do not trigger another push workflow run, so the
-release workflow calls the image publishing workflow directly via `workflow_call`.
+1. Create a fine-grained PAT under personal **Settings → Developer settings →
+   Personal access tokens**, selecting this repository and granting repository
+   **Contents: Read and write** permission. Set an expiration date.
+2. Save the token as `RELEASE_PAT` under repository **Settings → Secrets and
+   variables → Actions → New repository secret**.
 
-If image publishing fails, no GitHub Release is created. Use **Re-run failed jobs**
-to retry without preparing the same version again. If Release creation fails after
-images are published, retry the failed job. The prepared commit and tag remain
-available, and the release notes are also recorded in that commit's `CHANGELOG.md`.
+The workflow uses this PAT for checkout and tag push.
+It does not push to `main`, so the PR and required-check rules on `main` can remain
+unchanged without a branch-rule bypass. If tag rules restrict creating `v*` tags,
+the PAT owner must be permitted to create those tags. Renew the secret when the
+token expires.
+
+Image publishing uses its own `GITHUB_TOKEN` for GHCR and requires the
+`DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets for Docker Hub.
+
+If image publishing fails, retry the failed **Build and publish health-master**
+run. The tag remains available; do not rerun **Create release** with the same tag.
+A successful release workflow means the tag was pushed; check the separate deploy
+run for image publishing results.
