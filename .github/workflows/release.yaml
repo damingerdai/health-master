@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  create-tag:
-    # Tags point to the current main branch without creating a release commit.
+  prepare-release:
+    # Synchronize release files on main before tagging the release commit.
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -37,17 +37,57 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.RELEASE_PAT }}
 
-      - name: Validate release tag
+      - name: Validate and synchronize versions
         id: version
         env:
           RELEASE_VERSION: ${{ inputs.tag }}
-        run: python3 scripts/prepare-release.py --validate-only "$RELEASE_VERSION"
+        run: python3 scripts/prepare-release.py "$RELEASE_VERSION"
 
-      - name: Create and push tag
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Generate release notes and changelog
+        run: |
+          npx --yes --package conventional-changelog-cli@5.0.0 \
+            --package conventional-changelog-conventionalcommits@8.0.0 conventional-changelog \
+            --preset conventionalcommits --pkg web/package.json --tag-prefix v --release-count 1 \
+            --outfile "$RUNNER_TEMP/release-notes.md"
+          test -s "$RUNNER_TEMP/release-notes.md"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          notes = (Path(os.environ['RUNNER_TEMP']) / 'release-notes.md').read_text()
+          changelog = Path('CHANGELOG.md')
+          previous = changelog.read_text() if changelog.exists() else '# Changelog\n\n'
+          heading = '# Changelog\n\n'
+          body = previous.removeprefix(heading)
+          changelog.write_text((heading + notes.rstrip() + '\n\n' + body).rstrip() + '\n')
+          PY
+
+      - name: Save release notes
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-notes
+          path: ${{ runner.temp }}/release-notes.md
+          if-no-files-found: error
+
+      - name: Commit release and push tag
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pkg/version/version.go main.go docs/docs.go docs/swagger.json docs/swagger.yaml web/package.json CHANGELOG.md
+          git diff --cached --check
+          git commit -m "chore(release): ${RELEASE_TAG}"
           git tag -a "$RELEASE_TAG" -m "Release ${RELEASE_TAG}"
-          git push origin "refs/tags/${RELEASE_TAG}"
+          git push --atomic origin HEAD:refs/heads/main "refs/tags/${RELEASE_TAG}"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
+            --notes-file "$RUNNER_TEMP/release-notes.md"

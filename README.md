@@ -228,8 +228,8 @@ It publishes to `ghcr.io/damingerdai/health-master` and/or
 
 Manual image publishing does not create a Git tag. Running it on an existing
 version tag also publishes that version image tag. Pushing a version tag triggers
-image publishing automatically. Neither workflow updates source versions or
-creates a GitHub Release.
+image publishing automatically. The image publishing workflow does not update
+source versions or create a GitHub Release.
 The image publishing workflow currently publishes only the Go backend.
 Frontend image definitions are available in `web/Dockerfile` and `web/Containerfile`.
 
@@ -250,19 +250,22 @@ A missing `v` prefix is added automatically. Versions must use the stable
 The version must be greater than every existing stable release tag.
 Existing tags are rejected.
 
-The [release workflow](.github/workflows/release.yaml) validates the version,
-creates an annotated tag on the checked-out `main` commit, and pushes only that tag.
-The tag push independently triggers [deploy.yaml](.github/workflows/deploy.yaml).
+The [release workflow](.github/workflows/release.yaml) validates the version and
+synchronizes the Go version, Swagger annotations and generated documents, and
+`web/package.json`. It generates Conventional Commits release notes, prepends them
+to `CHANGELOG.md`, and saves the notes as an artifact. The changelog ends with a
+single newline, including on the first release.
+
+It commits these changes as `chore(release): vX.Y.Z`, creates an annotated tag on
+that commit, and atomically pushes both `main` and the tag. It then creates a
+GitHub Release using the generated notes. The tag push independently triggers
+[deploy.yaml](.github/workflows/deploy.yaml); release does not wait for images.
 
 ```text
-release.yaml → push version tag → deploy.yaml → publish images
+release.yaml → update versions and CHANGELOG → commit and push main + tag
+                                            ├─ create GitHub Release
+                                            └─ tag push → deploy.yaml → publish images
 ```
-
-Release does not create commits, update version files or `CHANGELOG.md`, or create
-a GitHub Release. Update application versions and changelog through the normal
-review process before tagging if they need to match the release. The existing
-`python3 scripts/prepare-release.py <version>` helper remains available for preparing
-version file changes locally; the workflow uses its read-only `--validate-only` mode.
 
 ### Permissions and recovery
 
@@ -275,16 +278,20 @@ Tag pushes use a personal access token (PAT): pushes made with the default
 2. Save the token as `RELEASE_PAT` under repository **Settings → Secrets and
    variables → Actions → New repository secret**.
 
-The workflow uses this PAT for checkout and tag push.
-It does not push to `main`, so the PR and required-check rules on `main` can remain
-unchanged without a branch-rule bypass. If tag rules restrict creating `v*` tags,
-the PAT owner must be permitted to create those tags. Renew the secret when the
-token expires.
+The workflow uses this PAT for checkout, pushing the release commit and tag, and
+creating the GitHub Release. Keep the PR and required-check rules on `main`, but
+grant the PAT owner an applicable ruleset bypass with **Always allow** (not
+**For pull requests only**). A PAT does not bypass repository rules by itself;
+without that exception, pushing the release commit will fail with GH013. If tag
+rules restrict creating `v*` tags, the owner must also be permitted to create them.
+Renew the secret when the token expires.
 
 Image publishing uses its own `GITHUB_TOKEN` for GHCR and requires the
 `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets for Docker Hub.
 
 If image publishing fails, retry the failed **Build and publish health-master**
 run. The tag remains available; do not rerun **Create release** with the same tag.
-A successful release workflow means the tag was pushed; check the separate deploy
-run for image publishing results.
+A successful release workflow means the commit, tag, and GitHub Release were
+created; check the separate deploy run for image publishing results. If GitHub
+Release creation fails after the push, use the saved release-notes artifact to
+create the Release for the existing tag; rerunning preparation rejects that tag.
