@@ -1,43 +1,303 @@
 # Health Master
 
-health master
+A personal health tracking application with a Go REST API and a Next.js frontend.
+Track blood pressure, weight, height, and body temperature, view summary statistics,
+and export blood pressure records.
 
-## Setup
+The backend uses Gin, PostgreSQL, and Redis. The frontend uses Next.js, React,
+TypeScript, and shadcn/ui. Authentication includes JWT tokens, optional TOTP
+verification, and email-based password resets.
+
+## Project layout
+
+```text
+main.go                 Backend entry point
+internal/api/           HTTP handlers
+internal/service/       Business logic
+internal/repository/    PostgreSQL data access
+internal/middleware/    Authentication, rate limiting, and request logging
+pkg/                    Shared packages, migration commands, and app version
+configs/                Application and migration configuration
+cmd/migrate.go          Database migration entry point
+db/migrations/          SQL migrations
+docs/                   Generated Swagger documentation
+web/                    Next.js application
+scripts/                Build, deployment, and release helpers
+deployments/            Kubernetes, Kustomize, and Helm manifests
+.github/workflows/      CI, image publishing, and releases
+```
+
+Backend requests flow through `router → handler → service → repository → PostgreSQL`.
+API routes live under `/api/v1`.
+
+## Local development
+
+### Prerequisites
+
+- Go matching [go.mod](go.mod), currently `1.27.0`.
+- Bun matching [web/package.json](web/package.json), currently `1.4.2`.
+- Docker with Docker Compose.
+- Python 3 for the release helper tests.
+
+Run the following commands from the repository root unless stated otherwise.
+
+### 1. Start infrastructure
+
+Create the external volumes once per machine, then start the services:
 
 ```bash
 docker volume create daming-health-master-volume
 docker volume create daming-health-master-redis-volume
 docker volume create daming-health-master-kuma-volume
-docker network create daming-health-master-network
-
-docker-compose pull
+docker volume create daming-health-master-mailpit-volume
+docker compose up -d
 ```
 
-### Postgresql
+Compose creates the application network. It runs infrastructure only; start the
+Go API and Next.js application separately.
 
-create a user, like `dbuser`
+| Service | Local address | Purpose |
+| --- | --- | --- |
+| PostgreSQL through PgBouncer | `127.0.0.1:16543` | Application database |
+| Redis | `127.0.0.1:6379` | Cache |
+| Mailpit SMTP | `127.0.0.1:11025` | Development email delivery |
+| Mailpit UI | `http://localhost:18025` | Inspect captured email |
+| Uptime Kuma | `http://localhost:3001` | Service monitoring |
+| Jaeger UI | `http://localhost:16686` | Trace viewer |
+| Jaeger OTLP | `localhost:4317` / `localhost:4318` | gRPC / HTTP trace ingestion |
 
-```
-	
-CREATE USER dbuser WITH PASSWORD '<CUSTOM PASSWORD>';
+Compose also runs a PostgreSQL backup service with output in `./backups`.
+The bundled local credentials are `postgres` / `123456` for PostgreSQL,
+`123456` for Redis, and `admin` / `12345` for Mailpit.
+
+### 2. Configure the backend
+
+```bash
+cp .env.example .env
 ```
 
-create a database, like `exampledb`
+The API reads [configs/config.yaml](configs/config.yaml), loads `.env` at startup,
+and accepts environment overrides using uppercase keys with underscores, such as
+`SERVER_HTTPPORT` and `REDIS_PASSWORD`.
 
-```
-CREATE DATABASE exampledb OWNER dbuser;
+Update `.env` with these values to use the Compose services:
+
+```dotenv
+DATABASE_URL=postgres://postgres:123456@127.0.0.1:16543/postgres?sslmode=disable
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=123456
+SMTP_HOST=127.0.0.1
+SMTP_PORT=11025
+SMTP_USERNAME=admin
+SMTP_PASSWORD=12345
+SMTP_FROM=health-master@example.com
+SERVER_FRONTENDURL=http://localhost:3000
 ```
 
-add permission to the database with the user:
+`DATABASE_URL` takes precedence over the separate database host, port, and name
+settings. Use `SMTP_USERNAME` and `SMTP_FROM` for mail configuration; the
+`SMTP_ADDRESS` entry in the example file is not a supported setting.
+The API requires a nonempty `SMTP_HOST` to start.
 
-```
-GRANT ALL PRIVILEGES ON DATABASE exampledb TO dbuser.
+Set `JWT_SECRET` to your own signing secret and `TOTP_SECRETKEY` to a 32-character
+ASCII encryption key. Keep the TOTP key stable once users enable two-factor
+authentication. Replace the bundled development credentials for deployed environments.
+
+Tracing is disabled by default. To send traces to the local Jaeger instance, set
+`JAEGER_ENABLED=true`, `JAEGER_ENDPOINT=localhost:4318`, and `JAEGER_INSECURE=true`.
+
+### 3. Apply database migrations
+
+The migration CLI reads [configs/db.yaml](configs/db.yaml). Unlike the API, it does
+not load `.env`; export `DATABASE_URL` explicitly or update the migration config.
+The Compose database is named `postgres`, while the checked-in migration config
+uses `hm` on port `5432`.
+
+```bash
+go build -o migrate ./cmd/migrate.go
+export DATABASE_URL='postgres://postgres:123456@127.0.0.1:16543/postgres?sslmode=disable'
+export MIGRATE_PATH='file://./db/migrations'
+./migrate up
 ```
 
-## Install githook
+Other migration commands:
 
+```bash
+./migrate up 1                 # Apply one pending migration
+./migrate down 1               # Roll back one migration
+./migrate create add_example   # Create a migration pair
 ```
-chmod ug+x .go-husky/*
-sh install_githooks.sh
-chmod ug+x .git/hooks/*
+
+`./migrate down` without a step count rolls back all migrations.
+
+### 4. Start the API
+
+```bash
+make run
 ```
+
+The API listens on `http://localhost:8000` by default.
+
+- Health check: `http://localhost:8000/ping`
+- Swagger UI: `http://localhost:8000/swagger/index.html`
+- Metrics: `http://localhost:8000/metrics`
+
+### 5. Start the frontend
+
+In a separate terminal:
+
+```bash
+cd web
+cp .env.example .env.local
+```
+
+Set the following values in `web/.env.local`:
+
+```dotenv
+BACKEND_HOST=http://localhost:8000
+AUTH_SECRET=replace-with-a-random-secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+Then install dependencies and start the development server:
+
+```bash
+bun install --frozen-lockfile
+bun run dev
+```
+
+Open `http://localhost:3000`. Server-side API requests use `BACKEND_HOST`;
+`web/proxy.ts` handles authentication and two-factor redirects.
+
+## Development commands
+
+### Backend
+
+```bash
+go build -o main main.go
+bash scripts/gofmtcheck.sh
+go test ./...
+go test ./pkg/serializer/... -run TestGobRedisSerializer
+```
+
+Regenerate API documentation after changing Swagger annotations
+(requires the `swag` CLI):
+
+```bash
+swag init -g main.go
+```
+
+### Frontend
+
+Run from `web/`:
+
+```bash
+bun run lint
+bun run prettier
+bun run prettier:fix
+bun run build
+bun run start
+```
+
+`bun run start` serves the production build created by `bun run build`.
+
+### Release helpers
+
+```bash
+python3 -m unittest discover -s scripts -p 'test_release.py'
+```
+
+The legacy hooks in `.go-husky/` reference frontend script names that are no
+longer present. Use the commands above until those hooks are updated.
+
+## CI and container images
+
+[CI](.github/workflows/ci.yaml) runs on pushes and pull requests to `main`.
+It checks and builds the frontend and backend, then builds their container images.
+
+The [image publishing workflow](.github/workflows/deploy.yaml) builds the Go API
+using `github.Dockerfile` for `linux/amd64` and `linux/arm64`.
+It publishes to `ghcr.io/damingerdai/health-master` and/or
+`docker.io/damingerdai/health-master`.
+
+| Trigger | Registries | Image tags |
+| --- | --- | --- |
+| Manual workflow run | Choose GHCR, Docker Hub, or both | Full commit SHA, seven-character SHA, optional `latest` |
+| Push a `vx.y.z` Git tag | Both | Version tag, full SHA, short SHA, `latest` |
+| Release workflow | Both | Version tag, full SHA, short SHA, `latest` |
+
+Manual image publishing does not create a Git tag or a version image tag.
+Pushing a Git tag directly publishes images but does not synchronize source
+versions or create a GitHub Release; use the release workflow for those steps.
+The image publishing workflow currently publishes only the Go backend.
+Frontend image definitions are available in `web/Dockerfile` and `web/Containerfile`.
+
+Deployment manifests are in `deployments/`; see the
+[Helm deployment guide](deployments/helm/README.md) for chart configuration.
+Image publishing does not update a running Kubernetes deployment.
+
+## Releases
+
+### Create a release
+
+1. Open **Actions → Create release → Run workflow** on GitHub.
+2. Select the `main` branch.
+3. Enter a version such as `1.2.3` or `v1.2.3` and run the workflow.
+
+A missing `v` prefix is added automatically. Versions must use the stable
+`x.y.z` format, with no leading zeros, prerelease suffix, or build metadata.
+The version must be greater than every existing stable release tag.
+Existing tags are rejected.
+
+The [release workflow](.github/workflows/release.yaml) runs in this order:
+
+```text
+prepare-release → publish-images → release
+```
+
+1. **Prepare:** synchronize the Go version constant, Swagger annotations and
+   generated documents, and `web/package.json`. Generate release notes with
+   conventional-changelog, prepend them to `CHANGELOG.md`, and save the notes
+   as an artifact. Commit as `chore(release): vX.Y.Z`, create an annotated tag,
+   and atomically push the commit and tag to GitHub.
+2. **Publish images:** build and push the versioned backend images using the
+   reusable image publishing workflow.
+3. **Publish Release:** download the saved notes and create the GitHub Release
+   only after image publishing succeeds.
+
+The release version is stored without `v` in application files and with `v`
+in Git tags and versioned image tags. The Go API logs its version at startup.
+
+### Changelog conventions
+
+Release notes use the Conventional Commits preset. The first release reads the
+full commit history; later releases include changes since the previous version.
+Features, fixes, performance improvements, and breaking changes appear in the notes.
+
+Example commit messages:
+
+```text
+feat(auth): add passkey support
+fix: handle empty blood pressure records
+perf: reduce statistics query time
+feat!: change the API response format
+```
+
+Breaking changes can also be described with a `BREAKING CHANGE:` footer in the
+commit body. Routine `chore` and `ci` commits are normally omitted from release notes.
+
+### Permissions and recovery
+
+The workflow uses the built-in `GITHUB_TOKEN`. Repository rules must allow it to
+write release commits to `main`, create tags and Releases, and publish packages.
+Docker Hub publishing requires the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`
+repository secrets.
+
+Tags pushed with `GITHUB_TOKEN` do not trigger another push workflow run, so the
+release workflow calls the image publishing workflow directly via `workflow_call`.
+
+If image publishing fails, no GitHub Release is created. Use **Re-run failed jobs**
+to retry without preparing the same version again. If Release creation fails after
+images are published, retry the failed job. The prepared commit and tag remain
+available, and the release notes are also recorded in that commit's `CHANGELOG.md`.

@@ -18,6 +18,7 @@ import (
 	"github.com/damingerdai/health-master/internal/routers"
 	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
+	"github.com/damingerdai/health-master/pkg/version"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 
@@ -87,7 +88,7 @@ func main() {
 		global.Logger.Error(fmt.Sprintf("run server: %s", err.Error()))
 		os.Exit(-1)
 	}
-	global.Logger.Info("health master server is running")
+	global.Logger.Info("health master server is running, version=" + version.Version)
 	app.Run()
 }
 
