@@ -31,11 +31,11 @@ import { request } from '@/lib/request';
 
 const schemas = z.object({
   weight: z.coerce
-    .number()
+    .number<string>()
     .max(500, 'Weight should be less than 500')
     .min(1, 'Weight is required'),
   logDate: z.date({
-    required_error: 'Log date is required'
+    error: 'Log date is required'
   }),
   logTime: z.string().optional()
 });
@@ -49,8 +49,8 @@ export function CreateWeightForm({
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const currentDate = new Date();
-  const defaultValues: InputData = {
-    weight: 70,
+  const defaultValues: z.input<typeof schemas> = {
+    weight: '70',
     logDate: currentDate,
     logTime: format(currentDate, 'HH:mm')
   };

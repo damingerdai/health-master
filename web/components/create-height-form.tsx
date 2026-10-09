@@ -31,11 +31,11 @@ import { request } from '@/lib/request';
 
 const schema = z.object({
   height: z.coerce
-    .number()
+    .number<string>()
     .min(1, 'Height is required')
     .max(300, 'Height should be less than 300 cm'),
   logDate: z.date({
-    required_error: 'Log date is required'
+    error: 'Log date is required'
   }),
   logTime: z.string().optional()
 });
@@ -49,10 +49,10 @@ export function CreateHeightForm({
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const currentDate = new Date();
-  const form = useForm<InputData>({
+  const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      height: 170,
+      height: '170',
       logDate: currentDate,
       logTime: format(currentDate, 'HH:mm')
     }
