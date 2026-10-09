@@ -31,11 +31,11 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 const schemas = z.object({
-  systolic: z.coerce.number().min(0, 'Systolic is required'),
-  diastolic: z.coerce.number().min(0, 'Diastolic is required'),
-  pulse: z.coerce.number().min(0, 'Pulse is required'),
+  systolic: z.coerce.number<string>().min(0, 'Systolic is required'),
+  diastolic: z.coerce.number<string>().min(0, 'Diastolic is required'),
+  pulse: z.coerce.number<string>().min(0, 'Pulse is required'),
   logDate: z.date({
-    required_error: 'Log date is required'
+    error: 'Log date is required'
   }),
   logTime: z.string().optional()
 });
@@ -47,10 +47,10 @@ export function CreateBloodPressureForm({
   ...props
 }: React.ComponentProps<'form'>) {
   const [isPending, startTransition] = React.useTransition();
-  const defaultValues: InputData = {
-    systolic: 120,
-    diastolic: 80,
-    pulse: 70,
+  const defaultValues: z.input<typeof schemas> = {
+    systolic: '120',
+    diastolic: '80',
+    pulse: '70',
     logDate: new Date(),
     logTime: format(new Date(), 'HH:mm') // Default to current time
   };

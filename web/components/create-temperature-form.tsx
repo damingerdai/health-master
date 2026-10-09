@@ -34,11 +34,11 @@ import { request } from '@/lib/request';
 
 const schemas = z
   .object({
-    temperature: z.coerce.number().min(30).max(113),
+    temperature: z.coerce.number<string>().min(30).max(113),
     unit: z.enum(['C', 'F']),
     note: z.string().max(500).optional(),
     logDate: z.date({
-      required_error: 'Log date is required'
+      error: 'Log date is required'
     }),
     logTime: z.string().optional()
   })
@@ -67,8 +67,8 @@ export function CreateTemperatureForm({
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const currentDate = new Date();
-  const defaultValues: InputData = {
-    temperature: 36.5,
+  const defaultValues: z.input<typeof schemas> = {
+    temperature: '36.5',
     unit: 'C',
     logDate: currentDate,
     logTime: format(currentDate, 'HH:mm'),
