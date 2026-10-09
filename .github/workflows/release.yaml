@@ -54,7 +54,7 @@ jobs:
           previous = changelog.read_text() if changelog.exists() else '# Changelog\n\n'
           heading = '# Changelog\n\n'
           body = previous.removeprefix(heading)
-          changelog.write_text(heading + notes.rstrip() + '\n\n' + body)
+          changelog.write_text((heading + notes.rstrip() + '\n\n' + body).rstrip() + '\n')
           PY
 
       - name: Save release notes
