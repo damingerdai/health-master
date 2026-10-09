@@ -15,7 +15,7 @@ on:
           - ghcr
           - dockerhub
       publish_latest:
-        description: Also publish the latest tag
+        description: Also publish latest for branch builds (always enabled for version tags)
         type: boolean
         default: true
 
@@ -26,7 +26,7 @@ permissions:
 env:
   IMAGE_NAME: damingerdai/health-master
   REGISTRY: ${{ inputs.registry || 'both' }}
-  PUBLISH_LATEST: ${{ github.event_name == 'push' || inputs.publish_latest }}
+  PUBLISH_LATEST: ${{ github.ref_type == 'tag' || inputs.publish_latest }}
 
 jobs:
   deploy:
@@ -48,6 +48,7 @@ jobs:
               echo "Expected a version tag in vx.y.z format: $version" >&2
               exit 1
             fi
+            version="${version#v}"
           fi
           sha="$(git rev-parse HEAD)"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"

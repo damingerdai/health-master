@@ -223,11 +223,12 @@ It publishes to `ghcr.io/damingerdai/health-master` and/or
 
 | Trigger | Registries | Image tags |
 | --- | --- | --- |
-| Manual workflow run | Choose GHCR, Docker Hub, or both | Full commit SHA, seven-character SHA, version when run on a tag, optional `latest` |
-| Push a `vx.y.z` Git tag | Both | Version tag, full SHA, short SHA, `latest` |
+| Manual workflow run | Choose GHCR, Docker Hub, or both | Full commit SHA, seven-character SHA; on a version tag, `x.y.z` and `latest`; on a branch, optional `latest` |
+| Push a `vx.y.z` Git tag | Both | `x.y.z` (without the `v` prefix), full SHA, short SHA, `latest` |
 
 Manual image publishing does not create a Git tag. Running it on an existing
-version tag also publishes that version image tag. Pushing a version tag triggers
+version tag (for example, `v0.0.1`) also publishes the version image tag (`0.0.1`)
+and `latest`, regardless of the manual `publish_latest` option. Pushing a version tag triggers
 image publishing automatically. The image publishing workflow does not update
 source versions or create a GitHub Release.
 The image publishing workflow currently publishes only the Go backend.
