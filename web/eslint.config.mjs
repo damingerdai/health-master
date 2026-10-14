@@ -1,14 +1,10 @@
+import { fixupConfigRules } from '@eslint/compat';
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const eslintConfig = [
-  ...nextCoreWebVitals,
-  ...nextTypescript,
+  // Next's React plugins still use rule context APIs removed in ESLint 10.
+  ...fixupConfigRules([...nextCoreWebVitals, ...nextTypescript]),
   {
     ignores: [
       'node_modules/**',
