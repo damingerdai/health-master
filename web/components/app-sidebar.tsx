@@ -2,9 +2,16 @@
 
 import * as React from 'react';
 import { useMemo } from 'react';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { IconInnerShadowTop, IconLoader3 } from '@tabler/icons-react';
-import { LayoutDashboard, Activity, Scale, Thermometer, Ruler } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Activity,
+  Scale,
+  Thermometer,
+  Ruler
+} from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import {
@@ -69,7 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              render={<a href="#" />}
+              render={<Link href="/" />}
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <IconInnerShadowTop className="!size-5" />
