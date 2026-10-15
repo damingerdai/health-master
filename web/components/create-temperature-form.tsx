@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -80,6 +80,8 @@ export function CreateTemperatureForm({
     defaultValues
   });
 
+  const unit = useWatch({ control: form.control, name: 'unit' });
+
   return (
     <Form {...form}>
       <form
@@ -144,7 +146,7 @@ export function CreateTemperatureForm({
                         />
                       </FormControl>
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
-                        °{form.watch('unit')}
+                        °{unit}
                       </span>
                     </div>
                     <FormMessage />
