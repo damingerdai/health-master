@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         hostname: 'picsum.photos'
       }
     ]
+  },
+  reactCompiler: true,
+  experimental: {
+    turbopackRustReactCompiler: true
   }
 };
 
