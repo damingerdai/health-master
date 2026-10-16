@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { AlertCircleIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { updateTwoFactor } from '@/components/actions/twofactor';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,9 @@ interface TwoFactorFormProps {
   enabled: boolean;
   canEnable: boolean;
 }
+
+const slotClassName =
+  'size-11 rounded-xl border border-stone-200/90 bg-[#FAF8F5]/80 text-base font-medium text-stone-800 shadow-2xs transition-all first:rounded-l-xl last:rounded-r-xl data-[active=true]:border-[#3F6254]/60 data-[active=true]:bg-white data-[active=true]:ring-3 data-[active=true]:ring-[#3F6254]/15 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-100 dark:data-[active=true]:border-emerald-500/50 dark:data-[active=true]:bg-stone-950';
 
 export function TwoFactorForm({ enabled, canEnable }: TwoFactorFormProps) {
   const [disabling, setDisabling] = useState(false);
@@ -54,18 +58,23 @@ export function TwoFactorForm({ enabled, canEnable }: TwoFactorFormProps) {
   const showForm = (!enabled && canEnable) || disabling;
 
   return (
-    <form action={submit} className="flex flex-col gap-4">
+    <form action={submit} className="flex flex-col gap-5">
       {showForm && (
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-4 px-6 sm:px-7">
           {disabling && (
-            <p>
+            <p className="text-sm leading-relaxed text-stone-600 dark:text-stone-300">
               Enter your current authenticator code to confirm turning off this
               extra protection.
             </p>
           )}
           <FieldSet disabled={pending} className="flex flex-col gap-4">
-            <FormItem data-invalid={!!error} className="flex flex-col gap-2">
-              <Label htmlFor="verification-code">Verification code</Label>
+            <FormItem data-invalid={!!error} className="flex flex-col gap-2.5">
+              <Label
+                htmlFor="verification-code"
+                className="text-xs font-medium text-stone-600 dark:text-stone-300"
+              >
+                Verification code
+              </Label>
               <InputOTP
                 id="verification-code"
                 name="code"
@@ -85,34 +94,44 @@ export function TwoFactorForm({ enabled, canEnable }: TwoFactorFormProps) {
                 aria-invalid={!!error}
                 aria-describedby={error ? 'two-factor-error' : undefined}
               >
-                <InputOTPGroup>
+                <InputOTPGroup className="gap-2 sm:gap-2.5">
                   {Array.from({ length: 6 }, (_, index) => (
                     <InputOTPSlot
                       key={index}
                       index={index}
                       aria-invalid={!!error}
+                      className={slotClassName}
                     />
                   ))}
                 </InputOTPGroup>
               </InputOTP>
               {error && (
-                <p
+                <div
                   id="two-factor-error"
                   role="alert"
-                  className="text-sm text-destructive"
+                  className="flex items-start gap-2 rounded-2xl border border-rose-200/80 bg-rose-50/70 px-3.5 py-2.5 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300"
                 >
-                  {error}
-                </p>
+                  <AlertCircleIcon
+                    aria-hidden="true"
+                    className="mt-0.5 size-4 shrink-0"
+                  />
+                  <span>{error}</span>
+                </div>
               )}
             </FormItem>
           </FieldSet>
         </CardContent>
       )}
-      <CardFooter className="flex flex-wrap gap-2">
+      <CardFooter className="flex flex-wrap gap-2.5 border-t border-stone-200/60 bg-transparent px-6 pt-5 sm:px-7 dark:border-stone-800/70">
         {showForm && (
           <Button
             type="submit"
             variant={disabling ? 'destructive' : 'default'}
+            className={
+              disabling
+                ? 'h-10 rounded-xl px-5 text-xs font-medium'
+                : 'h-10 rounded-xl bg-[#3F6254] px-5 text-xs font-medium text-stone-50 hover:bg-[#345246] dark:bg-emerald-700 dark:text-stone-50 dark:hover:bg-emerald-600'
+            }
             disabled={pending || code.length !== 6}
           >
             {pending
@@ -126,6 +145,7 @@ export function TwoFactorForm({ enabled, canEnable }: TwoFactorFormProps) {
           <Button
             type="button"
             variant="outline"
+            className="h-10 rounded-xl border-stone-200 bg-white px-5 text-xs font-medium text-stone-700 hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200"
             disabled={pending}
             onClick={() => setDisabling(true)}
           >
@@ -136,6 +156,7 @@ export function TwoFactorForm({ enabled, canEnable }: TwoFactorFormProps) {
           <Button
             type="button"
             variant="ghost"
+            className="h-10 rounded-xl px-4 text-xs font-medium text-stone-500 hover:bg-stone-200/50 hover:text-stone-800 dark:text-stone-400"
             disabled={pending}
             onClick={() => {
               setDisabling(false);
