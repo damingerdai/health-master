@@ -1,5 +1,5 @@
 'use client';
-
+import * as React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, KeyRound, Monitor } from 'lucide-react';
 
@@ -22,7 +22,7 @@ interface SecurityCardProps {
 
 export function SecurityCard({ twoFactorEnabled }: SecurityCardProps) {
   return (
-    <Card>
+    <Card className="border-none shadow-none bg-transparent">
       <CardHeader>
         <CardTitle>Security</CardTitle>
         <CardDescription>
@@ -65,16 +65,18 @@ export function SecurityCard({ twoFactorEnabled }: SecurityCardProps) {
         <Separator />
 
         {/* Sessions */}
-        <SecurityItem
-          icon={<Monitor className="h-5 w-5 text-muted-foreground" />}
-          title="Active Sessions"
-          description="View and manage devices signed into your account."
-          action={
-            <Button variant="outline" disabled>
-              Coming Soon
-            </Button>
-          }
-        />
+        <React.Activity mode="hidden">
+          <SecurityItem
+            icon={<Monitor className="h-5 w-5 text-muted-foreground" />}
+            title="Active Sessions"
+            description="View and manage devices signed into your account."
+            action={
+              <Button variant="outline" disabled>
+                Coming Soon
+              </Button>
+            }
+          />
+        </React.Activity>
       </CardContent>
     </Card>
   );

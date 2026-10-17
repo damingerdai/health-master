@@ -1,49 +1,107 @@
-import {
-  IconActivity,
-  IconScale,
-  IconTemperature,
-  IconRuler2
-} from '@tabler/icons-react';
+import { Activity, Ruler, Scale, Thermometer } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-  CardAction
+  CardTitle
 } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { StatisticsSummary } from '@/types/statistics';
-import { Badge } from './ui/badge';
 
 interface StatisticsCardsProps {
   summary: StatisticsSummary;
 }
 
-export function StatisticsCards({ summary }: StatisticsCardsProps) {
-  const { latestBloodPressure, latestWeight, latestTemperature, latestHeight } =
-    summary;
+function getBloodPressureMeta(systolic?: number, diastolic?: number, pulse?: number) {
+  if (systolic === undefined || diastolic === undefined) {
+    return {
+      badge: 'No Data',
+      subtext: 'Record your first reading'
+    };
+  }
+  const isNormal = systolic < 120 && diastolic < 80;
+  const isElevated = systolic < 140 && diastolic < 90;
+  const statusLabel = isNormal ? 'Optimal' : isElevated ? 'Normal' : 'Elevated';
+  return {
+    badge: isNormal ? 'Normal' : statusLabel,
+    subtext: `Pulse: ${pulse ?? '--'} bpm · ${statusLabel}`
+  };
+}
 
-  const cards = [
+function getWeightSubtext(
+  latestWeight?: { weight: number; recordDate: Date | string } | null,
+  weightTrend?: { weight: number }[]
+) {
+  if (!latestWeight) {
+    return 'Keep track of your weight';
+  }
+  if (weightTrend && weightTrend.length >= 2) {
+    const earliest = weightTrend[weightTrend.length - 1];
+    if (earliest) {
+      const diff = Number((latestWeight.weight - earliest.weight).toFixed(1));
+      const sign = diff > 0 ? '+' : '';
+      return `${sign}${diff} kg vs last 30 days`;
+    }
+  }
+  return new Date(latestWeight.recordDate).toLocaleDateString();
+}
+
+function getHeightSubtext(
+  latestHeight?: { height: number; recordDate: string } | null,
+  latestWeight?: { weight: number } | null
+) {
+  if (!latestHeight) {
+    return 'Update your profile';
+  }
+  if (latestWeight && latestHeight.height > 0) {
+    const heightM = latestHeight.height / 100;
+    const bmi = latestWeight.weight / (heightM * heightM);
+    const range =
+      bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal range' : 'Overweight';
+    return `BMI ${bmi.toFixed(1)} · ${range}`;
+  }
+  return new Date(latestHeight.recordDate).toLocaleDateString();
+}
+
+export function StatisticsCards({ summary }: StatisticsCardsProps) {
+  const {
+    latestBloodPressure,
+    latestWeight,
+    latestTemperature,
+    latestHeight,
+    weightTrend
+  } = summary;
+
+  const bpMeta = getBloodPressureMeta(
+    latestBloodPressure?.systolicBloodPressure,
+    latestBloodPressure?.diastolicBloodPressure,
+    latestBloodPressure?.pulse
+  );
+
+  const vitals = [
     {
       title: 'Blood Pressure',
       value: latestBloodPressure
         ? `${latestBloodPressure.systolicBloodPressure}/${latestBloodPressure.diastolicBloodPressure}`
         : 'No data',
       unit: 'mmHg',
-      description: latestBloodPressure
-        ? `Pulse: ${latestBloodPressure.pulse} bpm`
-        : 'Record your first reading',
-      icon: IconActivity,
-      color: 'text-rose-500'
+      subtext: bpMeta.subtext,
+      badge: bpMeta.badge,
+      icon: Activity,
+      iconColor: 'text-rose-500',
+      badgeClass:
+        'border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400'
     },
     {
       title: 'Weight',
       value: latestWeight ? latestWeight.weight.toString() : 'No data',
       unit: 'kg',
-      description: latestWeight
-        ? new Date(latestWeight.recordDate).toLocaleDateString()
-        : 'Keep track of your weight',
-      icon: IconScale,
-      color: 'text-blue-500'
+      subtext: getWeightSubtext(latestWeight, weightTrend),
+      badge: latestWeight ? 'On Track' : 'No Data',
+      icon: Scale,
+      iconColor: 'text-blue-500',
+      badgeClass:
+        'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
     },
     {
       title: 'Temperature',
@@ -51,44 +109,61 @@ export function StatisticsCards({ summary }: StatisticsCardsProps) {
         ? latestTemperature.temperature.toString()
         : 'No data',
       unit: '°C',
-      description: latestTemperature
-        ? new Date(latestTemperature.recordDate).toLocaleDateString()
+      subtext: latestTemperature
+        ? 'Stable baseline reading'
         : 'Monitor your health',
-      icon: IconTemperature,
-      color: 'text-orange-500'
+      badge: latestTemperature ? 'Healthy' : 'No Data',
+      icon: Thermometer,
+      iconColor: 'text-orange-500',
+      badgeClass:
+        'border-orange-500/20 bg-orange-500/10 text-orange-600 dark:text-orange-400'
     },
     {
       title: 'Height',
       value: latestHeight ? latestHeight.height.toString() : 'No data',
       unit: 'cm',
-      description: latestHeight
-        ? new Date(latestHeight.recordDate).toLocaleDateString()
-        : 'Update your profile',
-      icon: IconRuler2,
-      color: 'text-emerald-500'
+      subtext: getHeightSubtext(latestHeight, latestWeight),
+      badge: latestHeight ? 'Recorded' : 'No Data',
+      icon: Ruler,
+      iconColor: 'text-emerald-500',
+      badgeClass:
+        'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
     }
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
-      {cards.map(card => (
-        <Card key={card.title} className="@container/card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
-            <CardAction>
-              <Badge variant="outline">
-                <card.icon className={`h-4 w-4 ${card.color}`} />
-              </Badge>
-            </CardAction>
+    <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      {vitals.map(vital => (
+        <Card
+          key={vital.title}
+          className="from-primary/5 to-card bg-gradient-to-t py-4 shadow-xs"
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-2">
+            <CardTitle className="text-xs font-medium">{vital.title}</CardTitle>
+            <div className="border-border/80 bg-background/80 flex size-7 items-center justify-center rounded-md border">
+              <vital.icon className={cn('size-4', vital.iconColor)} />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {card.value}
-              <span className="ml-1 text-sm font-normal text-muted-foreground">
-                {card.unit}
+          <CardContent className="px-4">
+            <div className="flex items-baseline justify-between gap-2">
+              <div className="text-2xl font-bold tracking-tight">
+                {vital.value}
+                <span className="text-muted-foreground ml-1 text-xs font-normal">
+                  {vital.unit}
+                </span>
+              </div>
+              <span
+                className={cn(
+                  'inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium',
+                  vital.badgeClass
+                )}
+              >
+                {vital.badge}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground">{card.description}</p>
+            <p className="text-muted-foreground mt-1.5 text-xs">
+              {vital.subtext}
+            </p>
           </CardContent>
         </Card>
       ))}
