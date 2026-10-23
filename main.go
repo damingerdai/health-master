@@ -59,7 +59,7 @@ func init() {
 }
 
 // @title						health master api
-// @version					1.0
+// @version					0.0.2-alpha.0
 // @description				health master open api
 // @termsOfService				http://swagger.io/terms/
 // @securityDefinitions.apiKey	BearerAuth
