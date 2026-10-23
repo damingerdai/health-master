@@ -37,7 +37,7 @@ API routes live under `/api/v1`.
 - Go matching [go.mod](go.mod), currently `1.27.0`.
 - Bun matching [web/package.json](web/package.json), currently `1.4.2`.
 - Docker with Docker Compose.
-- Python 3 for the release helper tests.
+- Node.js 24 for the release helper tests.
 
 Run the following commands from the repository root unless stated otherwise.
 
@@ -205,7 +205,7 @@ bun run start
 ### Release helpers
 
 ```bash
-python3 -m unittest discover -s scripts -p 'test_release.py'
+node --test scripts/test-release.mjs
 ```
 
 The legacy hooks in `.go-husky/` reference frontend script names that are no
@@ -242,30 +242,38 @@ Image publishing does not update a running Kubernetes deployment.
 
 ### Create a release
 
-1. Open **Actions → Create release → Run workflow** on GitHub.
-2. Select the `main` branch.
-3. Enter a version such as `1.2.3` or `v1.2.3` and run the workflow.
+1. Open **Actions → Release from main → Run workflow** on GitHub.
+2. Select the `main` branch. Releases can only run from `main`.
+3. Select a version increment and, for prereleases, an identifier (`alpha`,
+   `beta`, or `rc`).
 
-A missing `v` prefix is added automatically. Versions must use the stable
-`x.y.z` format, with no leading zeros, prerelease suffix, or build metadata.
-The version must be greater than every existing stable release tag.
-Existing tags are rejected.
+No manual tag input is required. The workflow calculates the next version from
+existing release tags. Patch/minor/major increments use the latest stable tag
+(or `0.0.0` before the first release). `prerelease` continues the highest pending
+prerelease core version; changing the identifier starts its own counter at zero. `patch`,
+`minor`, and `major` create stable releases; `prepatch`, `preminor`, `premajor`,
+and `prerelease` create prereleases. Both release types are created on `main`. Stable and prerelease versions are
+synchronized across the Go version, Swagger annotations and generated
+documents, and `web/package.json`. Duplicate tags and versions that are not
+newer than the latest stable release are rejected.
 
 The [release workflow](.github/workflows/release.yaml) validates the version and
-synchronizes the Go version, Swagger annotations and generated documents, and
-`web/package.json`. It generates Conventional Commits release notes, prepends them
-to `CHANGELOG.md`, and saves the notes as an artifact. The changelog ends with a
-single newline, including on the first release.
+synchronizes those files. It uses [git-cliff](https://git-cliff.org/docs/) and `cliff.toml` to generate
+release notes and rebuild `CHANGELOG.md` from the branch history. The same
+release notes are saved as an artifact and published as the GitHub Release body.
+Non-conventional commits are included; release bookkeeping commits are excluded.
 
 It commits these changes as `chore(release): vX.Y.Z`, creates an annotated tag on
-that commit, and atomically pushes both `main` and the tag. It then creates a
-GitHub Release using the generated notes. The tag push independently triggers
-[deploy.yaml](.github/workflows/deploy.yaml); release does not wait for images.
+that commit, and atomically pushes `main` and the tag without force. It then
+creates a GitHub Release using the generated notes. Stable tag pushes
+independently trigger [deploy.yaml](.github/workflows/deploy.yaml); release does
+not wait for images. Prerelease tags create GitHub prereleases and do not trigger
+image publishing.
 
 ```text
 release.yaml → update versions and CHANGELOG → commit and push main + tag
                                             ├─ create GitHub Release
-                                            └─ tag push → deploy.yaml → publish images
+                                            └─ stable tag → deploy.yaml → publish images
 ```
 
 ### Permissions and recovery
@@ -280,19 +288,19 @@ Tag pushes use a personal access token (PAT): pushes made with the default
    variables → Actions → New repository secret**.
 
 The workflow uses this PAT for checkout, pushing the release commit and tag, and
-creating the GitHub Release. Keep the PR and required-check rules on `main`, but
-grant the PAT owner an applicable ruleset bypass with **Always allow** (not
-**For pull requests only**). A PAT does not bypass repository rules by itself;
-without that exception, pushing the release commit will fail with GH013. If tag
-rules restrict creating `v*` tags, the owner must also be permitted to create them.
-Renew the secret when the token expires.
+creating the GitHub Release. Grant the PAT owner any required bypass for the
+`main` branch ruleset with **Always allow** (not **For pull requests
+only**). A PAT does not bypass repository rules by itself; without the needed
+exception, pushing the release commit will fail with GH013. If tag rules restrict
+creating `v*` tags, the owner must also be permitted to create them. Renew the
+secret when the token expires.
 
 Image publishing uses its own `GITHUB_TOKEN` for GHCR and requires the
 `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets for Docker Hub.
 
 If image publishing fails, retry the failed **Build and publish health-master**
-run. The tag remains available; do not rerun **Create release** with the same tag.
-A successful release workflow means the commit, tag, and GitHub Release were
+run. A successful release workflow means the commit, tag, and GitHub Release were
 created; check the separate deploy run for image publishing results. If GitHub
 Release creation fails after the push, use the saved release-notes artifact to
-create the Release for the existing tag; rerunning preparation rejects that tag.
+create the Release for the existing tag. Do not rerun the workflow for that
+increment: it will calculate the next tag.
