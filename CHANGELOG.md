@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.2-beta.0] - 2026-10-28
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update dependency cn to ^0.5.0 (#346)
+- *(deps)* Update dependency @hookform/resolvers to v6 (#347)
+- *(deps)* Update nextjs monorepo to v16.4.3 (#354)
 ## [0.0.2-alpha.0] - 2026-10-23
 
 ### 🚀 Features

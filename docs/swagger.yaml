@@ -329,7 +329,7 @@ info:
   description: health master open api
   termsOfService: http://swagger.io/terms/
   title: health master api
-  version: "0.0.2-alpha.0"
+  version: "0.0.2-beta.0"
 paths:
   /api/v1/auth/login:
     post:
