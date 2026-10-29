@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import {
   AlertCircleIcon,
   ArrowRightIcon,
+  CheckCircle2Icon,
   EyeIcon,
   EyeOffIcon,
   Loader2Icon,
@@ -39,8 +40,9 @@ type InputData = z.infer<typeof schemas>;
 
 export function LoginForm({
   className,
+  passwordUpdated = false,
   ...props
-}: React.ComponentProps<'form'>) {
+}: React.ComponentProps<'form'> & { passwordUpdated?: boolean }) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -108,6 +110,20 @@ export function LoginForm({
             journal.
           </p>
         </div>
+
+        {/* Password Updated Confirmation */}
+        {passwordUpdated && (
+          <div
+            role="status"
+            className="flex items-start gap-2.5 rounded-2xl border border-emerald-200/80 bg-emerald-50/70 px-4 py-3 text-xs leading-relaxed text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300"
+          >
+            <CheckCircle2Icon
+              aria-hidden="true"
+              className="mt-0.5 size-4 shrink-0"
+            />
+            <span>Your password has been updated. Please sign in again.</span>
+          </div>
+        )}
 
         {/* Soft Inline Error Feedback */}
         {authError && (
