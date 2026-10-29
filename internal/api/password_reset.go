@@ -36,7 +36,7 @@ func CreateResetPassword(c *gin.Context) {
 
 	userRepository := repository.NewUserRepository(global.DBEngine)
 	tokenRepository := repository.NewTokenRecordRepository(global.DBEngine)
-	tokenService := service.NewTokenService(userRepository, tokenRepository)
+	tokenService := service.NewTokenService(userRepository, tokenRepository, global.Logger)
 	resetPasswordToken, err := tokenService.CreatePasswordResetToken(c, input.Email)
 	if err != nil {
 		global.Logger.Error("fail to create password reset token", zap.Error(err))

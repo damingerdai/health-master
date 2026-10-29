@@ -102,7 +102,7 @@ func NewRouter() *gin.Engine {
 	{
 		settingsApi.GET("/2fa", api.GetTwoFactor)
 		settingsApi.PUT("/2fa", api.UpdateTwoFactor)
-		settingsApi.PUT("/password", api.ChangePassword)
+		settingsApi.PUT("/password", middleware.PasswordChangeLimiter(global.RedisClient, global.Logger), api.ChangePassword)
 
 	}
 
