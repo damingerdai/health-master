@@ -10,8 +10,6 @@ import (
 	"github.com/damingerdai/health-master/pkg/limiter"
 	"github.com/gin-gonic/gin"
 	"github.com/penglongli/gin-metrics/ginmetrics"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
@@ -41,7 +39,7 @@ func NewRouter() *gin.Engine {
 	m.SetMetricPath("/metrics")
 	m.SetSlowTime(10)
 	m.Use(r)
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.GET("/swagger/*any", swaggerHandler())
 	r.Use(middleware.AccessLog())
 
 	r.Any("ping", func(ctx *gin.Context) {
