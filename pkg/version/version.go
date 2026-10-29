@@ -1,4 +1,4 @@
 // Package version contains the application release version.
 package version
 
-const Version = "0.0.2-beta.0"
+const Version = "0.0.2-rc.0"

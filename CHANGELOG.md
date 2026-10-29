@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.2-rc.0] - 2026-10-29
+
+### 🚀 Features
+
+- Support token 2FA and scaffold password change endpoint (#357)
+- Implement password changes with logging and per-user rate limits (#358)
+- Add password settings and refresh profile UI (#362)
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update module github.com/swaggo/files to v2 (#331)
+- *(deps)* Update module github.com/swaggo/files to v2 (#359)
+
+### ⚙️ Miscellaneous Tasks
+
+- Update github.com/swaggo/files/v2 (#360)
 ## [0.0.2-beta.0] - 2026-10-28
 
 ### 🐛 Bug Fixes
