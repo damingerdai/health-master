@@ -522,6 +522,76 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/settings/password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Change the authenticated user's password using the current password. A six-digit TOTP code is required when 2FA is enabled.\nLimited to 5 requests per user per minute. Five password or TOTP verification failures within 15 minutes trigger a 15-minute lockout. Successful changes reset the failure count.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "settings"
+                ],
+                "summary": "Change password",
+                "parameters": [
+                    {
+                        "description": "Password change request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ChangePasswordInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password changed",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or TOTP code",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required, invalid current password, or missing required TOTP code",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "429": {
+                        "description": "Request limit exceeded or temporarily locked out",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        },
+                        "headers": {
+                            "Retry-After": {
+                                "type": "string",
+                                "description": "Seconds until another attempt is allowed"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/statistics/summary": {
             "get": {
                 "security": [
@@ -1482,6 +1552,29 @@ const docTemplate = `{
     "definitions": {
         "errcode.Error": {
             "type": "object"
+        },
+        "model.ChangePasswordInput": {
+            "type": "object",
+            "required": [
+                "current_password",
+                "new_password"
+            ],
+            "properties": {
+                "current_password": {
+                    "description": "Current password, at least 8 characters.",
+                    "type": "string",
+                    "minLength": 8
+                },
+                "new_password": {
+                    "description": "New password, at least 8 characters.",
+                    "type": "string",
+                    "minLength": 8
+                },
+                "two_factor_code": {
+                    "description": "Six-digit TOTP code; required when 2FA is enabled.",
+                    "type": "string"
+                }
+            }
         },
         "model.ListResponse-model_UserBloodPressure": {
             "type": "object",

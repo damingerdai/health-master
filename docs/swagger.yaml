@@ -1,6 +1,23 @@
 definitions:
   errcode.Error:
     type: object
+  model.ChangePasswordInput:
+    properties:
+      current_password:
+        description: Current password, at least 8 characters.
+        minLength: 8
+        type: string
+      new_password:
+        description: New password, at least 8 characters.
+        minLength: 8
+        type: string
+      two_factor_code:
+        description: Six-digit TOTP code; required when 2FA is enabled.
+        type: string
+    required:
+    - current_password
+    - new_password
+    type: object
   model.ListResponse-model_UserBloodPressure:
     properties:
       count:
@@ -660,6 +677,54 @@ paths:
       security:
       - BearerAuth: []
       summary: Enable or disable Two-Factor Authentication
+      tags:
+      - settings
+  /api/v1/settings/password:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Change the authenticated user's password using the current password. A six-digit TOTP code is required when 2FA is enabled.
+        Limited to 5 requests per user per minute. Five password or TOTP verification failures within 15 minutes trigger a 15-minute lockout. Successful changes reset the failure count.
+      parameters:
+      - description: Password change request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangePasswordInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password changed
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request or TOTP code
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "401":
+          description: Authentication required, invalid current password, or missing
+            required TOTP code
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "429":
+          description: Request limit exceeded or temporarily locked out
+          headers:
+            Retry-After:
+              description: Seconds until another attempt is allowed
+              type: string
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      security:
+      - BearerAuth: []
+      summary: Change password
       tags:
       - settings
   /api/v1/statistics/summary:
