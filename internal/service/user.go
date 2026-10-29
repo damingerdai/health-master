@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -20,7 +21,8 @@ type UserService struct {
 	userRoleRepository    *repository.UserRoleRepository
 	tokenRecordRepository *repository.TokenRecordRepository
 
-	tokenService *TokenService
+	tokenService     *TokenService
+	twoFactorService *TwoFactorService
 
 	logger *zap.Logger
 }
@@ -31,6 +33,7 @@ func NewUserService(
 	userRoleRepository *repository.UserRoleRepository,
 	tokenRecordRepository *repository.TokenRecordRepository,
 	tokenService *TokenService,
+	twoFactorService *TwoFactorService,
 	logger *zap.Logger,
 ) *UserService {
 	return &UserService{
@@ -39,6 +42,7 @@ func NewUserService(
 		userRoleRepository:    userRoleRepository,
 		tokenRecordRepository: tokenRecordRepository,
 		tokenService:          tokenService,
+		twoFactorService:      twoFactorService,
 		logger:                logger,
 	}
 }
@@ -155,4 +159,56 @@ func (userService *UserService) ResetPassword(ctx context.Context, email string,
 	}
 	user.Password = ""
 	return user, nil
+}
+
+func (userService *UserService) ChangePassword(ctx context.Context, userId string, changePasswordInput *model.ChangePasswordInput) error {
+	logger := userService.logger
+	if logger == nil {
+		logger = zap.NewNop()
+	}
+	logger = logger.With(zap.String("user_id", userId), zap.String("operation", "change_password"))
+	user, err := userService.Find(ctx, userId)
+	if err != nil {
+		logger.Error("failed to find user", zap.Error(err))
+		return fmt.Errorf("%w: failed to find user: %w", errcode.ServerError, err)
+	}
+	if user == nil {
+		logger.Warn("user not found")
+		return errcode.UnauthorizedAuthNotExist
+	}
+	if err := pwd.Authenticate(changePasswordInput.CurrentPassword, user.Password); err != nil {
+		logger.Warn("current password verification failed", zap.Error(err))
+		return err
+	}
+	if user.TwoFactorEnabled {
+		twoFactorCode := changePasswordInput.TwoFactorCode
+		if twoFactorCode == nil {
+			logger.Warn("two-factor code missing")
+			return errcode.ErrTwoFactorAuthenticationRequired
+		}
+		if userService.twoFactorService == nil {
+			logger.Error("two-factor service unavailable")
+			return errcode.ServerError
+		}
+		if err := userService.twoFactorService.VerifyCode(ctx, user.Id, *twoFactorCode); err != nil {
+			if errors.Is(err, ErrInvalidTwoFactorCode) {
+				logger.Warn("two-factor verification failed")
+				return errcode.InvalidVerificationCode
+			}
+			logger.Error("failed to verify two-factor code", zap.Error(err))
+			return fmt.Errorf("%w: verify two-factor code: %w", errcode.ServerError, err)
+		}
+	}
+	hashedPassword, err := pwd.HashPassword(changePasswordInput.NewPassword, nil)
+	if err != nil {
+		logger.Error("failed to hash new password", zap.Error(err))
+		return fmt.Errorf("hash new password: %w", err)
+	}
+	err = userService.userRepository.UpdatePassword(ctx, userId, hashedPassword)
+	if err != nil {
+		logger.Error("failed to update password", zap.Error(err))
+		return err
+	}
+	logger.Info("password changed")
+	return nil
 }

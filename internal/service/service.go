@@ -85,7 +85,7 @@ func New(db db.Connection, opts ...NewOption) *Services {
 	weigthRecordRepository := repo.WeightRecordRepository
 	userHeightRepository := repo.UserHeightRepository
 	userTemperatureRepository := repo.UserTemperatureRepository
-	tokenService := NewTokenService(userRepository, tokenRecordRepository)
+	tokenService := NewTokenService(userRepository, tokenRecordRepository, logger)
 	twoFactorService := NewTwoFactorService(aes, userRepository, issuer)
 	tokenService.twoFactorService = twoFactorService
 
@@ -95,7 +95,7 @@ func New(db db.Connection, opts ...NewOption) *Services {
 
 		AuthService:              NewAuthService(userRepository, tokenService, twoFactorService),
 		RoleService:              NewRoleService(roleRepository),
-		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository, tokenRecordRepository, tokenService, logger),
+		UserService:              NewUserService(userRepository, roleRepository, userRoleRepository, tokenRecordRepository, tokenService, twoFactorService, logger),
 		TokenService:             tokenService,
 		UserBloodPressureService: NewUserBloodPressureService(userBloodPressureRepository),
 		WeightRecordService:      NewWeightRecordService(weigthRecordRepository, userRepository),
