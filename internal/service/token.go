@@ -126,25 +126,6 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 	return ts.CreateAccessToken(ctx, user)
 }
 
-// func (ts *TokenService) DoCreateToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
-// 	return ts.doCreateToken(ctx, user)
-// }
-
-// func (ts *TokenService) doCreateToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
-// 	nowTime := time.Now()
-// 	expireTime := nowTime.Add(global.JwtSetting.Expire)
-// 	redisService := NewRedisService(global.RedisClient)
-// 	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	userKey := fmt.Sprintf("token-user-%s", user.Id)
-// 	userToken := model.UserToken{AccessToken: *token, Expired: expireTime}
-// 	redisService.SaveNX(ctx, userKey, userToken, global.JwtSetting.Expire.Abs()-5*time.Second)
-
-// 	return &userToken, nil
-// }
-
 func (ts *TokenService) CreateTmpToken(ctx context.Context, user *model.User, expireTime time.Time) (*model.UserToken, error) {
 	token, err := tokens.CreateToken(global.JwtSetting.GetJwtSecret(), user.Id, global.JwtSetting.Issuer, expireTime)
 	if err != nil {
