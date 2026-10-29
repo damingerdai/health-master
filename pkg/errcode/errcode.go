@@ -43,6 +43,7 @@ func (e *Error) StatusCode() int {
 	case InvalidVerificationCode.Code(), InvalidParams.Code():
 		return http.StatusBadRequest
 	case ErrLegacyPasswordResetRequired.Code(), ErrInvalidCredentials.Code(),
+		ErrTwoFactorAuthenticationRequired.Code(),
 		UnauthorizedAuthNotExist.Code(), UnauthorizedTokenError.Code(),
 		UnauthorizedTokenGenerate.Code(), UnauthorizedTokenTimeout.Code():
 		return http.StatusUnauthorized

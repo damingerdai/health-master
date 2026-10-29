@@ -87,6 +87,7 @@ func New(db db.Connection, opts ...NewOption) *Services {
 	userTemperatureRepository := repo.UserTemperatureRepository
 	tokenService := NewTokenService(userRepository, tokenRecordRepository)
 	twoFactorService := NewTwoFactorService(aes, userRepository, issuer)
+	tokenService.twoFactorService = twoFactorService
 
 	return &Services{
 		db:     db,

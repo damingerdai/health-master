@@ -10,19 +10,26 @@ import (
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/pkg/contants"
+	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/pwd"
 	"github.com/damingerdai/health-master/pkg/util"
 	"github.com/damingerdai/health-master/pkg/util/tokens"
 	"go.uber.org/zap"
 )
 
+type tokenUserRepository interface {
+	FindByEmail(context.Context, string) (*model.User, error)
+	Find(context.Context, string) (*model.User, error)
+}
+
 type TokenService struct {
-	userRepository *repository.UserRepository
-	tokenRepo      *repository.TokenRecordRepository
+	userRepository   tokenUserRepository
+	twoFactorService *TwoFactorService
+	tokenRepo        *repository.TokenRecordRepository
 }
 
 func NewTokenService(userRepository *repository.UserRepository, tokenRepo *repository.TokenRecordRepository) *TokenService {
-	return &TokenService{userRepository, tokenRepo}
+	return &TokenService{userRepository: userRepository, tokenRepo: tokenRepo}
 }
 
 func (ts *TokenService) CreateAccessToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
@@ -64,11 +71,7 @@ func (ts *TokenService) CreateAccessToken(ctx context.Context, user *model.User)
 	return &userToken, nil
 }
 
-func (ts *TokenService) CreateChallengeToken(
-	ctx context.Context,
-	user *model.User,
-) (*model.UserToken, error) {
-
+func (ts *TokenService) CreateChallengeToken(ctx context.Context, user *model.User) (*model.UserToken, error) {
 	expire := time.Now().Add(5 * time.Minute)
 
 	token, err := tokens.CreateToken(
@@ -92,7 +95,7 @@ func (ts *TokenService) ParseChallengeToken(token string) (*model.Claims, error)
 	return tokens.ParseToken(token, []byte(string(global.JwtSetting.GetJwtSecret())+":2fa-challenge"))
 }
 
-func (ts *TokenService) CreateToken(ctx context.Context, email string, password string) (*model.UserToken, error) {
+func (ts *TokenService) CreateToken(ctx context.Context, email string, password string, twoFactorCode string) (*model.UserToken, error) {
 	user, err := ts.userRepository.FindByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -107,7 +110,18 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 		return nil, err
 	}
 	if user.TwoFactorEnabled {
-		return nil, errors.New("two-factor authentication required; use auth/login")
+		if twoFactorCode == "" {
+			return nil, errcode.ErrTwoFactorAuthenticationRequired
+		}
+		if ts.twoFactorService == nil {
+			return nil, errcode.ServerError
+		}
+		if err := ts.twoFactorService.VerifyCode(ctx, user.Id, twoFactorCode); err != nil {
+			if errors.Is(err, ErrInvalidTwoFactorCode) {
+				return nil, errcode.InvalidVerificationCode
+			}
+			return nil, fmt.Errorf("%w: verify two-factor code: %w", errcode.ServerError, err)
+		}
 	}
 	return ts.CreateAccessToken(ctx, user)
 }
