@@ -58,3 +58,14 @@ func (r *Response) ToErrorResponseWithError(err *errcode.Error, cause error) {
 
 	r.Ctx.JSON(err.StatusCode(), response)
 }
+
+func (r *Response) ToErrorResponseWithDetails(err *errcode.Error, cause error) {
+	message := err.Message()
+	response := gin.H{"code": err.Code(), "message": message}
+	details := cause.Error()
+	if len(details) > 0 {
+		response["details"] = details
+	}
+
+	r.Ctx.JSON(err.StatusCode(), response)
+}

@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/damingerdai/health-master/global"
-	"github.com/damingerdai/health-master/internal/repository"
-	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -18,12 +16,14 @@ import (
 // Create a token godoc
 //
 //	@Summary		create a token
-//	@Description	create a new token
+//	@Description	Create an access token using email, password, and a TOTP code when 2FA is enabled.
 //	@Tags			token
 //	@Accept			json
 //	@Produce		json
 //	@Param			email		header		string			true	"email"
 //	@Param			password	header		string			true	"password"
+//	@Param			two_factor_code	header	string	false	"TOTP code; required when 2FA is enabled"
+//	@Failure		401	{object}	errcode.Error	"authentication required"
 //	@Success		200			{object}	model.UserToken	"success"
 //	@Failure		400			{object}	errcode.Error	"bad request error"
 //	@Failure		500			{object}	errcode.Error	"internal server error"
@@ -42,18 +42,23 @@ func CreateToken(c *gin.Context) {
 		response.ToErrorResponse(errcode.InvalidParams)
 		return
 	}
-	userRepository := repository.NewUserRepository(global.DBEngine)
-	tokenRepository := repository.NewTokenRecordRepository(global.DBEngine)
-	tokenService := service.NewTokenService(userRepository, tokenRepository)
+	tokenService := getServices().TokenService
 
-	userToken, err := tokenService.CreateToken(c, email, password)
+	userToken, err := tokenService.CreateToken(c.Request.Context(), email, password, c.GetHeader("two_factor_code"))
 	if err != nil {
 		global.Logger.Error("fail to create token", zap.Error(err))
-		if errors.Is(err, errcode.ErrLegacyPasswordResetRequired) {
-			response.ToErrorResponse(errcode.ErrLegacyPasswordResetRequired)
-		} else {
-			response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		responseErr := errcode.UnauthorizedAuthNotExist
+		switch {
+		case errors.Is(err, errcode.ErrLegacyPasswordResetRequired):
+			responseErr = errcode.ErrLegacyPasswordResetRequired
+		case errors.Is(err, errcode.InvalidVerificationCode):
+			responseErr = errcode.InvalidVerificationCode
+		case errors.Is(err, errcode.ServerError):
+			responseErr = errcode.ServerError
+		case errors.Is(err, errcode.ErrTwoFactorAuthenticationRequired):
+			responseErr = errcode.ErrTwoFactorAuthenticationRequired
 		}
+		response.ToErrorResponse(responseErr)
 		return
 	}
 	response.ToTokenResponse(userToken)

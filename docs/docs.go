@@ -657,7 +657,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "create a new token",
+                "description": "Create an access token using email, password, and a TOTP code when 2FA is enabled.",
                 "consumes": [
                     "application/json"
                 ],
@@ -682,6 +682,12 @@ const docTemplate = `{
                         "name": "password",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "TOTP code; required when 2FA is enabled",
+                        "name": "two_factor_code",
+                        "in": "header"
                     }
                 ],
                 "responses": {
@@ -693,6 +699,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "authentication required",
                         "schema": {
                             "$ref": "#/definitions/errcode.Error"
                         }

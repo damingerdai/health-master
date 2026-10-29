@@ -102,6 +102,8 @@ func NewRouter() *gin.Engine {
 	{
 		settingsApi.GET("/2fa", api.GetTwoFactor)
 		settingsApi.PUT("/2fa", api.UpdateTwoFactor)
+		settingsApi.PUT("/password", api.ChangePassword)
+
 	}
 
 	return r
