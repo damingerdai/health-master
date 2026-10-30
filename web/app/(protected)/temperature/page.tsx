@@ -7,14 +7,14 @@ export default async function Page() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-2">
-        <h2 className="text-lg font-semibold tracking-tight">
+        <h2 className="text-base font-medium tracking-tight text-stone-800 dark:text-stone-100">
           Recent Temperature Records
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-stone-500 dark:text-stone-400">
           Monitoring your body temperature
         </p>
       </div>
       <UserTemperatureRecords userTemperatures={userTemperatures ?? []} />
     </div>
-  )
+  );
 }
