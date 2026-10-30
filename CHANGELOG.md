@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.0.2] - 2026-10-30
+
+### 🚀 Features
+
+- *(web)* Add global not-found page (#363)
 ## [0.0.2-rc.0] - 2026-10-29
 
 ### 🚀 Features
