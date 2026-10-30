@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Table,
@@ -11,91 +10,87 @@ import {
   TableHeader,
   TableRow
 } from './ui/table';
-import { WeightRecord, WeightRecords } from '@/types/weight-record';
-import { request } from '@/lib/request';
+import { WeightRecords } from '@/types/weight-record';
 import { formatDate } from 'date-fns';
-import { Skeleton } from './ui/skeleton';
 import { Badge } from './ui/badge';
-import { buttonVariants } from './ui/button';
 import Link from 'next/link';
-import { Scale } from 'lucide-react';
-
-const TablePlaceholder = () => (
-  <div className="space-y-3">
-    {[...Array(5)].map((_, i) => (
-      <Skeleton key={i} className="h-12 w-full" />
-    ))}
-  </div>
-);
+import { PlusIcon, Scale } from 'lucide-react';
 
 interface WeightTableProps {
   userWeights: WeightRecords;
 }
 
-export const WeightTable: React.FC<WeightTableProps> = ({ userWeights }) => {
+const headClassName =
+  'py-4 text-xs font-medium text-stone-500 dark:text-stone-400';
 
+export const WeightTable: React.FC<WeightTableProps> = ({ userWeights }) => {
   const getWeightStatus = (weight: number) => {
     // Basic status logic, can be refined based on user profile (BMI)
     if (weight > 100)
       return {
         label: 'Overweight',
-        color: 'text-amber-600 bg-amber-50 border-amber-200'
+        color:
+          'text-amber-700 bg-amber-50/80 border-amber-200/80 dark:text-amber-300 dark:bg-amber-950/40 dark:border-amber-900/50'
       };
     if (weight < 50)
       return {
         label: 'Underweight',
-        color: 'text-blue-600 bg-blue-50 border-blue-200'
+        color:
+          'text-amber-700 bg-amber-50/80 border-amber-200/80 dark:text-amber-300 dark:bg-amber-950/40 dark:border-amber-900/50'
       };
     return {
       label: 'Normal',
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200'
+      color:
+        'text-[#3F6254] bg-emerald-900/5 border-emerald-700/20 dark:text-emerald-300 dark:bg-emerald-950/50 dark:border-emerald-500/30'
     };
   };
 
   return (
-    <div className="rounded-2xl border bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:bg-zinc-900 dark:shadow-none overflow-hidden">
+    <div className="overflow-hidden rounded-3xl border border-stone-200/70 bg-white/85 shadow-[0_12px_40px_-12px_rgba(120,113,108,0.1)] backdrop-blur-sm dark:border-stone-800/80 dark:bg-stone-900/70">
       <Table>
-        <TableHeader className="bg-slate-50/50 dark:bg-zinc-800/40">
-          <TableRow className="hover:bg-transparent border-b">
-            <TableHead className="w-[120px] py-5 pl-8 font-semibold uppercase tracking-wider text-[11px]">
+        <TableHeader className="bg-stone-50/60 dark:bg-stone-900/40">
+          <TableRow className="border-stone-200/60 hover:bg-transparent dark:border-stone-800/70">
+            <TableHead className={cn(headClassName, 'w-[120px] pl-8')}>
               Index
             </TableHead>
-            <TableHead className="py-5">Status</TableHead>
-            <TableHead className="py-5 text-center">Weight</TableHead>
-            <TableHead className="py-5 text-right pr-8">Logged At</TableHead>
+            <TableHead className={headClassName}>Status</TableHead>
+            <TableHead className={cn(headClassName, 'text-center')}>
+              Weight
+            </TableHead>
+            <TableHead className={cn(headClassName, 'pr-8 text-right')}>
+              Logged At
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {!userWeights || userWeights.length === 0 ? (
-            <TableRow>
+            <TableRow className="hover:bg-transparent">
               <TableCell colSpan={4} className="h-[400px] text-center">
                 <div className="flex flex-col items-center justify-center gap-4 animate-in fade-in zoom-in duration-500">
                   <div className="relative">
-                    <div className="absolute -inset-4 rounded-full bg-blue-100/50 dark:bg-blue-900/10 animate-pulse" />
-                    <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
+                    <div className="absolute -inset-4 animate-pulse rounded-full bg-emerald-100/50 dark:bg-emerald-950/30" />
+                    <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-emerald-800/15 bg-emerald-900/5 dark:border-emerald-500/20 dark:bg-emerald-950/30">
                       <Scale
-                        className="h-10 w-10 text-blue-500"
+                        className="h-10 w-10 text-[#3F6254] dark:text-emerald-300"
                         strokeWidth={1.5}
+                        aria-hidden="true"
                       />
                     </div>
                   </div>
-                  <div className="space-y-2 max-w-[280px] mx-auto">
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+                  <div className="mx-auto max-w-[280px] space-y-2">
+                    <h3 className="text-lg font-medium text-stone-800 dark:text-stone-100">
                       No records yet
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Start tracking to monitor your health trends.
+                    <p className="text-sm leading-relaxed text-stone-500 dark:text-stone-400">
+                      Start tracking to gently follow your body balance.
                     </p>
                   </div>
                   <Link
                     href="/weight-new"
-                    className={buttonVariants({
-                      variant: 'outline',
-                      size: 'sm',
-                      className: 'mt-2'
-                    })}
+                    className="mt-2 inline-flex h-10 items-center gap-2 rounded-xl bg-[#3F6254] px-5 text-xs font-medium text-stone-50 shadow-xs transition-all duration-300 hover:bg-[#345246] dark:bg-emerald-700 dark:text-stone-50 dark:hover:bg-emerald-600"
                   >
-                    Add Your First Record
+                    <PlusIcon className="size-4" aria-hidden="true" />
+                    <span>Add your first record</span>
                   </Link>
                 </div>
               </TableCell>
@@ -104,16 +99,19 @@ export const WeightTable: React.FC<WeightTableProps> = ({ userWeights }) => {
             userWeights.map((item, index) => {
               const status = getWeightStatus(item.weight);
               return (
-                <TableRow key={item.id} className="group transition-colors">
-                  <TableCell className="py-6 pl-8 font-mono text-xs text-muted-foreground">
+                <TableRow
+                  key={item.id}
+                  className="group border-stone-200/60 transition-colors hover:bg-stone-50/60 dark:border-stone-800/70 dark:hover:bg-stone-900/40"
+                >
+                  <TableCell className="py-5 pl-8 text-xs text-stone-400 dark:text-stone-500">
                     {index + 1}
                   </TableCell>
 
-                  <TableCell className="py-6">
+                  <TableCell className="py-5">
                     <Badge
                       variant="secondary"
                       className={cn(
-                        'rounded-full border px-2.5 py-0.5 text-[11px] font-bold shadow-sm',
+                        'rounded-full border px-2.5 py-0.5 text-[11px] font-medium',
                         status.color
                       )}
                     >
@@ -121,21 +119,21 @@ export const WeightTable: React.FC<WeightTableProps> = ({ userWeights }) => {
                     </Badge>
                   </TableCell>
 
-                  <TableCell className="py-6 text-center">
+                  <TableCell className="py-5 text-center">
                     <div className="inline-flex flex-col items-center">
-                      <span className="text-lg font-bold tracking-tight text-slate-700 dark:text-slate-200">
+                      <span className="text-base font-medium tracking-tight text-stone-800 dark:text-stone-100">
                         {item.weight}{' '}
-                        <span className="text-xs font-normal text-muted-foreground">
+                        <span className="text-xs font-normal text-stone-400 dark:text-stone-500">
                           kg
                         </span>
                       </span>
-                      <span className="text-[10px] text-muted-foreground font-normal uppercase">
+                      <span className="text-[10px] font-normal text-stone-400 dark:text-stone-500">
                         Weight
                       </span>
                     </div>
                   </TableCell>
 
-                  <TableCell className="py-6 text-right pr-8 text-sm text-muted-foreground">
+                  <TableCell className="py-5 pr-8 text-right text-xs text-stone-500 dark:text-stone-400">
                     {item.recordDate
                       ? formatDate(
                           new Date(item.recordDate),
