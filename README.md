@@ -216,22 +216,26 @@ longer present. Use the commands above until those hooks are updated.
 [CI](.github/workflows/ci.yaml) runs on pushes and pull requests to `main`.
 It checks and builds the frontend and backend, then builds their container images.
 
-The [image publishing workflow](.github/workflows/deploy.yaml) builds the Go API
-using `github.Dockerfile` for `linux/amd64` and `linux/arm64`.
-It publishes to `ghcr.io/damingerdai/health-master` and/or
+The [release workflow](.github/workflows/release.yaml) creates a version commit,
+Git tag, and GitHub Release from `main`. After the release succeeds, a separate
+job checks out that exact tag and builds the Go API using `github.Dockerfile`
+for `linux/amd64` and `linux/arm64`.
+Choose GHCR, Docker Hub, or both with the `registry` input (default: both).
+Images are published to `ghcr.io/damingerdai/health-master` and/or
 `docker.io/damingerdai/health-master`.
 
-| Trigger | Registries | Image tags |
-| --- | --- | --- |
-| Manual workflow run | Choose GHCR, Docker Hub, or both | Full commit SHA, seven-character SHA; on a version tag, `x.y.z` and `latest`; on a branch, optional `latest` |
-| Push a `vx.y.z` Git tag | Both | `x.y.z` (without the `v` prefix), full SHA, short SHA, `latest` |
+| Release | Image tags |
+| --- | --- |
+| Stable (for example, `v0.0.2`) | Version with `v` prefix, full commit SHA, seven-character SHA, `latest` |
+| Prerelease (for example, `v0.0.3-beta.0`) | Version with `v` prefix, full commit SHA, seven-character SHA |
 
-Manual image publishing does not create a Git tag. Running it on an existing
-version tag (for example, `v0.0.1`) also publishes the version image tag (`0.0.1`)
-and `latest`, regardless of the manual `publish_latest` option. Pushing a version tag triggers
-image publishing automatically. The image publishing workflow does not update
-source versions or create a GitHub Release.
-The image publishing workflow currently publishes only the Go backend.
+Prereleases do not update `latest`. Pushing a Git tag alone does not publish
+images. If image publishing fails after the release succeeds, rerun only the
+failed job to retry publishing the same release without creating a new version.
+The workflow requires `RELEASE_PAT` for release creation and
+`DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN` when publishing to Docker Hub;
+GHCR publishing uses `GITHUB_TOKEN` with package write permission.
+The release workflow currently publishes only the Go backend.
 Frontend image definitions are available in `web/Dockerfile` and `web/Containerfile`.
 
 Deployment manifests are in `deployments/`; see the
