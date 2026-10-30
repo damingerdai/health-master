@@ -213,11 +213,11 @@ longer present. Use the commands above until those hooks are updated.
 
 ## CI and container images
 
-[CI](.github/workflows/ci.yaml) runs on pushes and pull requests to `main`.
+[CI](.github/workflows/ci.yaml) runs on pushes and pull requests to `dev` and `main`.
 It checks and builds the frontend and backend, then builds their container images.
 
 The [release workflow](.github/workflows/release.yaml) creates a version commit,
-Git tag, and GitHub Release from `main`. After the release succeeds, a separate
+Git tag, and GitHub Release from `dev`. After the release succeeds, a separate
 job checks out that exact tag and builds the Go API using `github.Dockerfile`
 for `linux/amd64` and `linux/arm64`.
 Choose GHCR, Docker Hub, or both with the `registry` input (default: both).
@@ -246,8 +246,8 @@ Image publishing does not update a running Kubernetes deployment.
 
 ### Create a release
 
-1. Open **Actions → Release from main → Run workflow** on GitHub.
-2. Select the `main` branch. Releases can only run from `main`.
+1. Open **Actions → Release from dev → Run workflow** on GitHub.
+2. Select the `dev` branch. Releases can only run from `dev`.
 3. Select a version increment and, for prereleases, an identifier (`alpha`,
    `beta`, or `rc`).
 
@@ -256,7 +256,7 @@ existing release tags. Patch/minor/major increments use the latest stable tag
 (or `0.0.0` before the first release). `prerelease` continues the highest pending
 prerelease core version; changing the identifier starts its own counter at zero. `patch`,
 `minor`, and `major` create stable releases; `prepatch`, `preminor`, `premajor`,
-and `prerelease` create prereleases. Both release types are created on `main`. Stable and prerelease versions are
+and `prerelease` create prereleases. Both release types are created on `dev`. Stable and prerelease versions are
 synchronized across the Go version, Swagger annotations and generated
 documents, and `web/package.json`. Duplicate tags and versions that are not
 newer than the latest stable release are rejected.
@@ -268,43 +268,35 @@ release notes are saved as an artifact and published as the GitHub Release body.
 Non-conventional commits are included; release bookkeeping commits are excluded.
 
 It commits these changes as `chore(release): vX.Y.Z`, creates an annotated tag on
-that commit, and atomically pushes `main` and the tag without force. It then
-creates a GitHub Release using the generated notes. Stable tag pushes
-independently trigger [deploy.yaml](.github/workflows/deploy.yaml); release does
-not wait for images. Prerelease tags create GitHub prereleases and do not trigger
-image publishing.
+that commit, and atomically pushes without force:
 
-```text
-release.yaml → update versions and CHANGELOG → commit and push main + tag
-                                            ├─ create GitHub Release
-                                            └─ stable tag → deploy.yaml → publish images
-```
+- Prereleases update only `dev` and the tag.
+- Stable releases update `dev`, `main`, and the tag to the same commit.
+
+`dev` is the default development branch; `main` tracks production releases.
+Stable promotion requires `main` to be an ancestor of `dev`. If the branches
+have diverged, merge `main` into `dev` before retrying. A rejected branch or
+tag update rejects the entire atomic push.
+
+The workflow then creates a GitHub Release using the generated notes and
+publishes images from that exact tag. Prereleases publish version and SHA tags;
+only stable releases update `latest`.
 
 ### Permissions and recovery
 
-Tag pushes use a personal access token (PAT): pushes made with the default
-`GITHUB_TOKEN` do not trigger the downstream push workflow.
+Save a personal access token as the repository Actions secret `RELEASE_PAT`.
+The workflow uses this token for checkout, pushing branches and tags, and
+creating the GitHub Release.
 
-1. Create a fine-grained PAT under personal **Settings → Developer settings →
-   Personal access tokens**, selecting this repository and granting repository
-   **Contents: Read and write** permission. Set an expiration date.
-2. Save the token as `RELEASE_PAT` under repository **Settings → Secrets and
-   variables → Actions → New repository secret**.
-
-The workflow uses this PAT for checkout, pushing the release commit and tag, and
-creating the GitHub Release. Grant the PAT owner any required bypass for the
-`main` branch ruleset with **Always allow** (not **For pull requests
-only**). A PAT does not bypass repository rules by itself; without the needed
-exception, pushing the release commit will fail with GH013. If tag rules restrict
-creating `v*` tags, the owner must also be permitted to create them. Renew the
-secret when the token expires.
+Repository rules must permit the token owner to push directly to `dev` and
+`main` and create `v*` tags. Configure any required ruleset bypass for the
+token owner; a PAT does not bypass branch protection by itself.
 
 Image publishing uses its own `GITHUB_TOKEN` for GHCR and requires the
 `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets for Docker Hub.
 
-If image publishing fails, retry the failed **Build and publish health-master**
-run. A successful release workflow means the commit, tag, and GitHub Release were
-created; check the separate deploy run for image publishing results. If GitHub
-Release creation fails after the push, use the saved release-notes artifact to
-create the Release for the existing tag. Do not rerun the workflow for that
-increment: it will calculate the next tag.
+If image publishing fails after release creation succeeds, rerun only the failed
+`publish-image` job to publish the same tag. If GitHub Release creation fails
+after the push, use the saved release-notes artifact to create the Release for
+the existing tag, then rerun the image job. Do not rerun the version-producing
+job for that increment: it will calculate the next tag.

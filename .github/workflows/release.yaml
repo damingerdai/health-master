@@ -1,10 +1,10 @@
-name: Release from main
+name: Release from dev
 
 on:
   workflow_dispatch:
     inputs:
       increment:
-        description: Version increment
+        description: Version increment (only patch/minor/major promote to main)
         required: true
         type: choice
         default: prerelease
@@ -38,7 +38,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: release-from-main
+  group: release-from-dev
   cancel-in-progress: false
 
 jobs:
@@ -46,31 +46,56 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.version.outputs.tag }}
-    env:
-      RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
     steps:
-      - name: Require main workflow
+      - name: Require dev workflow
         env:
           WORKFLOW_REF: ${{ github.ref }}
         run: |
-          if [[ "$WORKFLOW_REF" != 'refs/heads/main' ]]; then
-            echo '::error::Select main in the Run workflow branch selector.'
+          if [[ "$WORKFLOW_REF" != 'refs/heads/dev' ]]; then
+            echo '::error::Select dev in the Run workflow branch selector.'
             exit 1
           fi
 
       - name: Check release token
+        env:
+          RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
         run: |
           if [[ -z "$RELEASE_PAT" ]]; then
             echo 'Configure the RELEASE_PAT repository secret before running this workflow.' >&2
             exit 1
           fi
 
-      - name: Checkout main
+      - name: Checkout dev
         uses: actions/checkout@v7
         with:
-          ref: main
+          ref: dev
           fetch-depth: 0
           token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Validate release inputs and branches
+        id: prepare
+        env:
+          INCREMENT: ${{ inputs.increment }}
+          PREID: ${{ inputs.preid }}
+        run: |
+          set -euo pipefail
+          case "$INCREMENT" in
+            patch|minor|major) STABLE=true ;;
+            prepatch|preminor|premajor|prerelease) STABLE=false ;;
+            *) echo '::error::Unsupported version increment.'; exit 1 ;;
+          esac
+          case "$PREID" in
+            alpha|beta|rc) ;;
+            *) echo '::error::Unsupported prerelease identifier.'; exit 1 ;;
+          esac
+          if [[ "$STABLE" == true ]]; then
+            git fetch origin main
+            if ! git merge-base --is-ancestor origin/main HEAD; then
+              echo '::error::Merge main into dev first, then retry. Production promotion must be a fast-forward.'
+              exit 1
+            fi
+          fi
+          printf 'stable=%s\n' "$STABLE" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v7
         with:
@@ -117,18 +142,33 @@ jobs:
           path: ${{ runner.temp }}/release-notes.md
           if-no-files-found: error
 
-      - name: Commit release and push
+      - name: Commit release and promote stable version
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          STABLE: ${{ steps.prepare.outputs.stable }}
         run: |
           set -euo pipefail
+          case "$RELEASE_TAG" in
+            *-*) ACTUAL_STABLE=false ;;
+            *) ACTUAL_STABLE=true ;;
+          esac
+          if [[ "$ACTUAL_STABLE" != "$STABLE" ]]; then
+            echo "::error::Generated version does not match the requested release type."
+            exit 1
+          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add pkg/version/version.go main.go docs/docs.go docs/swagger.json docs/swagger.yaml web/package.json CHANGELOG.md
           git diff --cached --check
           git commit -m "chore(release): ${RELEASE_TAG}"
           git tag -a "$RELEASE_TAG" -m "Release ${RELEASE_TAG}"
-          REFS=(HEAD:refs/heads/main "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}")
+          test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$(git rev-parse HEAD)"
+          test -z "$(git status --porcelain)"
+          # Atomic, non-force push: rejection leaves every remote ref unchanged.
+          REFS=(HEAD:refs/heads/dev "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}")
+          if [[ "$STABLE" == true ]]; then
+            REFS+=(HEAD:refs/heads/main)
+          fi
           git push --atomic origin "${REFS[@]}"
 
       - name: Create GitHub release
