@@ -17,6 +17,14 @@ definitions:
       data:
         $ref: '#/definitions/model.ListResponse-model_UserBloodPressure'
     type: object
+  model.APIResponseSwagger-model_ListResponse-model_UserTemperature:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.ListResponse-model_UserTemperature'
+    type: object
   model.APIResponseSwagger-model_ListResponse-model_WeightRecordVO:
     properties:
       code:
@@ -101,6 +109,15 @@ definitions:
       data:
         items:
           $ref: '#/definitions/model.UserHeightVO'
+        type: array
+    type: object
+  model.ListResponse-model_UserTemperature:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.UserTemperature'
         type: array
     type: object
   model.ListResponse-model_WeightRecordVO:
@@ -414,7 +431,7 @@ info:
   description: health master open api
   termsOfService: http://swagger.io/terms/
   title: health master api
-  version: "0.0.3-alpha.0"
+  version: 0.0.3-alpha.0
 paths:
   /api/v1/auth/login:
     post:
@@ -1185,32 +1202,43 @@ paths:
     get:
       consumes:
       - application/json
-      description: list all user temperature records for a user
+      description: List temperature records ordered by record date descending. If
+        userId is omitted or empty, use the authenticated user's ID. The response
+        contains the current page of records and the total record count.
       parameters:
-      - description: user id
+      - description: User ID; defaults to the authenticated user's ID
         in: query
         name: userId
         type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Records per page
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: success
           schema:
-            items:
-              $ref: '#/definitions/model.UserTemperature'
-            type: array
-        "400":
-          description: bad request error
+            $ref: '#/definitions/model.APIResponseSwagger-model_ListResponse-model_UserTemperature'
+        "401":
+          description: invalid or expired authentication token
           schema:
             $ref: '#/definitions/errcode.Error'
         "500":
-          description: internal server error
+          description: missing or invalid user context, invalid pagination parameters,
+            or failed to retrieve temperature records
           schema:
             $ref: '#/definitions/errcode.Error'
       security:
       - BearerAuth: []
-      summary: list all user temperature records
+      summary: list paginated user temperature records
       tags:
       - user_temperature
   /api/v1/user/:

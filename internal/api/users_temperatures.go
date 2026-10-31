@@ -93,18 +93,20 @@ func GetUsersTemperatures(c *gin.Context) {
 	}
 }
 
-// list all user temperature records godoc
+// ListUsersTemperatures godoc
 //
-//	@Summary		list all user temperature records
-//	@Description	list all user temperature records for a user
+//	@Summary		list paginated user temperature records
+//	@Description	List temperature records ordered by record date descending. If userId is omitted or empty, use the authenticated user's ID. The response contains the current page of records and the total record count.
 //	@Tags			user_temperature
 //	@Accept			json
 //	@Produce		json
-//	@Param			userId	query	string	false	"user id"
+//	@Param			userId	query	string	false	"User ID; defaults to the authenticated user's ID"
+//	@Param			page	query	int		false	"Page number" default(1)
+//	@Param			limit	query	int		false	"Records per page" default(5)
 //	@Security		BearerAuth
-//	@Success		200	{array}		model.UserTemperature	"success"
-//	@Failure		400	{object}	errcode.Error			"bad request error"
-//	@Failure		500	{object}	errcode.Error			"internal server error"
+//	@Success		200	{object}	model.APIResponseSwagger[model.ListResponse[model.UserTemperature]]	"success"
+//	@Failure		401	{object}	errcode.Error	"invalid or expired authentication token"
+//	@Failure		500	{object}	errcode.Error	"missing or invalid user context, invalid pagination parameters, or failed to retrieve temperature records"
 //	@Router			/api/v1/user-temperatures [get]
 func ListUsersTemperatures(c *gin.Context) {
 	resp := response.NewResponse(c)
@@ -113,20 +115,33 @@ func ListUsersTemperatures(c *gin.Context) {
 	if userId == "" {
 		userIdInContext, exists := c.Get(contants.UserContext)
 		if !exists {
+			global.Logger.Warn("list user temperatures: user context not found", zap.Error(errcode.NotFoundAuthorization))
 			resp.ToErrorResponse(errcode.NotFoundAuthorization)
 			return
 		}
-		userId, _ = userIdInContext.(string)
+		var ok bool
+		userId, ok = userIdInContext.(string)
+		if !ok {
+			global.Logger.Warn("list user temperatures: invalid user context type", zap.Error(errcode.NotFoundAuthorization))
+			resp.ToErrorResponse(errcode.NotFoundAuthorization)
+			return
+		}
 		if userId == "" {
+			global.Logger.Warn("list user temperatures: empty user ID in context", zap.Error(errcode.NotFoundAuthorization))
 			resp.ToErrorResponse(errcode.NotFoundAuthorization)
 			return
 		}
 	}
-	uts, err := srvs.UserTemperatureService.List(c, userId)
+	global.Logger.Debug("list user temperatures", zap.String("userId", userId))
+	page := c.DefaultQuery("page", "1")
+	limit := c.DefaultQuery("limit", "5")
+	uts, err := srvs.UserTemperatureService.PagingQueryByUserId(c.Request.Context(), userId, page, limit)
 	if err != nil {
+		global.Logger.Error("failed to list user temperatures", zap.String("userId", userId), zap.Error(err))
 		resp.ToErrorResponse(errcode.ListUserTemperatureError)
-	} else {
-		resp.ToResponse(uts)
+		return
 	}
+	global.Logger.Info("listed user temperatures", zap.String("userId", userId), zap.Int64("count", uts.Count))
+	resp.ToResponse(uts)
 
 }

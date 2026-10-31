@@ -2,10 +2,10 @@ package api
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
+	"github.com/damingerdai/health-master/pkg/contants"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -64,32 +64,23 @@ func ListWeightRecords(c *gin.Context) {
 	resp := response.NewResponse(c)
 	srvs := getServices()
 	var userId = c.Query("userId")
-	if len(userId) == 0 {
-		var (
-			err   error
-			token string
-		)
-		if s, exist := c.GetQuery("accessToken"); exist {
-			token = s
-		} else {
-			token = c.GetHeader("Authorization")
-			token = strings.TrimPrefix(token, "Bearer ")
-		}
-		global.Logger.Debug("list a single user weight records", zap.String("Authorization", token))
-		if len(token) == 0 {
-			global.Logger.Error("fail to list a single user weight records", zap.Error(errcode.NotFoundAuthorization))
+	if userId == "" {
+		userIdInContext, exists := c.Get(contants.UserContext)
+		if !exists {
+			global.Logger.Warn("list user weights: user context not found", zap.Error(errcode.NotFoundAuthorization))
 			resp.ToErrorResponse(errcode.NotFoundAuthorization)
 			return
 		}
-		userId, err = srvs.UserService.GetUserIdByAuthorization(c, token)
-		if err != nil {
-			global.Logger.Error("fail to list a single user weight records", zap.Error(err))
-			resp.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		var ok bool
+		userId, ok = userIdInContext.(string)
+		if !ok {
+			global.Logger.Warn("list user weights: invalid user context type", zap.Error(errcode.NotFoundAuthorization))
+			resp.ToErrorResponse(errcode.NotFoundAuthorization)
 			return
 		}
-		if len(userId) == 0 {
-			global.Logger.Error("fail to list a single user weight records", zap.Error(errcode.UnauthorizedAuthNotExist))
-			resp.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+		if userId == "" {
+			global.Logger.Warn("list user weights: empty user ID in context", zap.Error(errcode.NotFoundAuthorization))
+			resp.ToErrorResponse(errcode.NotFoundAuthorization)
 			return
 		}
 		global.Logger.Info("list a single user weight records", zap.String("UserId", userId))
