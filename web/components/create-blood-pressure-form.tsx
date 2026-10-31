@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useActionState, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -26,22 +27,28 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
-import { request } from '@/lib/request';
+import { createUserBloodPressure } from '@/components/actions/user-blood-pressure';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+const readingSchema = z
+  .string()
+  .trim()
+  .min(1, 'Reading is required')
+  .pipe(
+    z.coerce.number<string>().int('Enter a whole number').min(0).max(2147483647)
+  );
+
 const schemas = z.object({
-  systolic: z.coerce.number<string>().min(0, 'Systolic is required'),
-  diastolic: z.coerce.number<string>().min(0, 'Diastolic is required'),
-  pulse: z.coerce.number<string>().min(0, 'Pulse is required'),
+  systolic: readingSchema,
+  diastolic: readingSchema,
+  pulse: readingSchema,
   logDate: z.date({
     error: 'Log date is required'
   }),
-  logTime: z.string().optional()
+  logTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Enter a valid time')
 });
-
-type InputData = z.infer<typeof schemas>;
 
 const inputClassName =
   'h-11 rounded-xl border-stone-200/90 bg-[#FAF8F5]/70 pr-12 text-base font-medium text-stone-800 transition-colors placeholder:text-stone-400 focus-visible:border-[#3F6254]/50 focus-visible:bg-white focus-visible:ring-[#3F6254]/15 dark:border-stone-800 dark:bg-stone-950/50 dark:text-stone-100 dark:focus-visible:bg-stone-950';
@@ -55,8 +62,8 @@ export function CreateBloodPressureForm({
   className,
   ...props
 }: React.ComponentProps<'form'>) {
-  const [isPending, startTransition] = React.useTransition();
-  const [formError, setFormError] = React.useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+
   const defaultValues: z.input<typeof schemas> = {
     systolic: '120',
     diastolic: '80',
@@ -64,8 +71,37 @@ export function CreateBloodPressureForm({
     logDate: new Date(),
     logTime: format(new Date(), 'HH:mm') // Default to current time
   };
+
   const form = useForm({ resolver: zodResolver(schemas), defaultValues });
   const router = useRouter();
+  const [, submitAction, isPending] = useActionState(
+    async (_: null, formData: FormData) => {
+      setFormError(null);
+      await form.handleSubmit(async data => {
+        const [hours, minutes] = data.logTime.split(':').map(Number);
+        const logDate = new Date(data.logDate);
+        logDate.setHours(hours, minutes, 0, 0);
+        formData.set('systolic', String(data.systolic));
+        formData.set('diastolic', String(data.diastolic));
+        formData.set('pulse', String(data.pulse));
+        formData.set('logDatetime', logDate.toISOString());
+
+        try {
+          const result = await createUserBloodPressure(formData);
+          if ('error' in result) {
+            setFormError(result.error);
+            return;
+          }
+          toast.success('Blood pressure record created successfully');
+          router.push('/blood-pressure');
+        } catch {
+          setFormError('Unable to save the record. Please try again.');
+        }
+      })();
+      return null;
+    },
+    null
+  );
 
   // Clear the inline error banner as soon as the user resumes typing.
   const clearFormError = () => {
@@ -77,42 +113,7 @@ export function CreateBloodPressureForm({
       <form
         className={cn('flex flex-col gap-6', className)}
         {...props}
-        onSubmit={form.handleSubmit(async (data: InputData) => {
-          setFormError(null);
-          startTransition(async () => {
-            const logTime = data.logTime ?? format(new Date(), 'HH:mm'); // Use provided time or default to current time
-            // Parse the logTime to set hours and minutes
-            // Assuming logTime is in "HH:mm" format
-            const [hours, minutes] = logTime.split(':').map(Number);
-            const logDate = new Date(data.logDate);
-            logDate.setHours(hours, minutes, 0, 0); // Set hours and minutes
-            const value: Omit<InputData, 'logTime'> = {
-              systolic: data.systolic,
-              diastolic: data.diastolic,
-              pulse: data.pulse,
-              logDate
-            };
-            try {
-              await request({
-                method: 'POST',
-                url: '/api/user-blood-pressure',
-                data: value
-              });
-              toast.success('Blood pressure record created successfully');
-              router.push('/blood-pressure'); // Return to the journal after saving
-            } catch (error) {
-              console.error('Error creating blood pressure record:', error);
-              setFormError(
-                typeof error === 'object' &&
-                  error !== null &&
-                  'message' in error
-                  ? ((error as { message?: string }).message ??
-                      'Failed to create blood pressure record')
-                  : 'Failed to create blood pressure record'
-              );
-            }
-          });
-        })}
+        action={submitAction}
       >
         {formError && (
           <div
@@ -239,6 +240,7 @@ export function CreateBloodPressureForm({
                       <PopoverTrigger
                         render={
                           <Button
+                            type="button"
                             variant="outline"
                             className={cn(
                               'h-11 w-full rounded-xl border-stone-200/90 bg-[#FAF8F5]/70 pl-3.5 text-left text-sm font-normal text-stone-800 transition-colors hover:bg-stone-100/60 focus-visible:border-[#3F6254]/50 focus-visible:ring-[#3F6254]/15 dark:border-stone-800 dark:bg-stone-950/50 dark:text-stone-100 dark:hover:bg-stone-900',
