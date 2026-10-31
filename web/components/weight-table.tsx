@@ -18,12 +18,16 @@ import { PlusIcon, Scale } from 'lucide-react';
 
 interface WeightTableProps {
   userWeights: WeightRecords;
+  offset?: number;
 }
 
 const headClassName =
   'py-4 text-xs font-medium text-stone-500 dark:text-stone-400';
 
-export const WeightTable: React.FC<WeightTableProps> = ({ userWeights }) => {
+export const WeightTable: React.FC<WeightTableProps> = ({
+  userWeights,
+  offset = 0
+}) => {
   const getWeightStatus = (weight: number) => {
     // Basic status logic, can be refined based on user profile (BMI)
     if (weight > 100)
@@ -104,7 +108,7 @@ export const WeightTable: React.FC<WeightTableProps> = ({ userWeights }) => {
                   className="group border-stone-200/60 transition-colors hover:bg-stone-50/60 dark:border-stone-800/70 dark:hover:bg-stone-900/40"
                 >
                   <TableCell className="py-5 pl-8 text-xs text-stone-400 dark:text-stone-500">
-                    {index + 1}
+                    {offset + index + 1}
                   </TableCell>
 
                   <TableCell className="py-5">

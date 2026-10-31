@@ -9,3 +9,8 @@ export interface WeightRecord {
 }
 
 export type WeightRecords = WeightRecord[];
+
+export interface WeightRecordPage {
+  data: WeightRecords;
+  count: number;
+}

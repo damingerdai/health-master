@@ -1,22 +1,30 @@
 'use server';
 
 import { authOptions } from '@/lib/auth-options';
-import { WeightRecords } from '@/types/weight-record';
+import { WeightRecordPage } from '@/types/weight-record';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
-export const getUserWeights = async (query?: string) => {
+export const getUserWeights = async (
+  page = 1,
+  limit = 20
+): Promise<WeightRecordPage | null> => {
   const session = await getServerSession(authOptions);
   const accessToken = session?.accessToken;
 
   if (!accessToken) {
-    return []; // Return empty array if no access token is available
+    return null;
   }
+
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit)
+  });
 
   try {
     const res = await fetch(
-      `${process.env.BACKEND_HOST}/api/v1/weight-records${query ?? ''}`,
+      `${process.env.BACKEND_HOST}/api/v1/weight-records?${query}`,
       {
         method: 'GET',
         headers: {
@@ -28,11 +36,11 @@ export const getUserWeights = async (query?: string) => {
 
     if (!res.ok) {
       console.error('getUserWeights failed:', res.statusText);
-      return [];
+      return null;
     }
 
     const resp = await res.json();
-    return resp.data.data as WeightRecords;
+    return resp.data as WeightRecordPage;
   } catch (err) {
     console.error('getUserWeights error:', err);
     return null;
