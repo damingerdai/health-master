@@ -24,6 +24,7 @@ var (
 	CreateUserBloodPressureError = NewError(30000001, "Failed to Create Blood Pressure Record")
 	ListUserBloodPressureError   = NewError(30000002, "Failed to Retrieve Blood Pressure Records")
 	DeleteUserBloodPressureError = NewError(30000003, "Failed to Delete Blood Pressure Record")
+	ExportUserBloodPressureError = NewError(30000004, "Failed to Export Blood Pressure Records")
 
 	ListRoleError = NewError(40000001, "Failed to Retrieve Roles")
 

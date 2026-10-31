@@ -130,7 +130,7 @@ func DowonloadBloodPressure(c *gin.Context) {
 	id := c.Params.ByName("id")
 	f, err := srvs.UserBloodPressureService.CreateExcelizeFile(c, id)
 	if err != nil {
-		resp.ToErrorResponseWithError(errcode.DeleteUserBloodPressureError, err)
+		resp.ToErrorResponseWithError(errcode.ExportUserBloodPressureError, err)
 		return
 	}
 	c.Header("Content-Type", "application/octet-stream")
