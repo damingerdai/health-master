@@ -53,7 +53,6 @@ func AddWeightRecord(c *gin.Context) {
 // @Tags weight_record
 // @Produce json
 // @Param userId query string false "User ID; defaults to the authenticated user"
-// @Param accessToken query string false "Access token alternative to the Authorization header; takes precedence when provided"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Records per page" default(5)
 // @Security BearerAuth

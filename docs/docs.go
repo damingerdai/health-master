@@ -1467,12 +1467,6 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "Access token alternative to the Authorization header; takes precedence when provided",
-                        "name": "accessToken",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "default": 1,
                         "description": "Page number",

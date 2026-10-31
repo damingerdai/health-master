@@ -1352,11 +1352,6 @@ paths:
         in: query
         name: userId
         type: string
-      - description: Access token alternative to the Authorization header; takes precedence
-          when provided
-        in: query
-        name: accessToken
-        type: string
       - default: 1
         description: Page number
         in: query
