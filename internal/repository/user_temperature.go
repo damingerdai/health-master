@@ -128,3 +128,68 @@ func (userTemperatureRepository *UserTemperatureRepository) List(ctx context.Con
 	}
 	return &uts, nil
 }
+
+func (userTemperatureRepository *UserTemperatureRepository) PagingQueryByUserId(ctx context.Context, userId string, page, limit int) (*[]model.UserTemperature, error) {
+	var uts []model.UserTemperature
+	statement := `
+		SELECT 
+			ut.id, ut.temperature, ut.unit, ut.notes, ut.record_date,
+			ut.created_at, ut.updated_at,
+			ut.user_id, u.username, u.first_name, u.last_name, u.gender
+		FROM users_temperatures ut
+		LEFT JOIN users u on u.id = ut.user_id
+		WHERE ut.deleted_at IS NULL AND ut.user_id = $1
+		ORDER BY ut.record_date DESC
+		LIMIT $2 OFFSET $3
+	`
+	rows, err := userTemperatureRepository.db.Query(ctx, statement, userId, limit, limit*(page-1))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var rid, uid, username, fristName, lastName string
+		var createdAt, updatedAt, recordDate *time.Time
+		var temperature float64
+		var unit string
+		var notes *string
+		var gender string
+		err := rows.Scan(&rid, &temperature, &unit, &notes, &recordDate, &createdAt, &updatedAt, &uid, &username, &fristName, &lastName, &gender)
+		if err != nil {
+			return nil, err
+		}
+		userTemperature := model.UserTemperature{
+			UserTemperatureRecord: model.UserTemperatureRecord{
+				ID:          rid,
+				UserId:      uid,
+				Temperature: temperature,
+				Unit:        unit,
+				Notes:       notes,
+				RecordDate:  *recordDate,
+				CreatedAt:   createdAt,
+				UpdatedAt:   updatedAt,
+			},
+
+			User: &model.User{
+				Id:        uid,
+				Username:  username,
+				FirstName: fristName,
+				LastName:  lastName,
+				Gender:    gender,
+			},
+		}
+		uts = append(uts, userTemperature)
+	}
+	return &uts, nil
+}
+
+func (userTemperatureRepository *UserTemperatureRepository) Count(ctx context.Context, userId string) (int64, error) {
+	var num int64
+	statement := "SELECT COUNT(id) FROM users_temperatures WHERE user_id = $1 AND deleted_at IS NULL"
+	row := userTemperatureRepository.db.QueryRow(ctx, statement, userId)
+	err := row.Scan(&num)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
+}

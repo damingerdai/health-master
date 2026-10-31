@@ -1198,7 +1198,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "list all user temperature records for a user",
+                "description": "List temperature records ordered by record date descending. If userId is omitted or empty, use the authenticated user's ID. The response contains the current page of records and the total record count.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1208,12 +1208,26 @@ const docTemplate = `{
                 "tags": [
                     "user_temperature"
                 ],
-                "summary": "list all user temperature records",
+                "summary": "list paginated user temperature records",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user id",
+                        "description": "User ID; defaults to the authenticated user's ID",
                         "name": "userId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "Records per page",
+                        "name": "limit",
                         "in": "query"
                     }
                 ],
@@ -1221,20 +1235,17 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.UserTemperature"
-                            }
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_ListResponse-model_UserTemperature"
                         }
                     },
-                    "400": {
-                        "description": "bad request error",
+                    "401": {
+                        "description": "invalid or expired authentication token",
                         "schema": {
                             "$ref": "#/definitions/errcode.Error"
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "missing or invalid user context, invalid pagination parameters, or failed to retrieve temperature records",
                         "schema": {
                             "$ref": "#/definitions/errcode.Error"
                         }
@@ -1555,6 +1566,18 @@ const docTemplate = `{
                 }
             }
         },
+        "model.APIResponseSwagger-model_ListResponse-model_UserTemperature": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.ListResponse-model_UserTemperature"
+                }
+            }
+        },
         "model.APIResponseSwagger-model_ListResponse-model_WeightRecordVO": {
             "type": "object",
             "properties": {
@@ -1678,6 +1701,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.UserHeightVO"
+                    }
+                }
+            }
+        },
+        "model.ListResponse-model_UserTemperature": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserTemperature"
                     }
                 }
             }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -42,11 +41,11 @@ func (userBloodPressureService *UserBloodPressureService) List(ctx context.Conte
 func (userBloodPressureService *UserBloodPressureService) PagingQueryByUserId(ctx context.Context, userId string, page, limit string) (*model.ListResponse[model.UserBloodPressure], error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("page %s should be integer", page))
+		return nil, fmt.Errorf("page %s should be integer", page)
 	}
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("limit %s should be integer", limit))
+		return nil, fmt.Errorf("limit %s should be integer", limit)
 	}
 
 	ubps, err := userBloodPressureService.userBloodPressureRepository.PagingQueryByUserId(ctx, userId, pageInt, limitInt)
