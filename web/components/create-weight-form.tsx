@@ -28,7 +28,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { request } from '@/lib/request';
+import { createUserWeight } from '@/components/actions/user-weights';
+import { useActionState, useState } from 'react';
 
 const schemas = z.object({
   weight: z.coerce
@@ -38,10 +39,8 @@ const schemas = z.object({
   logDate: z.date({
     error: 'Log date is required'
   }),
-  logTime: z.string().optional()
+  logTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Enter a valid time')
 });
-
-type InputData = z.infer<typeof schemas>;
 
 const inputClassName =
   'h-11 rounded-xl border-stone-200/90 bg-[#FAF8F5]/70 pr-12 text-base font-medium text-stone-800 transition-colors placeholder:text-stone-400 focus-visible:border-[#3F6254]/50 focus-visible:bg-white focus-visible:ring-[#3F6254]/15 dark:border-stone-800 dark:bg-stone-950/50 dark:text-stone-100 dark:focus-visible:bg-stone-950';
@@ -55,8 +54,7 @@ export function CreateWeightForm({
   className,
   ...props
 }: React.ComponentProps<'form'>) {
-  const [isPending, startTransition] = React.useTransition();
-  const [formError, setFormError] = React.useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const router = useRouter();
   const currentDate = new Date();
   const defaultValues: z.input<typeof schemas> = {
@@ -70,6 +68,33 @@ export function CreateWeightForm({
     defaultValues
   });
 
+  const [, submitAction, isPending] = useActionState(
+    async (_: null, formData: FormData) => {
+      setFormError(null);
+      await form.handleSubmit(async data => {
+        const [hours, minutes] = data.logTime.split(':').map(Number);
+        const logDate = new Date(data.logDate);
+        logDate.setHours(hours, minutes, 0, 0);
+        formData.set('weight', String(data.weight));
+        formData.set('recordDate', logDate.toISOString());
+
+        try {
+          const result = await createUserWeight(formData);
+          if ('error' in result) {
+            setFormError(result.error);
+            return;
+          }
+          toast.success('Weight record created successfully');
+          router.push('/weight');
+        } catch {
+          setFormError('Unable to save the record. Please try again.');
+        }
+      })();
+      return null;
+    },
+    null
+  );
+
   // Clear the inline error banner as soon as the user resumes typing.
   const clearFormError = () => {
     if (formError) setFormError(null);
@@ -80,38 +105,7 @@ export function CreateWeightForm({
       <form
         className={cn('flex flex-col gap-6', className)}
         {...props}
-        onSubmit={form.handleSubmit(async (data: InputData) => {
-          setFormError(null);
-          startTransition(async () => {
-            const logTime = data.logTime ?? format(new Date(), 'HH:mm');
-            const [hours, minutes] = logTime.split(':').map(Number);
-            const logDate = new Date(data.logDate);
-            logDate.setHours(hours, minutes, 0, 0);
-
-            const value = {
-              weight: data.weight,
-              logDate
-            };
-
-            try {
-              await request({
-                method: 'POST',
-                url: '/api/user-weight',
-                data: value
-              });
-              toast.success('Weight record created successfully');
-              router.push('/weight');
-            } catch (err) {
-              console.error('Error creating weight record:', err);
-              setFormError(
-                typeof err === 'object' && err !== null && 'message' in err
-                  ? ((err as { message?: string }).message ??
-                      'Failed to create weight record')
-                  : 'Failed to create weight record'
-              );
-            }
-          });
-        })}
+        action={submitAction}
       >
         {formError && (
           <div
@@ -177,6 +171,7 @@ export function CreateWeightForm({
                       <PopoverTrigger
                         render={
                           <Button
+                            type="button"
                             variant="outline"
                             className={cn(
                               'h-11 w-full rounded-xl border-stone-200/90 bg-[#FAF8F5]/70 pl-3.5 text-left text-sm font-normal text-stone-800 transition-colors hover:bg-stone-100/60 focus-visible:border-[#3F6254]/50 focus-visible:ring-[#3F6254]/15 dark:border-stone-800 dark:bg-stone-950/50 dark:text-stone-100 dark:hover:bg-stone-900',
