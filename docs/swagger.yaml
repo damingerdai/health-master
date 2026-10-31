@@ -1,6 +1,36 @@
 definitions:
   errcode.Error:
     type: object
+  model.APIResponseSwagger-model_BloodPressureDeleteResultSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.BloodPressureDeleteResultSwagger'
+    type: object
+  model.APIResponseSwagger-model_ListResponse-model_UserBloodPressure:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.ListResponse-model_UserBloodPressure'
+    type: object
+  model.APIResponseSwagger-model_UserBloodPressure:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.UserBloodPressure'
+    type: object
+  model.BloodPressureDeleteResultSwagger:
+    properties:
+      success:
+        example: true
+        type: boolean
+    type: object
   model.ChangePasswordInput:
     properties:
       current_password:
@@ -17,6 +47,19 @@ definitions:
     required:
     - current_password
     - new_password
+    type: object
+  model.ErrorResponseSwagger:
+    properties:
+      code:
+        example: 10000001
+        type: integer
+      details:
+        items:
+          type: string
+        type: array
+      message:
+        example: Invalid Parameters
+        type: string
     type: object
   model.ListResponse-model_UserBloodPressure:
     properties:
@@ -125,11 +168,6 @@ definitions:
         items:
           $ref: '#/definitions/model.WeightRecord'
         type: array
-    type: object
-  model.SuccessReponseSwagger:
-    properties:
-      success:
-        type: boolean
     type: object
   model.UpdateTwoFactorRequest:
     properties:
@@ -346,7 +384,7 @@ info:
   description: health master open api
   termsOfService: http://swagger.io/terms/
   title: health master api
-  version: "0.0.2"
+  version: 0.0.2
 paths:
   /api/v1/auth/login:
     post:
@@ -920,6 +958,136 @@ paths:
       summary: update user
       tags:
       - user
+  /api/v1/user-blood-pressure:
+    post:
+      consumes:
+      - application/json
+      description: create a user blood pressure
+      parameters:
+      - description: create a user blood pressure
+        in: body
+        name: user_blood_pressure
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserBloodPressure'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.APIResponseSwagger-model_UserBloodPressure'
+        "400":
+          description: bad request error
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+        "401":
+          description: invalid or expired access token
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+      security:
+      - BearerAuth: []
+      summary: create a user blood pressure
+      tags:
+      - user_blood_pressure
+  /api/v1/user-blood-pressure/{id}:
+    delete:
+      description: delete a user blood pressure record
+      parameters:
+      - description: user blood pressure id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.APIResponseSwagger-model_BloodPressureDeleteResultSwagger'
+        "401":
+          description: invalid or expired access token
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+      security:
+      - BearerAuth: []
+      summary: delete a user blood pressure record
+      tags:
+      - user_blood_pressure
+  /api/v1/user-blood-pressure/{id}/export:
+    get:
+      description: download user blood pressure excel
+      parameters:
+      - description: User ID whose blood pressure records will be exported
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      - application/json
+      responses:
+        "200":
+          description: excel file
+          schema:
+            type: file
+        "401":
+          description: invalid or expired access token
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+      security:
+      - BearerAuth: []
+      summary: download user blood pressure excel
+      tags:
+      - user_blood_pressure
+  /api/v1/user-blood-pressures:
+    get:
+      description: List blood pressure records for the authenticated user. Invalid
+        pagination values currently return HTTP 500.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Records per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/model.APIResponseSwagger-model_ListResponse-model_UserBloodPressure'
+        "401":
+          description: invalid or expired access token
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+      security:
+      - BearerAuth: []
+      summary: list all user blood pressure for single user
+      tags:
+      - user_blood_pressure
   /api/v1/user-temperature:
     post:
       consumes:
@@ -1078,142 +1246,6 @@ paths:
       summary: get user
       tags:
       - user
-  /api/v1/user_blood_pressure:
-    post:
-      consumes:
-      - application/json
-      description: create a user blood pressure
-      parameters:
-      - description: create a user blood pressure
-        in: body
-        name: user_blood_pressure
-        required: true
-        schema:
-          $ref: '#/definitions/model.UserBloodPressure'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: sucess
-          schema:
-            $ref: '#/definitions/model.UserBloodPressure'
-        "400":
-          description: bad request error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: internal server error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      security:
-      - BearerAuth: []
-      summary: create a user blood pressure
-      tags:
-      - user_blood_pressure
-  /api/v1/user_blood_pressure/{id}:
-    post:
-      consumes:
-      - application/json
-      description: delete a user blood pressure record
-      parameters:
-      - description: user blood pressure id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: sucess
-          schema:
-            items:
-              $ref: '#/definitions/model.SuccessReponseSwagger'
-            type: array
-        "400":
-          description: bad request error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: internal server error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      security:
-      - BearerAuth: []
-      summary: delete a user blood pressure record
-      tags:
-      - user_blood_pressure
-  /api/v1/user_blood_pressure/{id}/export:
-    get:
-      consumes:
-      - application/json
-      description: download user blood pressure excel
-      parameters:
-      - description: user blood pressure id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/octet-stream
-      responses:
-        "200":
-          description: excel file
-          schema:
-            type: file
-        "400":
-          description: bad request error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: internal server error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      security:
-      - BearerAuth: []
-      summary: download user blood pressure excel
-      tags:
-      - user_blood_pressure
-  /api/v1/user_blood_pressures:
-    post:
-      consumes:
-      - application/json
-      description: list all user blood pressure for single user
-      parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: sucess
-          schema:
-            $ref: '#/definitions/model.ListResponse-model_UserBloodPressure'
-        "400":
-          description: bad request error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: internal server error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      security:
-      - BearerAuth: []
-      summary: list all user blood pressure for single user
-      tags:
-      - user_blood_pressure
   /api/v1/weight-record:
     post:
       consumes:

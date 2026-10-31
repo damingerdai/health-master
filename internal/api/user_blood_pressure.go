@@ -22,10 +22,11 @@ import (
 //	@Produce		json
 //	@Param			user_blood_pressure	body	model.UserBloodPressure	true	"create a user blood pressure"
 //	@Security		BearerAuth
-//	@Success		200	{object}	model.UserBloodPressure	"sucess"
-//	@Failure		400	{object}	errcode.Error			"bad request error"
-//	@Failure		500	{object}	errcode.Error			"internal server error"
-//	@Router			/api/v1/user_blood_pressure [post]
+//	@Success		200	{object}	model.APIResponseSwagger[model.UserBloodPressure]	"success"
+//	@Failure		400	{object}	model.ErrorResponseSwagger			"bad request error"
+//	@Failure		401	{object}	model.ErrorResponseSwagger	"invalid or expired access token"
+//	@Failure		500	{object}	model.ErrorResponseSwagger			"internal server error"
+//	@Router			/api/v1/user-blood-pressure [post]
 func CreateUserBloodPressure(c *gin.Context) {
 	var userBloodPressure model.UserBloodPressure
 	resp := response.NewResponse(c)
@@ -62,18 +63,16 @@ func CreateUserBloodPressure(c *gin.Context) {
 // list all user blood pressure for single user godoc
 //
 //	@Summary		list all user blood pressure for single user
-//	@Description	list all user blood pressure for single user
+//	@Description	List blood pressure records for the authenticated user. Invalid pagination values currently return HTTP 500.
 //	@Tags			user_blood_pressure
-//	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header	string	true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			page			query	string	false	"page"
-//	@Param			limit			query	string	false	"limit"
+//	@Param			page			query	int	false	"Page number"	default(1)
+//	@Param			limit			query	int	false	"Records per page"	default(5)
 //	@Security		BearerAuth
-//	@Success		200	{object}	model.ListResponse[model.UserBloodPressure]	"sucess"
-//	@Failure		400	{object}	errcode.Error								"bad request error"
-//	@Failure		500	{object}	errcode.Error								"internal server error"
-//	@Router			/api/v1/user_blood_pressures [post]
+//	@Success		200	{object}	model.APIResponseSwagger[model.ListResponse[model.UserBloodPressure]]	"success"
+//	@Failure		401	{object}	model.ErrorResponseSwagger	"invalid or expired access token"
+//	@Failure		500	{object}	model.ErrorResponseSwagger								"internal server error"
+//	@Router			/api/v1/user-blood-pressures [get]
 func ListBloodPressures(c *gin.Context) {
 	resp := response.NewResponse(c)
 	srvs := getServices()
@@ -94,14 +93,13 @@ func ListBloodPressures(c *gin.Context) {
 //	@Summary		delete a user blood pressure record
 //	@Description	delete a user blood pressure record
 //	@Tags			user_blood_pressure
-//	@Accept			json
 //	@Produce		json
 //	@Param			id	path	string	true	"user blood pressure id"
 //	@Security		BearerAuth
-//	@Success		200	{array}		model.SuccessReponseSwagger	"sucess"
-//	@Failure		400	{object}	errcode.Error				"bad request error"
-//	@Failure		500	{object}	errcode.Error				"internal server error"
-//	@Router			/api/v1/user_blood_pressure/{id} [post]
+//	@Success		200	{object}	model.APIResponseSwagger[model.BloodPressureDeleteResultSwagger]	"success"
+//	@Failure		401	{object}	model.ErrorResponseSwagger	"invalid or expired access token"
+//	@Failure		500	{object}	model.ErrorResponseSwagger				"internal server error"
+//	@Router			/api/v1/user-blood-pressure/{id} [delete]
 func DeleteBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
 	srvs := getServices()
@@ -119,14 +117,13 @@ func DeleteBloodPressure(c *gin.Context) {
 //	@Summary		download user blood pressure excel
 //	@Description	download user blood pressure excel
 //	@Tags			user_blood_pressure
-//	@Accept			json
-//	@Produce		application/octet-stream
-//	@Param			id	path	string	true	"user blood pressure id"
+//	@Produce		application/octet-stream,json
+//	@Param			id	path	string	true	"User ID whose blood pressure records will be exported"
 //	@Security		BearerAuth
 //	@Success		200	{file}		binary			"excel file"
-//	@Failure		400	{object}	errcode.Error	"bad request error"
-//	@Failure		500	{object}	errcode.Error	"internal server error"
-//	@Router			/api/v1/user_blood_pressure/{id}/export [get]
+//	@Failure		401	{object}	model.ErrorResponseSwagger	"invalid or expired access token"
+//	@Failure		500	{object}	model.ErrorResponseSwagger	"internal server error"
+//	@Router			/api/v1/user-blood-pressure/{id}/export [get]
 func DowonloadBloodPressure(c *gin.Context) {
 	resp := response.NewResponse(c)
 	srvs := getServices()

@@ -646,7 +646,7 @@
                     },
                     {
                         "type": "string",
-                        "default": "Bearer <Add access token here>",
+                        "default": "Bearer \u003cAdd access token here\u003e",
                         "description": "Authorization token",
                         "name": "Authorization",
                         "in": "header"
@@ -690,7 +690,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "Bearer <Add access token here>",
+                        "default": "Bearer \u003cAdd access token here\u003e",
                         "description": "Insert your access token",
                         "name": "Authorization",
                         "in": "header",
@@ -880,6 +880,209 @@
                 }
             }
         },
+        "/api/v1/user-blood-pressure": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create a user blood pressure",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_blood_pressure"
+                ],
+                "summary": "create a user blood pressure",
+                "parameters": [
+                    {
+                        "description": "create a user blood pressure",
+                        "name": "user_blood_pressure",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserBloodPressure"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_UserBloodPressure"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    },
+                    "401": {
+                        "description": "invalid or expired access token",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-blood-pressure/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "delete a user blood pressure record",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_blood_pressure"
+                ],
+                "summary": "delete a user blood pressure record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user blood pressure id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_BloodPressureDeleteResultSwagger"
+                        }
+                    },
+                    "401": {
+                        "description": "invalid or expired access token",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-blood-pressure/{id}/export": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "download user blood pressure excel",
+                "produces": [
+                    "application/octet-stream",
+                    "application/json"
+                ],
+                "tags": [
+                    "user_blood_pressure"
+                ],
+                "summary": "download user blood pressure excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID whose blood pressure records will be exported",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "excel file",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "401": {
+                        "description": "invalid or expired access token",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-blood-pressures": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List blood pressure records for the authenticated user. Invalid pagination values currently return HTTP 500.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_blood_pressure"
+                ],
+                "summary": "list all user blood pressure for single user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "Records per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_ListResponse-model_UserBloodPressure"
+                        }
+                    },
+                    "401": {
+                        "description": "invalid or expired access token",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user-temperature": {
             "post": {
                 "security": [
@@ -1052,7 +1255,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "Bearer <Add access token here>",
+                        "default": "Bearer \u003cAdd access token here\u003e",
                         "description": "Insert your access token",
                         "name": "Authorization",
                         "in": "header",
@@ -1113,220 +1316,6 @@
                         "description": "sucess",
                         "schema": {
                             "$ref": "#/definitions/model.User"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/user_blood_pressure": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "create a user blood pressure",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user_blood_pressure"
-                ],
-                "summary": "create a user blood pressure",
-                "parameters": [
-                    {
-                        "description": "create a user blood pressure",
-                        "name": "user_blood_pressure",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.UserBloodPressure"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "sucess",
-                        "schema": {
-                            "$ref": "#/definitions/model.UserBloodPressure"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/user_blood_pressure/{id}": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "delete a user blood pressure record",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user_blood_pressure"
-                ],
-                "summary": "delete a user blood pressure record",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "user blood pressure id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "sucess",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.SuccessReponseSwagger"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "bad request error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/user_blood_pressure/{id}/export": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "download user blood pressure excel",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/octet-stream"
-                ],
-                "tags": [
-                    "user_blood_pressure"
-                ],
-                "summary": "download user blood pressure excel",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "user blood pressure id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "excel file",
-                        "schema": {
-                            "type": "file"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/user_blood_pressures": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "list all user blood pressure for single user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user_blood_pressure"
-                ],
-                "summary": "list all user blood pressure for single user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer <Add access token here>",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "sucess",
-                        "schema": {
-                            "$ref": "#/definitions/model.ListResponse-model_UserBloodPressure"
                         }
                     },
                     "400": {
@@ -1545,6 +1534,51 @@
         "errcode.Error": {
             "type": "object"
         },
+        "model.APIResponseSwagger-model_BloodPressureDeleteResultSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.BloodPressureDeleteResultSwagger"
+                }
+            }
+        },
+        "model.APIResponseSwagger-model_ListResponse-model_UserBloodPressure": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.ListResponse-model_UserBloodPressure"
+                }
+            }
+        },
+        "model.APIResponseSwagger-model_UserBloodPressure": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.UserBloodPressure"
+                }
+            }
+        },
+        "model.BloodPressureDeleteResultSwagger": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
         "model.ChangePasswordInput": {
             "type": "object",
             "required": [
@@ -1565,6 +1599,25 @@
                 "two_factor_code": {
                     "description": "Six-digit TOTP code; required when 2FA is enabled.",
                     "type": "string"
+                }
+            }
+        },
+        "model.ErrorResponseSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 10000001
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid Parameters"
                 }
             }
         },
@@ -1730,14 +1783,6 @@
                     "items": {
                         "$ref": "#/definitions/model.WeightRecord"
                     }
-                }
-            }
-        },
-        "model.SuccessReponseSwagger": {
-            "type": "object",
-            "properties": {
-                "success": {
-                    "type": "boolean"
                 }
             }
         },
