@@ -1348,7 +1348,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "create a new weight record",
+                "description": "Create a weight record. Weight is in kilograms, must be greater than 0 and at most 500. recordDate is an RFC3339 timestamp.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1361,7 +1361,7 @@ const docTemplate = `{
                 "summary": "create a weight record",
                 "parameters": [
                     {
-                        "description": "create a weight record",
+                        "description": "Weight record with userId, weight and recordDate",
                         "name": "weight_record",
                         "in": "body",
                         "required": true,
@@ -1374,19 +1374,25 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/model.WeightRecord"
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_WeightRecord"
                         }
                     },
                     "400": {
-                        "description": "bad request error",
+                        "description": "invalid request body or weight",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
+                        }
+                    },
+                    "401": {
+                        "description": "invalid or expired access token",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "internal server error or missing authorization",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
                         }
                     }
                 }
@@ -1399,10 +1405,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "delete a weight record by id",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Delete a weight record by ID.",
                 "produces": [
                     "application/json"
                 ],
@@ -1413,7 +1416,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "weight record id",
+                        "description": "Weight record ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1423,20 +1426,19 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_WeightRecordDeleteResultSwagger"
                         }
                     },
-                    "400": {
-                        "description": "bad request error",
+                    "401": {
+                        "description": "invalid or expired access token",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "deletion failed or missing authorization",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
                         }
                     }
                 }
@@ -1449,10 +1451,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "list weight records with pagination",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "List weight records with pagination and a total count. When userId is omitted, use the authenticated user. Invalid pagination values currently return HTTP 500.",
                 "produces": [
                     "application/json"
                 ],
@@ -1463,31 +1462,27 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user id",
+                        "description": "User ID; defaults to the authenticated user",
                         "name": "userId",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "access token",
+                        "description": "Access token alternative to the Authorization header; takes precedence when provided",
                         "name": "accessToken",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "Authorization token",
-                        "name": "Authorization",
-                        "in": "header"
-                    },
-                    {
-                        "type": "string",
-                        "description": "page",
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
                         "name": "page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "limit",
+                        "type": "integer",
+                        "default": 5,
+                        "description": "Records per page",
                         "name": "limit",
                         "in": "query"
                     }
@@ -1496,19 +1491,19 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/model.ListResponse-model_WeightRecordVO"
+                            "$ref": "#/definitions/model.APIResponseSwagger-model_ListResponse-model_WeightRecordVO"
                         }
                     },
-                    "400": {
-                        "description": "bad request error",
+                    "401": {
+                        "description": "invalid or expired access token",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "invalid pagination, internal server error or missing authorization",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/model.ErrorResponseSwagger"
                         }
                     }
                 }
@@ -1566,6 +1561,18 @@ const docTemplate = `{
                 }
             }
         },
+        "model.APIResponseSwagger-model_ListResponse-model_WeightRecordVO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.ListResponse-model_WeightRecordVO"
+                }
+            }
+        },
         "model.APIResponseSwagger-model_UserBloodPressure": {
             "type": "object",
             "properties": {
@@ -1575,6 +1582,30 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/model.UserBloodPressure"
+                }
+            }
+        },
+        "model.APIResponseSwagger-model_WeightRecord": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.WeightRecord"
+                }
+            }
+        },
+        "model.APIResponseSwagger-model_WeightRecordDeleteResultSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/model.WeightRecordDeleteResultSwagger"
                 }
             }
         },
@@ -2074,6 +2105,15 @@ const docTemplate = `{
                 "weight": {
                     "type": "number",
                     "maximum": 500
+                }
+            }
+        },
+        "model.WeightRecordDeleteResultSwagger": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

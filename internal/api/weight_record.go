@@ -14,17 +14,18 @@ import (
 
 // create a weight record godoc
 //
-//	@Summary		create a weight record
-//	@Description	create a new weight record
-//	@Tags			weight_record
-//	@Accept			json
-//	@Produce		json
-//	@Param			weight_record	body	model.WeightRecord	true	"create a weight record"
-//	@Security		BearerAuth
-//	@Success		200	{object}	model.WeightRecord	"success"
-//	@Failure		400	{object}	errcode.Error		"bad request error"
-//	@Failure		500	{object}	errcode.Error		"internal server error"
-//	@Router			/api/v1/weight-record [post]
+// @Summary create a weight record
+// @Description Create a weight record. Weight is in kilograms, must be greater than 0 and at most 500. recordDate is an RFC3339 timestamp.
+// @Tags weight_record
+// @Accept json
+// @Produce json
+// @Param weight_record body model.WeightRecord true "Weight record with userId, weight and recordDate"
+// @Security BearerAuth
+// @Success 200 {object} model.APIResponseSwagger[model.WeightRecord] "success"
+// @Failure 400 {object} model.ErrorResponseSwagger "invalid request body or weight"
+// @Failure 401 {object} model.ErrorResponseSwagger "invalid or expired access token"
+// @Failure 500 {object} model.ErrorResponseSwagger "internal server error or missing authorization"
+// @Router /api/v1/weight-record [post]
 func AddWeightRecord(c *gin.Context) {
 	var weightRecord model.WeightRecord
 	resp := response.NewResponse(c)
@@ -47,21 +48,19 @@ func AddWeightRecord(c *gin.Context) {
 
 // list weight records godoc
 //
-//	@Summary		list weight records
-//	@Description	list weight records with pagination
-//	@Tags			weight_record
-//	@Accept			json
-//	@Produce		json
-//	@Param			userId			query	string	false	"user id"
-//	@Param			accessToken		query	string	false	"access token"
-//	@Param			Authorization	header	string	false	"Authorization token"
-//	@Param			page			query	string	false	"page"
-//	@Param			limit			query	string	false	"limit"
-//	@Security		BearerAuth
-//	@Success		200	{object}	model.ListResponse[model.WeightRecordVO]	"success"
-//	@Failure		400	{object}	errcode.Error								"bad request error"
-//	@Failure		500	{object}	errcode.Error								"internal server error"
-//	@Router			/api/v1/weight-records [get]
+// @Summary list weight records
+// @Description List weight records with pagination and a total count. When userId is omitted, use the authenticated user. Invalid pagination values currently return HTTP 500.
+// @Tags weight_record
+// @Produce json
+// @Param userId query string false "User ID; defaults to the authenticated user"
+// @Param accessToken query string false "Access token alternative to the Authorization header; takes precedence when provided"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Records per page" default(5)
+// @Security BearerAuth
+// @Success 200 {object} model.APIResponseSwagger[model.ListResponse[model.WeightRecordVO]] "success"
+// @Failure 401 {object} model.ErrorResponseSwagger "invalid or expired access token"
+// @Failure 500 {object} model.ErrorResponseSwagger "invalid pagination, internal server error or missing authorization"
+// @Router /api/v1/weight-records [get]
 func ListWeightRecords(c *gin.Context) {
 	resp := response.NewResponse(c)
 	srvs := getServices()
@@ -111,17 +110,16 @@ func ListWeightRecords(c *gin.Context) {
 
 // delete a weight record godoc
 //
-//	@Summary		delete a weight record
-//	@Description	delete a weight record by id
-//	@Tags			weight_record
-//	@Accept			json
-//	@Produce		json
-//	@Param			id	path	string	true	"weight record id"
-//	@Security		BearerAuth
-//	@Success		200	{object}	map[string]interface{}	"success"
-//	@Failure		400	{object}	errcode.Error			"bad request error"
-//	@Failure		500	{object}	errcode.Error			"internal server error"
-//	@Router			/api/v1/weight-record/{id} [delete]
+// @Summary delete a weight record
+// @Description Delete a weight record by ID.
+// @Tags weight_record
+// @Produce json
+// @Param id path string true "Weight record ID"
+// @Security BearerAuth
+// @Success 200 {object} model.APIResponseSwagger[model.WeightRecordDeleteResultSwagger] "success"
+// @Failure 401 {object} model.ErrorResponseSwagger "invalid or expired access token"
+// @Failure 500 {object} model.ErrorResponseSwagger "deletion failed or missing authorization"
+// @Router /api/v1/weight-record/{id} [delete]
 func DeleteWeightRecord(c *gin.Context) {
 	resp := response.NewResponse(c)
 	srvs := getServices()

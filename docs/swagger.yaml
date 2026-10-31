@@ -17,6 +17,14 @@ definitions:
       data:
         $ref: '#/definitions/model.ListResponse-model_UserBloodPressure'
     type: object
+  model.APIResponseSwagger-model_ListResponse-model_WeightRecordVO:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.ListResponse-model_WeightRecordVO'
+    type: object
   model.APIResponseSwagger-model_UserBloodPressure:
     properties:
       code:
@@ -24,6 +32,22 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/model.UserBloodPressure'
+    type: object
+  model.APIResponseSwagger-model_WeightRecord:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.WeightRecord'
+    type: object
+  model.APIResponseSwagger-model_WeightRecordDeleteResultSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/model.WeightRecordDeleteResultSwagger'
     type: object
   model.BloodPressureDeleteResultSwagger:
     properties:
@@ -356,6 +380,12 @@ definitions:
         type: number
     required:
     - weight
+    type: object
+  model.WeightRecordDeleteResultSwagger:
+    properties:
+      success:
+        example: true
+        type: boolean
     type: object
   model.WeightRecordVO:
     properties:
@@ -1250,9 +1280,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: create a new weight record
+      description: Create a weight record. Weight is in kilograms, must be greater
+        than 0 and at most 500. recordDate is an RFC3339 timestamp.
       parameters:
-      - description: create a weight record
+      - description: Weight record with userId, weight and recordDate
         in: body
         name: weight_record
         required: true
@@ -1264,15 +1295,19 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/model.WeightRecord'
+            $ref: '#/definitions/model.APIResponseSwagger-model_WeightRecord'
         "400":
-          description: bad request error
+          description: invalid request body or weight
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/model.ErrorResponseSwagger'
+        "401":
+          description: invalid or expired access token
+          schema:
+            $ref: '#/definitions/model.ErrorResponseSwagger'
         "500":
-          description: internal server error
+          description: internal server error or missing authorization
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/model.ErrorResponseSwagger'
       security:
       - BearerAuth: []
       summary: create a weight record
@@ -1280,11 +1315,9 @@ paths:
       - weight_record
   /api/v1/weight-record/{id}:
     delete:
-      consumes:
-      - application/json
-      description: delete a weight record by id
+      description: Delete a weight record by ID.
       parameters:
-      - description: weight record id
+      - description: Weight record ID
         in: path
         name: id
         required: true
@@ -1295,16 +1328,15 @@ paths:
         "200":
           description: success
           schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: bad request error
+            $ref: '#/definitions/model.APIResponseSwagger-model_WeightRecordDeleteResultSwagger'
+        "401":
+          description: invalid or expired access token
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/model.ErrorResponseSwagger'
         "500":
-          description: internal server error
+          description: deletion failed or missing authorization
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/model.ErrorResponseSwagger'
       security:
       - BearerAuth: []
       summary: delete a weight record
@@ -1312,45 +1344,44 @@ paths:
       - weight_record
   /api/v1/weight-records:
     get:
-      consumes:
-      - application/json
-      description: list weight records with pagination
+      description: List weight records with pagination and a total count. When userId
+        is omitted, use the authenticated user. Invalid pagination values currently
+        return HTTP 500.
       parameters:
-      - description: user id
+      - description: User ID; defaults to the authenticated user
         in: query
         name: userId
         type: string
-      - description: access token
+      - description: Access token alternative to the Authorization header; takes precedence
+          when provided
         in: query
         name: accessToken
         type: string
-      - description: Authorization token
-        in: header
-        name: Authorization
-        type: string
-      - description: page
+      - default: 1
+        description: Page number
         in: query
         name: page
-        type: string
-      - description: limit
+        type: integer
+      - default: 5
+        description: Records per page
         in: query
         name: limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/model.ListResponse-model_WeightRecordVO'
-        "400":
-          description: bad request error
+            $ref: '#/definitions/model.APIResponseSwagger-model_ListResponse-model_WeightRecordVO'
+        "401":
+          description: invalid or expired access token
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/model.ErrorResponseSwagger'
         "500":
-          description: internal server error
+          description: invalid pagination, internal server error or missing authorization
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/model.ErrorResponseSwagger'
       security:
       - BearerAuth: []
       summary: list weight records
