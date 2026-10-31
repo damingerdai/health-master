@@ -5,7 +5,7 @@
         "title": "health master api",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {},
-        "version": "0.0.2"
+        "version": "0.0.3-alpha.0"
     },
     "paths": {
         "/api/v1/auth/login": {
@@ -646,7 +646,7 @@
                     },
                     {
                         "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "default": "Bearer <Add access token here>",
                         "description": "Authorization token",
                         "name": "Authorization",
                         "in": "header"
@@ -690,7 +690,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "default": "Bearer <Add access token here>",
                         "description": "Insert your access token",
                         "name": "Authorization",
                         "in": "header",
@@ -1255,7 +1255,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "default": "Bearer <Add access token here>",
                         "description": "Insert your access token",
                         "name": "Authorization",
                         "in": "header",

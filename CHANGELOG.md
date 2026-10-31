@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.0.3-alpha.0] - 2026-10-31
+
+### 🚀 Features
+
+- *(web)* Restyle blood-pressure-new form with wellness design
+- *(web)* Restyle blood-pressure table with wellness design
+- *(web)* Restyle weight table with wellness design
+- *(web)* Restyle weight-new form with wellness design
+- *(web)* Restyle temperature table with wellness design
+- *(web)* Restyle temperature form and add loading skeleton
+- *(web)* Add blood pressure pagination
+- *(web)* Add weight records pagination
+
+### 🐛 Bug Fixes
+
+- Propagate blood pressure creation database errors
+- Use dedicated error code for blood pressure export
+- *(deps)* Update module github.com/jackc/pgx/v5 to v5.12.0 (#365)
+
+### 🚜 Refactor
+
+- *(web)* Submit blood pressure records via form action
+- *(web)* Submit weight records via form action
+
+### 📚 Documentation
+
+- Align blood pressure Swagger with API behavior
+
+### 🎨 Styling
+
+- *(web)* Apply mindful wellness styling to toaster
+
+### ⚙️ Miscellaneous Tasks
+
+- Publish container images from release workflow
+- Release from dev and promote stable versions to main
 ## [0.0.2] - 2026-10-30
 
 ### 🚀 Features
