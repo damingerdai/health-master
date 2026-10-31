@@ -20,11 +20,7 @@ func NewUserBloodPressureService(userBloodPressureRepository *repository.UserBlo
 }
 
 func (userBloodPressureService *UserBloodPressureService) Create(ctx context.Context, userBloodPressure *model.UserBloodPressure) error {
-	err := userBloodPressureService.userBloodPressureRepository.Create(ctx, userBloodPressure)
-	if err != nil {
-		return nil
-	}
-	return nil
+	return userBloodPressureService.userBloodPressureRepository.Create(ctx, userBloodPressure)
 }
 
 func (userBloodPressureService *UserBloodPressureService) Find(ctx context.Context, id string) (*model.UserBloodPressure, error) {
