@@ -12,3 +12,8 @@ export interface UserBloodPressure {
 }
 
 export type UserBloodPressures = UserBloodPressure[];
+
+export interface UserBloodPressurePage {
+  data: UserBloodPressures;
+  count: number;
+}
