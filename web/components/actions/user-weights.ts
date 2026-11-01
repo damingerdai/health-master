@@ -1,7 +1,8 @@
 'use server';
 
 import { authOptions } from '@/lib/auth-options';
-import { WeightRecordPage } from '@/types/weight-record';
+import { ListResponse } from '@/types/response';
+import { WeightRecord } from '@/types/weight-record';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -9,7 +10,7 @@ import { z } from 'zod';
 export const getUserWeights = async (
   page = 1,
   limit = 20
-): Promise<WeightRecordPage | null> => {
+): Promise<ListResponse<WeightRecord> | null> => {
   const session = await getServerSession(authOptions);
   const accessToken = session?.accessToken;
 
@@ -40,7 +41,7 @@ export const getUserWeights = async (
     }
 
     const resp = await res.json();
-    return resp.data as WeightRecordPage;
+    return resp.data as ListResponse<WeightRecord>;
   } catch (err) {
     console.error('getUserWeights error:', err);
     return null;

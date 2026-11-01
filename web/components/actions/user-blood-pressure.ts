@@ -4,12 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
-import { UserBloodPressurePage } from '@/types/user-blood-pressure';
+import { UserBloodPressure } from '@/types/user-blood-pressure';
+import { ListResponse } from '@/types/response';
 
 export const getUserBloodPressures = async (
   page = 1,
   limit = 20
-): Promise<UserBloodPressurePage | null> => {
+): Promise<ListResponse<UserBloodPressure> | null> => {
   const session = await getServerSession(authOptions);
   const accessToken = session?.accessToken;
 
@@ -40,7 +41,7 @@ export const getUserBloodPressures = async (
     }
 
     const data = await res.json();
-    return data.data as UserBloodPressurePage;
+    return data.data as ListResponse<UserBloodPressure> ;
   } catch (err) {
     console.error('getUserBloodPressures error:', err);
     return null;

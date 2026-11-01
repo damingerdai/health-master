@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/pagination';
 import { Fragment } from 'react';
 import { redirect } from 'next/navigation';
+import { isErrorResponse } from '@/types/response';
 
 const PAGE_SIZE = 20;
 
@@ -26,7 +27,7 @@ export default async function Page({
     Number.isSafeInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
   const result = await getUserWeights(page, PAGE_SIZE);
 
-  if (!result) {
+  if (!result || isErrorResponse(result)) {
     return (
       <p role="alert" className="text-sm text-destructive">
         Unable to load weight records. Please try again.
