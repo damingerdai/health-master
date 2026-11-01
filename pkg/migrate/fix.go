@@ -15,7 +15,12 @@ var migrateFixCmd = &cobra.Command{
 	Long:  "execute fix dirty database version command",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		m, err := migrate.New(getMigratePath(), getPostgresqlUrl())
+		databaseURL, err := getPostgresqlUrl()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
+		}
+		m, err := migrate.New(getMigratePath(), databaseURL)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
