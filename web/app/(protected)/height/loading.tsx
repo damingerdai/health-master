@@ -1,56 +1,44 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
 
 export default function Loading() {
   return (
-    <div role="status" aria-label="Loading height records" aria-busy="true">
-      <span className="sr-only">Loading height records...</span>
+    <div
+      className="mx-auto w-full max-w-6xl animate-in fade-in duration-500"
+      role="status"
+      aria-label="Loading height records"
+      aria-busy="true"
+    >
       <div className="flex flex-col gap-4" aria-hidden="true">
-        <div className="flex flex-wrap items-center justify-between gap-2 px-2">
-          <Skeleton className="h-7 w-48" />
+        <div className="flex items-center justify-between px-2">
           <Skeleton className="h-5 w-44" />
+          <Skeleton className="h-3.5 w-44" />
         </div>
-        <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-          <Table>
-            <TableHeader className="bg-muted/50">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[120px] py-5 pl-8">
-                  <Skeleton className="h-5 w-12" />
-                </TableHead>
-                <TableHead className="py-5 text-center">
-                  <Skeleton className="mx-auto h-5 w-16" />
-                </TableHead>
-                <TableHead className="py-5 pr-8 text-right">
-                  <Skeleton className="ml-auto h-5 w-20" />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Array.from({ length: 6 }, (_, index) => (
-                <TableRow key={index} className="hover:bg-transparent">
-                  <TableCell className="py-6 pl-8">
-                    <Skeleton className="h-4 w-8" />
-                  </TableCell>
-                  <TableCell className="py-6 text-center">
-                    <div className="flex flex-col items-center">
-                      <Skeleton className="h-7 w-16" />
-                      <Skeleton className="h-[15px] w-10" />
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-6 pr-8 text-right">
-                    <Skeleton className="ml-auto h-5 w-32" />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+        <div className="overflow-x-auto rounded-3xl border border-stone-200/70 bg-white/85 shadow-[0_12px_40px_-12px_rgba(120,113,108,0.1)] backdrop-blur-sm dark:border-stone-800/80 dark:bg-stone-900/70">
+          {/* Table header */}
+          <div className="grid min-w-[380px] grid-cols-[120px_1fr_1fr] gap-4 border-b border-stone-200/60 bg-stone-50/60 px-8 py-4 dark:border-stone-800/70 dark:bg-stone-900/40">
+            <Skeleton className="h-3.5 w-12" />
+            <Skeleton className="h-3.5 w-16 justify-self-center" />
+            <Skeleton className="h-3.5 w-20 justify-self-end" />
+          </div>
+
+          {/* Table rows */}
+          <div className="divide-y divide-stone-200/60 dark:divide-stone-800/70">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="grid min-w-[380px] grid-cols-[120px_1fr_1fr] items-center gap-4 px-8 py-5"
+              >
+                <Skeleton className="h-3.5 w-6" />
+
+                <div className="flex flex-col items-center gap-1.5">
+                  <Skeleton className="h-5 w-14" />
+                  <Skeleton className="h-2.5 w-10" />
+                </div>
+                <Skeleton className="h-3.5 w-28 justify-self-end" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
