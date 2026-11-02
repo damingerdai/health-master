@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.0.3-beta.0] - 2026-11-02
+
+### 🚀 Features
+
+- Paginate temperature records and improve query logging (#369)
+- *(web)* Add temperature pagination and unify list response types (#371)
+- *(web)* Add pagination to height records (#373)
+
+### 🐛 Bug Fixes
+
+- Sync weight record Swagger definitions (#367)
+- *(deps)* Update dependency @hookform/resolvers to v7 (#368)
+
+### 🚜 Refactor
+
+- *(web)* Align height page with weight page design (#372)
+- *(migrate)* Use database URL for connection configuration (#375)
 ## [0.0.3-alpha.0] - 2026-10-31
 
 ### 🚀 Features
