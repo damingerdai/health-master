@@ -110,9 +110,14 @@ Tracing is disabled by default. To send traces to the local Jaeger instance, set
 ### 3. Apply database migrations
 
 The migration CLI reads [configs/db.yaml](configs/db.yaml). Unlike the API, it does
-not load `.env`; export `DATABASE_URL` explicitly or update the migration config.
-The Compose database is named `postgres`, while the checked-in migration config
-uses `hm` on port `5432`.
+not load `.env`; export `DATABASE_URL` explicitly or set `DatabaseUrl` in the
+migration config. The environment variable takes precedence over the config file.
+Separate host, port, username, password, database name, and SSL fields are no longer
+supported; include these settings in the URL (for example, `?sslmode=disable`).
+The Compose database is named `postgres`, while the checked-in migration URL
+uses `hm` on port `5432`. `MIGRATE_PATH` overrides `MigratePath` in the config.
+The `up`, `down`, and `fix` commands require a connection URL via `DATABASE_URL`
+or `DatabaseUrl`; `create` does not.
 
 ```bash
 go build -o migrate ./cmd/migrate.go

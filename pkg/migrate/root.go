@@ -1,12 +1,11 @@
 package migrate
 
 import (
+	"errors"
 	"fmt"
-	"net/url"
 	"os"
 	"path"
-
-	"github.com/damingerdai/health-master/pkg/util"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -43,42 +42,24 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		viper.AddConfigPath(path.Join(dir, "configs"))
-		viper.SetConfigFile("yaml")
+		viper.SetConfigType("yaml")
 		viper.SetConfigName("db")
 	}
-
-	// TODO close the automatic bind env
-	//viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stdin, "Using config file: ", viper.ConfigFileUsed())
 	}
 }
 
-func getPostgresqlUrl() string {
+func getPostgresqlUrl() (string, error) {
 	databaseUrl := os.Getenv("DATABASE_URL")
 	if len(databaseUrl) == 0 {
-		return buildPostgresqlUrl()
+		databaseUrl = viper.GetString("DatabaseUrl")
 	}
-
-	return databaseUrl
-}
-
-func buildPostgresqlUrl() string {
-	var username string
-	var password string
-	var host string
-	var port string
-	var dbname string
-	var sslmode bool
-	viper.UnmarshalKey("Username", &username)
-	viper.UnmarshalKey("Password", &password)
-	viper.UnmarshalKey("Host", &host)
-	viper.UnmarshalKey("Port", &port)
-	viper.UnmarshalKey("Dbname", &dbname)
-	viper.UnmarshalKey("SSL", &sslmode)
-
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", username, url.QueryEscape(password), host, port, dbname, util.If(sslmode, "required", "disable"))
+	if strings.TrimSpace(databaseUrl) == "" {
+		return "", errors.New("database URL is required: set DATABASE_URL or configure DatabaseUrl in configs/db.yaml")
+	}
+	return databaseUrl, nil
 }
 
 func getMigratePath() string {
