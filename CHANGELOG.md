@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.3-rc.0] - 2026-11-05
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update module github.com/xuri/excelize/v2 to v2.11.1 [security] (#374)
+- *(web)* Set Next.js cache permissions after copying build output (#376)
+- *(deps)* Update nextjs monorepo to v16.4.5 (#379)
+- *(web)* Validate blood pressure response before pagination (#378)
 ## [0.0.3-beta.0] - 2026-11-02
 
 ### 🚀 Features
