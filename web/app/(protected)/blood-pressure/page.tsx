@@ -36,6 +36,20 @@ export default async function Page({
   }
 
   const { data: bloodPressures, count } = result;
+  if (!Array.isArray(bloodPressures) || !Number.isSafeInteger(count) || count < 0) {
+    console.error('Invalid blood pressure response', {
+      page,
+      dataType: bloodPressures === null ? 'null' : typeof bloodPressures,
+      count
+    });
+
+    return (
+      <p role="alert" className="text-sm text-destructive">
+        Invalid blood pressure response. Please try again.
+      </p>
+    );
+  }
+
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
   if (page > totalPages) {
     redirect(`/blood-pressure?page=${totalPages}`);
