@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.0.3] - 2026-11-10
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update nextjs monorepo to v16.4.6 (#382)
 ## [0.0.3-rc.0] - 2026-11-05
 
 ### 🐛 Bug Fixes
