@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.4] - 2026-11-16
+
+### 🚀 Features
+
+- Bump go 1.27.4
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update module golang.org/x/crypto to v0.59.0 (#385)
+- *(deps)* Update module github.com/jackc/pgx/v5 to v5.13.0 (#384)
+- Return generic password reset success for unknown emails
+- Use scalar Go version in migration workflow
 ## [0.0.3] - 2026-11-10
 
 ### 🐛 Bug Fixes
