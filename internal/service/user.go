@@ -174,7 +174,7 @@ func (userService *UserService) ChangePassword(ctx context.Context, userId strin
 	}
 	if user == nil {
 		logger.Warn("user not found")
-		return errcode.UnauthorizedAuthNotExist
+		return ErrUserNotFound
 	}
 	if err := pwd.Authenticate(changePasswordInput.CurrentPassword, user.Password); err != nil {
 		logger.Warn("current password verification failed", zap.Error(err))

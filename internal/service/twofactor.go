@@ -49,7 +49,7 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 		return nil, err
 	}
 	if user == nil {
-		return nil, errors.New("user not found")
+		return nil, ErrUserNotFound
 	}
 	if user.TwoFactorEnabled {
 		return &model.Setup2FaResult{Enabled: true}, nil
@@ -76,7 +76,7 @@ func (s *TwoFactorService) Generate(ctx context.Context, userID string, email st
 			return nil, err
 		}
 		if user == nil {
-			return nil, errors.New("user not found")
+			return nil, ErrUserNotFound
 		}
 		if user.TwoFactorEnabled {
 			return &model.Setup2FaResult{Enabled: true}, nil
@@ -121,7 +121,7 @@ func (s *TwoFactorService) Enable(ctx context.Context, userID string, code strin
 	}
 	if user == nil {
 		global.Logger.Error("user not found")
-		return errors.New("user not found")
+		return ErrUserNotFound
 	}
 	if user.TwoFactorSecret == nil {
 		global.Logger.Error("2fa secret not found")
@@ -151,7 +151,7 @@ func (s *TwoFactorService) Disable(ctx context.Context, userID string, code stri
 		return err
 	}
 	if user == nil {
-		return errors.New("user not found")
+		return ErrUserNotFound
 	}
 	if user.TwoFactorSecret == nil {
 		return errors.New("2fa secret not found")
@@ -178,7 +178,7 @@ func (s *TwoFactorService) VerifyCode(ctx context.Context, userID string, code s
 		return err
 	}
 	if user == nil {
-		return errors.New("user not found")
+		return ErrUserNotFound
 	}
 
 	if !user.TwoFactorEnabled || user.TwoFactorSecret == nil {

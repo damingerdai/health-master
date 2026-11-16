@@ -109,7 +109,7 @@ func (ts *TokenService) CreateToken(ctx context.Context, email string, password 
 	}
 	if user == nil {
 		logger.Warn("user not found")
-		return nil, errors.New("user not found")
+		return nil, ErrUserNotFound
 	}
 	logger = logger.With(zap.String("user_id", user.Id))
 	if err := pwd.Authenticate(password, user.Password); err != nil {
@@ -163,13 +163,15 @@ func (ts *TokenService) ParseToken(token string) (*model.Claims, error) {
 	return claims, err
 }
 
+// CreatePasswordResetToken returns an empty token without error when the email
+// does not belong to a user. Callers must skip email delivery in that case.
 func (ts *TokenService) CreatePasswordResetToken(ctx context.Context, email string) (string, error) {
 	user, err := ts.userRepository.FindByEmail(ctx, email)
 	if err != nil {
 		return "", err
 	}
 	if user == nil {
-		return "", errors.New("user not found")
+		return "", nil
 	}
 
 	rawToken, err := util.GenerateRandomString(32)

@@ -1,8 +1,11 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/damingerdai/health-master/global"
 	"github.com/damingerdai/health-master/internal/model"
+	"github.com/damingerdai/health-master/internal/service"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
@@ -60,6 +63,8 @@ func ChangePassword(c *gin.Context) {
 		_ = c.Error(err)
 		if codeErr, ok := err.(*errcode.Error); ok {
 			res.ToErrorResponse(codeErr)
+		} else if errors.Is(err, service.ErrUserNotFound) {
+			res.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		} else {
 			res.ToErrorResponse(errcode.ServerError)
 		}
