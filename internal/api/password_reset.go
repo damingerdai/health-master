@@ -43,12 +43,9 @@ func CreateResetPassword(c *gin.Context) {
 		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
-	// Here you would typically send the reset link via email to the user.
-	// For this example, we'll just log the token.
-	global.Logger.Info("Password reset link (token):", zap.String("token", resetPasswordToken))
-	targetEmail := input.Email
-	targetToken := resetPasswordToken
-	go sendResetPasswordEmail(targetEmail, targetToken)
+	if resetPasswordToken != "" {
+		go sendResetPasswordEmail(input.Email, resetPasswordToken)
+	}
 	res.ToResponse(gin.H{"message": "If the email exists, a password reset link has been sent."})
 }
 
