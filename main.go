@@ -16,9 +16,12 @@ import (
 	"github.com/damingerdai/health-master/internal/mail"
 	"github.com/damingerdai/health-master/internal/observability"
 	"github.com/damingerdai/health-master/internal/routers"
+	"github.com/damingerdai/health-master/internal/service"
+	"github.com/damingerdai/health-master/internal/task"
 	"github.com/damingerdai/health-master/pkg/server"
 	"github.com/damingerdai/health-master/pkg/setting"
 	"github.com/damingerdai/health-master/pkg/version"
+	"github.com/hibiken/asynq"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 
@@ -53,7 +56,11 @@ func init() {
 	log.Println("setup logger")
 	err = setupMailer()
 	if err != nil {
-		panic("init setup mail err:" + err.Error())
+		panic("init setup mail err: " + err.Error())
+	}
+	err = setupAsynq()
+	if err != nil {
+		panic("init asynq err:" + err.Error())
 	}
 	global.Logger.Info("setup mailler")
 }
@@ -82,6 +89,14 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 	defer global.Logger.Sync()
+
+	defer global.AsynqClient.Close()
+	mailService := service.NewMailService(global.Mailer)
+	mux := task.NewServeMux(mailService)
+	if err = global.AsynqWorker.Start(mux); err != nil {
+		global.Logger.Error(fmt.Sprintf("init async worker: %s", err.Error()))
+	}
+	defer global.AsynqWorker.Shutdown()
 
 	app, err := server.New(s, "release")
 	if err != nil {
@@ -172,6 +187,21 @@ func setupMailer() error {
 	}
 	mailer := mail.NewMailer(global.SmtpSetting.Host, global.SmtpSetting.Port, global.SmtpSetting.Username, global.SmtpSetting.Password, global.SmtpSetting.From)
 	global.Mailer = mailer
+
+	return nil
+}
+
+func setupAsynq() error {
+	redisOpt := asynq.RedisClientOpt{
+		Addr:     global.RedisSetting.Addr(),
+		Password: global.RedisSetting.Password,
+		DB:       global.RedisSetting.DB,
+	}
+
+	client := task.NewAsynq(redisOpt)
+	global.AsynqClient = client
+	worker := task.NewWorker(redisOpt)
+	global.AsynqWorker = worker
 
 	return nil
 }
