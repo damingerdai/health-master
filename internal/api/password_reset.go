@@ -58,16 +58,22 @@ func sendResetPasswordEmail(email, token string) {
 	defer func() {
 		if r := recover(); r != nil {
 			global.Logger.Error("Recovered from panic in sendResetPasswordEmail",
-				zap.Any("panic", r),
 				zap.String("email", email),
+				zap.Any("panic", r),
+				zap.Stack("stack"),
 			)
 		}
 	}()
+	if global.AsynqClient == nil {
+		global.Logger.Error("asynq client is not initialized, skip enqueue",
+			zap.String("email", email))
+		return
+	}
 	frontendURL := strings.TrimRight(global.ServerSetting.FrontendURL, "/")
 	resetLink := fmt.Sprintf("%s/reset-password?token=%s", frontendURL, token)
 	currentEnv := "staging"
 	maxRetries := 3
-	payload := task.SendResetTokenPassowrdPayload{
+	payload := task.SendResetTokenPasswordPayload{
 		ToEmail: email,
 		Env:     currentEnv,
 		Link:    resetLink,
@@ -89,7 +95,7 @@ func sendResetPasswordEmail(email, token string) {
 		global.Logger.Error("Failed to send reset password email after retries", zap.String("email", email), zap.Error(err))
 		return
 	}
-	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink), zap.String("taoskId", info.ID))
+	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink), zap.String("taskId", info.ID))
 }
 
 // @Summary		verify password reset token

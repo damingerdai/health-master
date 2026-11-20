@@ -90,11 +90,14 @@ func main() {
 	}
 	defer global.Logger.Sync()
 
-	defer global.AsynqClient.Close()
+	if global.AsynqClient != nil {
+		defer global.AsynqClient.Close()
+	}
 	mailService := service.NewMailService(global.Mailer)
 	mux := task.NewServeMux(mailService)
 	if err = global.AsynqWorker.Start(mux); err != nil {
 		global.Logger.Error(fmt.Sprintf("init async worker: %s", err.Error()))
+		os.Exit(-1)
 	}
 	defer global.AsynqWorker.Shutdown()
 

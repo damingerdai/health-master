@@ -22,7 +22,7 @@ type SendMailPayload struct {
 	Body    string `json:"body"`
 }
 
-type SendResetTokenPassowrdPayload struct {
+type SendResetTokenPasswordPayload struct {
 	ToEmail string `json:"to_email"`
 	Env     string `json:"env"`
 	Link    string `json:"link"`
@@ -36,7 +36,7 @@ func NewSendMailTask(payload SendMailPayload) (*asynq.Task, error) {
 	return asynq.NewTask(TypeSendMail, data), nil
 }
 
-func NewSendResetTokenPasswordMailTask(payload SendResetTokenPassowrdPayload) (*asynq.Task, error) {
+func NewSendResetTokenPasswordMailTask(payload SendResetTokenPasswordPayload) (*asynq.Task, error) {
 	data, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func HandleSendResetPasswordTokenMail(sender MailSender) asynq.HandlerFunc {
 	return func(ctx context.Context, t *asynq.Task) error {
 		logger := mailTaskLogger(ctx, t)
 		logger.Info("Processing password reset email task")
-		var payload SendResetTokenPassowrdPayload
+		var payload SendResetTokenPasswordPayload
 		if err := json.Unmarshal(t.Payload(), &payload); err != nil {
 			logger.Error("Invalid password reset email task payload; skipping retries", zap.Error(err))
 			return fmt.Errorf("invalid payload: %v: %w", err, asynq.SkipRetry)
