@@ -32,6 +32,31 @@ func NewMailer(host, port, username, password, from string) *Mailer {
 	}
 }
 
+func (m *Mailer) Host() string {
+	return m.host
+}
+
+func (m *Mailer) Port() int {
+	portInt, err := strconv.Atoi(m.port)
+	if err != nil {
+		portInt = 465
+	}
+
+	return portInt
+}
+
+func (m *Mailer) Username() string {
+	return m.username
+}
+
+func (m *Mailer) Password() string {
+	return m.password
+}
+
+func (m *Mailer) From() string {
+	return m.from
+}
+
 type ResetPasswordData struct {
 	Env  string
 	Link string

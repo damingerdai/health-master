@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -9,9 +10,11 @@ import (
 	"github.com/damingerdai/health-master/internal/model"
 	"github.com/damingerdai/health-master/internal/repository"
 	"github.com/damingerdai/health-master/internal/service"
+	"github.com/damingerdai/health-master/internal/task"
 	"github.com/damingerdai/health-master/pkg/errcode"
 	"github.com/damingerdai/health-master/pkg/server/response"
 	"github.com/gin-gonic/gin"
+	"github.com/hibiken/asynq"
 	"go.uber.org/zap"
 )
 
@@ -43,6 +46,8 @@ func CreateResetPassword(c *gin.Context) {
 		res.ToErrorResponse(errcode.ServerError)
 		return
 	}
+
+	global.Logger.Info("reset password token is ready", zap.String("resetPasswordToken", resetPasswordToken))
 	if resetPasswordToken != "" {
 		go sendResetPasswordEmail(input.Email, resetPasswordToken)
 	}
@@ -53,31 +58,44 @@ func sendResetPasswordEmail(email, token string) {
 	defer func() {
 		if r := recover(); r != nil {
 			global.Logger.Error("Recovered from panic in sendResetPasswordEmail",
-				zap.Any("panic", r),
 				zap.String("email", email),
+				zap.Any("panic", r),
+				zap.Stack("stack"),
 			)
 		}
 	}()
+	if global.AsynqClient == nil {
+		global.Logger.Error("asynq client is not initialized, skip enqueue",
+			zap.String("email", email))
+		return
+	}
 	frontendURL := strings.TrimRight(global.ServerSetting.FrontendURL, "/")
 	resetLink := fmt.Sprintf("%s/reset-password?token=%s", frontendURL, token)
 	currentEnv := "staging"
 	maxRetries := 3
-	var err error
-	for i := range maxRetries {
-		err = global.Mailer.SendResetPassword(email, currentEnv, resetLink)
-		if err == nil {
-			global.Logger.Info("Send reset email success", zap.String("email", email))
-			return
-		}
-		if i < maxRetries-1 {
-			time.Sleep(time.Second * time.Duration(i+1))
-		}
+	payload := task.SendResetTokenPasswordPayload{
+		ToEmail: email,
+		Env:     currentEnv,
+		Link:    resetLink,
 	}
+	var err error
+	t, err := task.NewSendResetTokenPasswordMailTask(payload)
+	if err != nil {
+		global.Logger.Error("fail to send reset token password ", zap.String("email", email), zap.Error(err))
+		return
+	}
+	info, err := global.AsynqClient.EnqueueContext(
+		context.Background(),
+		t,
+		asynq.Queue("mail"),
+		asynq.MaxRetry(maxRetries),
+		asynq.Timeout(30*time.Second),
+	)
 	if err != nil {
 		global.Logger.Error("Failed to send reset password email after retries", zap.String("email", email), zap.Error(err))
-	} else {
-		global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink))
+		return
 	}
+	global.Logger.Info("send reset password email", zap.String("email", email), zap.String("token", token), zap.String("resetLink", resetLink), zap.String("taskId", info.ID))
 }
 
 // @Summary		verify password reset token
