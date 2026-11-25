@@ -48,7 +48,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/cookie": "^1.0.0",
     "@types/node": "^26.0.0",
-    "@types/react": "19.3.0",
+    "@types/react": "19.3.3",
     "@types/react-dom": "19.3.0",
     "eslint": "10.15.0",
     "eslint-config-next": "16.4.6",
@@ -60,7 +60,7 @@
   },
   "overrides": {
     "typescript-eslint": "^8.71.2",
-    "@types/react": "19.3.0",
+    "@types/react": "19.3.3",
     "@types/react-dom": "19.3.0"
   }
 }
